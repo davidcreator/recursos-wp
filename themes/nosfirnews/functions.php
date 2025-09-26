@@ -250,6 +250,9 @@ function nosfirnews_scripts() {
     // Enqueue navigation script
     wp_enqueue_script( 'nosfirnews-navigation', get_template_directory_uri() . '/assets/js/navigation.js', array( 'jquery' ), NOSFIRNEWS_VERSION, true );
     
+    // Enqueue mobile menu script
+    wp_enqueue_script( 'nosfirnews-mobile-menu', get_template_directory_uri() . '/assets/js/mobile-menu.js', array(), NOSFIRNEWS_VERSION, true );
+    
     // Enqueue comment reply script
     if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
         wp_enqueue_script( 'comment-reply' );

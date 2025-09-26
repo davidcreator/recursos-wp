@@ -122,23 +122,51 @@ if ( ! function_exists( 'nosfirnews_post_thumbnail' ) ) :
             return;
         }
 
+        // Get thumbnail attributes with lazy loading and responsive images
+        $thumbnail_attrs = array(
+            'alt' => the_title_attribute( array(
+                'echo' => false,
+            ) ),
+            'loading' => 'lazy',
+            'decoding' => 'async',
+            'class' => 'post-thumbnail-img',
+        );
+
+        // Add sizes attribute for responsive images
+        if ( ! is_singular() ) {
+            $thumbnail_attrs['sizes'] = '(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw';
+        } else {
+            $thumbnail_attrs['sizes'] = '(max-width: 768px) 100vw, 80vw';
+        }
+
         if ( is_singular() ) :
             ?>
-
             <div class="post-thumbnail">
-                <?php the_post_thumbnail(); ?>
+                <figure class="post-thumbnail-figure">
+                    <?php 
+                    the_post_thumbnail( 'large', $thumbnail_attrs );
+                    
+                    // Add caption if available
+                    $caption = get_the_post_thumbnail_caption();
+                    if ( $caption ) : ?>
+                        <figcaption class="post-thumbnail-caption"><?php echo wp_kses_post( $caption ); ?></figcaption>
+                    <?php endif; ?>
+                </figure>
             </div><!-- .post-thumbnail -->
 
         <?php else : ?>
 
         <a class="post-thumbnail" href="<?php the_permalink(); ?>" aria-hidden="true" tabindex="-1">
-            <?php
-            the_post_thumbnail( 'post-thumbnail', array(
-                'alt' => the_title_attribute( array(
-                    'echo' => false,
-                ) ),
-            ) );
-            ?>
+            <figure class="post-thumbnail-figure">
+                <?php
+                the_post_thumbnail( 'medium_large', $thumbnail_attrs );
+                ?>
+                <div class="post-thumbnail-overlay">
+                    <svg class="post-thumbnail-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M15 12L9 7V17L15 12Z" fill="currentColor"/>
+                    </svg>
+                </div>
+            </figure>
         </a>
 
         <?php
