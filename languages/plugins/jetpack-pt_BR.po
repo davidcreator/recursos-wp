@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Jetpack &#8211; WP Security, Backup, Speed, &amp; Growth - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-09-24 18:54:13+0000\n"
+"PO-Revision-Date: 2025-09-25 22:35:43+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -10,6 +10,886 @@ msgstr ""
 "X-Generator: GlotPress/4.0.1\n"
 "Language: pt_BR\n"
 "Project-Id-Version: Plugins - Jetpack &#8211; WP Security, Backup, Speed, &amp; Growth - Stable (latest release)\n"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3065
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Zimbabwe"
+msgstr "Zimbábue"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3064
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Zambia"
+msgstr "Zâmbia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3063
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Yemen"
+msgstr "Iêmen"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3062
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Wallis and Futuna"
+msgstr "Wallis e Futuna"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3061
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Vietnam"
+msgstr "Vietnã"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3059
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Vatican City"
+msgstr "Cidade do Vaticano"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3057
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Uzbekistan"
+msgstr "Uzbequistão"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3056
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Uruguay"
+msgstr "Uruguai"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3055
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "United States"
+msgstr "Estados Unidos"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3054
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "United Kingdom"
+msgstr "Reino Unido"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3053
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "United Arab Emirates"
+msgstr "Emirados Árabes Unidos"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3052
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Ukraine"
+msgstr "Ucrânia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3050
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "U.S. Virgin Islands"
+msgstr "Ilhas Virgens Americanas"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3048
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Turks and Caicos Islands"
+msgstr "Ilhas Turks e Caicos"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3047
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Turkmenistan"
+msgstr "Turcomenistão"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3046
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Turkey"
+msgstr "Turquia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3045
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Tunisia"
+msgstr "Tunísia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3044
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Trinidad and Tobago"
+msgstr "Trindade e Tobago"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3042
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Tokelau"
+msgstr "Toquelau"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3039
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Thailand"
+msgstr "Tailândia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3038
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Tanzania"
+msgstr "Tanzânia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3037
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Tajikistan"
+msgstr "Tajiquistão"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3035
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "São Tomé and Príncipe"
+msgstr "São Tomé e Príncipe"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3034
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Syria"
+msgstr "Síria"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3033
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Switzerland"
+msgstr "Suíça"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3032
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Sweden"
+msgstr "Suécia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3031
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Svalbard and Jan Mayen"
+msgstr "Svalbard e Jan Mayen"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3029
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Sudan"
+msgstr "Sudão"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3027
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Spain"
+msgstr "Espanha"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3026
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "South Korea"
+msgstr "Coreia do Sul"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3025
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "South Georgia and the South Sandwich Islands"
+msgstr "Ilhas Geórgia do Sul e Sandwich do Sul"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3024
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "South Africa"
+msgstr "África do Sul"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3023
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Somalia"
+msgstr "Somália"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3022
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Solomon Islands"
+msgstr "Ilhas Salomão"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3021
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Slovenia"
+msgstr "Eslovênia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3020
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Slovakia"
+msgstr "Eslováquia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3019
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Singapore"
+msgstr "Singapura"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3018
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Sierra Leone"
+msgstr "Serra Leoa"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3017
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Seychelles"
+msgstr "Seicheles"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3016
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Serbia"
+msgstr "Sérvia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3014
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Saudi Arabia"
+msgstr "Arábia Saudita"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3011
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Saint Vincent and the Grenadines"
+msgstr "São Vicente e Granadinas"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3010
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Saint Pierre and Miquelon"
+msgstr "São Pedro e Miquelão"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3009
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Saint Martin"
+msgstr "São Martim"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3008
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Saint Lucia"
+msgstr "Santa Lúcia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3007
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Saint Kitts and Nevis"
+msgstr "São Cristóvão e Névis"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3006
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Saint Helena"
+msgstr "Santa Helena"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3005
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Saint Barthélemy"
+msgstr "St. Barth"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3004
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Réunion"
+msgstr "Ilha da Reunião"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3003
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Rwanda"
+msgstr "Ruanda"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3002
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Russia"
+msgstr "Rússia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3001
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Romania"
+msgstr "Romênia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3000
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Qatar"
+msgstr "Catar"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2999
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Puerto Rico"
+msgstr "Porto Rico"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2997
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Poland"
+msgstr "Polônia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2996
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Pitcairn Islands"
+msgstr "Ilhas Pitcairn"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2995
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Philippines"
+msgstr "Filipinas"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2993
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Paraguay"
+msgstr "Paraguai"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2992
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Papua New Guinea"
+msgstr "Papua-Nova Guiné"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2991
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Panama"
+msgstr "Panamá"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2990
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Palestine"
+msgstr "Palestina"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2988
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Pakistan"
+msgstr "Paquistão"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2987
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Oman"
+msgstr "Omã"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2986
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Norway"
+msgstr "Noruega"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2985
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Northern Mariana Islands"
+msgstr "Ilhas Marianas do Norte"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2984
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "North Macedonia"
+msgstr "Macedônia do Norte"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2983
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "North Korea"
+msgstr "Coreia do Norte"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2982
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Norfolk Island"
+msgstr "Ilha Norfolk"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2980
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Nigeria"
+msgstr "Nigéria"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2979
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Niger"
+msgstr "Níger"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2978
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Nicaragua"
+msgstr "Nicarágua"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2977
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "New Zealand"
+msgstr "Nova Zelândia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2976
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "New Caledonia"
+msgstr "Nova Caledônia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2975
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Netherlands"
+msgstr "Países Baixos"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2972
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Namibia"
+msgstr "Namíbia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2971
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Myanmar"
+msgstr "Mianmar"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2970
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Mozambique"
+msgstr "Moçambique"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2969
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Morocco"
+msgstr "Marrocos"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2966
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Mongolia"
+msgstr "Mongólia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2965
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Monaco"
+msgstr "Mônaco"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2964
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Moldova"
+msgstr "Moldávia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2963
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Micronesia"
+msgstr "Micronésia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2962
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Mexico"
+msgstr "México"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2961
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Mayotte"
+msgstr "Maiote"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2960
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Mauritius"
+msgstr "Ilhas Maurício"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2959
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Mauritania"
+msgstr "Mauritânia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2958
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Martinique"
+msgstr "Martinica"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2957
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Marshall Islands"
+msgstr "Ilhas Marshall"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2954
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Maldives"
+msgstr "Maldivas"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2953
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Malaysia"
+msgstr "Malásia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2950
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Macao"
+msgstr "Macau"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2949
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Luxembourg"
+msgstr "Luxemburgo"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2948
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Lithuania"
+msgstr "Lituânia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2946
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Libya"
+msgstr "Líbia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2945
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Liberia"
+msgstr "Libéria"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2944
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Lesotho"
+msgstr "Lesoto"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2943
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Lebanon"
+msgstr "Líbano"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2942
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Latvia"
+msgstr "Letônia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2940
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Kyrgyzstan"
+msgstr "Quirguistão"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2936
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Kenya"
+msgstr "Quênia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2935
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Kazakhstan"
+msgstr "Cazaquistão"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2934
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Jordan"
+msgstr "Jordânia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2932
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Japan"
+msgstr "Japão"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2930
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Italy"
+msgstr "Itália"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2928
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Isle of Man"
+msgstr "Ilha de Man"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2927
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Ireland"
+msgstr "Irlanda"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2926
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Iraq"
+msgstr "Iraque"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2925
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Iran"
+msgstr "Irã"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2923
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "India"
+msgstr "Índia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2922
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Iceland"
+msgstr "Islândia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2921
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Hungary"
+msgstr "Hungria"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2917
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Guyana"
+msgstr "Guiana"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2916
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Guinea-Bissau"
+msgstr "Guiné-Bissau"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2915
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Guinea"
+msgstr "Guiné"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2911
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Guadeloupe"
+msgstr "Guadalupe"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2910
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Grenada"
+msgstr "Granada"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2909
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Greenland"
+msgstr "Groenlândia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2908
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Greece"
+msgstr "Grécia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2906
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Ghana"
+msgstr "Gana"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2905
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Germany"
+msgstr "Alemanha"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2904
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Georgia"
+msgstr "Geórgia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2903
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Gambia"
+msgstr "Gâmbia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2902
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Gabon"
+msgstr "Gabão"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2901
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "French Polynesia"
+msgstr "Polinésia Francesa"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2900
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "French Guiana"
+msgstr "Guiana Francesa"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2899
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "France"
+msgstr "França"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2898
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Finland"
+msgstr "Finlândia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2896
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Faroe Islands"
+msgstr "Ilhas Faroé"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2895
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Falkland Islands"
+msgstr "Ilhas Malvinas"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2894
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Ethiopia"
+msgstr "Etiópia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2892
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Estonia"
+msgstr "Estônia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2891
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Eritrea"
+msgstr "Eritreia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2890
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Equatorial Guinea"
+msgstr "Guiné Equatorial"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2888
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Egypt"
+msgstr "Egito"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2887
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Ecuador"
+msgstr "Equador"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2886
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Dominican Republic"
+msgstr "República Dominicana"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2884
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Djibouti"
+msgstr "Djibuti"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2883
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Denmark"
+msgstr "Dinamarca"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2882
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Côte d'Ivoire"
+msgstr "Costa do Marfim"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2881
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Czech Republic"
+msgstr "República Tcheca"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2880
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Cyprus"
+msgstr "Chipre"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2878
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Croatia"
+msgstr "Croácia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2876
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Cook Islands"
+msgstr "Ilhas Cook"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2875
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Congo - Kinshasa"
+msgstr "República Democrática do Congo"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2874
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Congo - Brazzaville"
+msgstr "Congo"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2873
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Comoros"
+msgstr "Comores"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2872
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Colombia"
+msgstr "Colômbia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2871
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Cocos (Keeling) Islands"
+msgstr "Ilhas Cocos (Keeling)"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2870
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Christmas Island"
+msgstr "Ilha Christmas"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2867
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Chad"
+msgstr "Chade"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2866
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Central African Republic"
+msgstr "República Centro-Africana"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2865
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Cayman Islands"
+msgstr "Ilhas Cayman"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2864
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Cape Verde"
+msgstr "Cabo Verde"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2863
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Canada"
+msgstr "Canadá"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2862
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Cameroon"
+msgstr "Camarões"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2861
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Cambodia"
+msgstr "Camboja"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2858
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Bulgaria"
+msgstr "Bulgária"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2856
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "British Virgin Islands"
+msgstr "Ilhas Virgens Britânicas"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2855
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "British Indian Ocean Territory"
+msgstr "Território Britânico do Oceano Índico"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2854
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Brazil"
+msgstr "Brasil"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2853
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Botswana"
+msgstr "Botsuana"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2852
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Bosnia and Herzegovina"
+msgstr "Bósnia e Herzegovina"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2851
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Bolivia"
+msgstr "Bolívia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2850
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Bhutan"
+msgstr "Butão"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2849
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Bermuda"
+msgstr "Bermudas"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2846
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Belgium"
+msgstr "Bélgica"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2842
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Bahrain"
+msgstr "Bahrein"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2840
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Azerbaijan"
+msgstr "Azerbaijão"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2839
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Austria"
+msgstr "Áustria"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2838
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Australia"
+msgstr "Austrália"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2836
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Armenia"
+msgstr "Armênia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2834
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Antigua and Barbuda"
+msgstr "Antígua e Barbuda"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2830
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "American Samoa"
+msgstr "Samoa Americana"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2829
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Algeria"
+msgstr "Argélia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2828
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Albania"
+msgstr "Albânia"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2827
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Afghanistan"
+msgstr "Afeganistão"
 
 #: _inc/blocks/latex/block.json
 msgctxt "block description"
@@ -60,11 +940,11 @@ msgstr "Pares de chave-valor de slugs do produto e estados das intersticiais."
 msgid "Please fill out at least one field."
 msgstr "Preencha pelo menos um campo."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:969
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:977
 msgid "Completed"
 msgstr "Concluída"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1861
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1913
 msgid "Please enter a valid time."
 msgstr "Digite um horário válido."
 
@@ -195,19 +1075,19 @@ msgstr "Campo"
 msgid "Connection issue while submitting the form. Check that you are connected to the Internet and try again."
 msgstr "Problema de conexão ao enviar o formulário. Verifique se você está conectado à Internet e tente novamente."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2321
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2317
 msgid "Source URL:"
 msgstr "URL de origem:"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2316
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2312
 msgid "Source Title"
 msgstr "Título de origem"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2670
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2720
 msgid "Please select a valid value"
 msgstr "Selecione um preço válido"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1827
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1879
 msgid "You are on a date picker input. Use the down key to focus into the date picker. Or type the date in the format MM/DD/YYYY"
 msgstr "Você está usando um seletor de data. Use a seta para baixo para se manter nele. Ou digite a data no formato DD/MM/AAAA"
 
@@ -491,103 +1371,103 @@ msgid "This field is required."
 msgstr "Este campo é obrigatório."
 
 #. translators: %d is the maximum value.
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2028
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2677
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2080
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2727
 msgid "Please select a value that is no more than %d."
 msgstr "Selecione um valor que não seja maior que %d."
 
 #. translators: %d is the minimum value.
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2024
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2673
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2076
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2723
 msgid "Please select a value that is no less than %d."
 msgstr "Selecione um valor que não seja menor que %d."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2021
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2073
 msgid "Please enter a valid number"
 msgstr "Digite um número válido"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1836
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1888
 msgid "Close button. Use the space key to close the date picker."
 msgstr "Botão Fechar. Use a tecla de espaço para fechar o seletor de data."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1835
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1887
 msgid "Clear button. Use the space key to clear the date picker."
 msgstr "Botão Limpar. Use a tecla de espaço para limpar o seletor de data."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1834
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1886
 msgid "Today button. Use the space key to select the current date."
 msgstr "Botão Hoje. Use a tecla de espaço para selecionar a data atual."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1833
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1885
 msgid "Use the space key to select the date."
 msgstr "Use a tecla de espaço para selecionar a data."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1832
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1884
 msgid "Year picker. Use the space key to enter the month picker."
 msgstr "Seletor de ano. Use a tecla de espaço para inserir o seletor de mês."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1831
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1883
 msgid "Month picker. Use the space key to enter the month picker."
 msgstr "Seletor de mês. Use a tecla de espaço para inserir o seletor de mês."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1830
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1882
 msgid "You are currently inside the year picker, use the up and down arrow keys to navigate between the years. Use the space key to select it."
 msgstr "Você está no seletor de ano. Use as setas para cima e para baixo para navegar pelos anos. Use a tecla de espaço para selecioná-lo."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1829
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1881
 msgid "You are currently inside the month picker, use the arrow keys to navigate between the months. Use the space key to select it."
 msgstr "Você está no seletor de mês. Use as setas para navegar entre os meses. Use a tecla de espaço para selecioná-lo."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1828
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1880
 msgid "You are currently inside the date picker, use the arrow keys to navigate between the dates. Use tab key to jump to more controls."
 msgstr "Você está no seletor de data. Use as setas para navegar entre as datas. Use a tecla Tab para pular para mais controles."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1807
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1859
 msgid "Sa"
 msgstr "Sáb"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1806
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1858
 msgid "Fr"
 msgstr "Sex"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1805
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1857
 msgid "Th"
 msgstr "Qui"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1804
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1856
 msgid "We"
 msgstr "Qua"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1803
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1855
 msgid "Tu"
 msgstr "Ter"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1802
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1854
 msgid "Mo"
 msgstr "Seg"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1801
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1853
 msgid "Su"
 msgstr "Dom"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1743
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1795
 msgid "Please enter a valid date."
 msgstr "Insira uma data válida."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1360
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1412
 msgid "Please remove any file upload errors."
 msgstr "Remova todos os erros de upload de arquivo."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1359
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1411
 msgid "Please wait a moment, file is currently uploading."
 msgstr "Aguarde um momento, o arquivo está sendo enviado."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1155
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1207
 msgid "Please select one of the options."
 msgstr "Selecione uma das opções."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:985
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1006
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:990
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1004
 msgid "Please enter a valid phone number"
 msgstr "Digite um número de telefone válido"
 
@@ -614,11 +1494,11 @@ msgstr "Respostas do formulário"
 msgid "Powered by %1$s"
 msgstr "Com tecnologia %1$s"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2793
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2789
 msgid "You do not have permission to create pages"
 msgstr "Você não tem permissão para criar páginas."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2786
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2782
 msgid "Invalid nonce"
 msgstr "Uso único inválido"
 
@@ -733,11 +1613,11 @@ msgstr "Os itens do status de compartilhamento."
 msgid "The post ID to update the data for."
 msgstr "A ID do post cujos dados serão atualizados."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1432
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1484
 msgid "File upload failed, try again."
 msgstr "Falha no upload do arquivo. Tente novamente."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1431
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1483
 msgid "You have exeeded the number of files that you can upload."
 msgstr "Você excedeu o limite de arquivos permitidos para upload."
 
@@ -777,51 +1657,51 @@ msgstr "Destaque facilmente todos os posts com a <a href=\"%1$s\">tag \"em desta
 msgid "Please enter a valid email address"
 msgstr "Digite um endereço de e-mail válido"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1821
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1873
 msgid "December"
 msgstr "Dezembro"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1820
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1872
 msgid "November"
 msgstr "Novembro"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1819
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1871
 msgid "October"
 msgstr "Outubro"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1818
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1870
 msgid "September"
 msgstr "Setembro"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1817
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1869
 msgid "August"
 msgstr "Agosto"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1816
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1868
 msgid "July"
 msgstr "Julho"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1815
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1867
 msgid "June"
 msgstr "Junho"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1814
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1866
 msgid "May"
 msgstr "Maio"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1813
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1865
 msgid "April"
 msgstr "Abril"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1812
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1864
 msgid "March"
 msgstr "Março"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1811
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1863
 msgid "February"
 msgstr "Fevereiro"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1810
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1862
 msgid "January"
 msgstr "Janeiro"
 
@@ -946,36 +1826,36 @@ msgstr "Proteção de conta"
 msgid "Failed to upload file."
 msgstr "Não foi possível fazer upload do arquivo."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1498
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1550
 msgid "Remove file"
 msgstr "Remover arquivo"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1493
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1545
 msgid "Uploaded"
 msgstr "Enviado"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1430
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1482
 msgid "This file type is not allowed."
 msgstr "Este tipo de arquivo não é permitido."
 
 #. translators: %s is the formatted maximum file size.
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1429
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1481
 msgid "File is too large. Maximum allowed size is %s."
 msgstr "O arquivo é grande demais. O tamanho máximo permitido é %s."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1427
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1479
 msgid "Folder uploads are not supported"
 msgstr "Uploads de pasta não são compatíveis"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1426
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1478
 msgid "Error uploading file"
 msgstr "Erro ao fazer upload do arquivo"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1425
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1477
 msgid "0 Bytes"
 msgstr "0 bytes"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1355
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1407
 msgid "File upload field requires Jetpack to be active."
 msgstr "O campo de upload de arquivo requer que o Jetpack esteja ativo."
 
@@ -1810,7 +2690,7 @@ msgstr "Deixe seu conteúdo mais legível"
 msgid "Easily refine content to your liking"
 msgstr "Aprimore o conteúdo de acordo com seus gostos"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1824
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1876
 msgid "Clear"
 msgstr "Limpar"
 
@@ -2686,21 +3566,21 @@ msgstr "O segredo da URL para comparar com o que já está armazenado no banco d
 
 #. translators: date format. DD is the day of the month, MM the month, and YYYY
 #. the year (e.g., 2023-12-31).
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1756
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1808
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:22
 msgid "YYYY-MM-DD"
 msgstr "AAAA-MM-DD"
 
 #. translators: date format. DD is the day of the month, MM the month, and YYYY
 #. the year (e.g., 31/12/2023).
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1752
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1804
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:20
 msgid "DD/MM/YYYY"
 msgstr "DD/MM/AAAA"
 
 #. translators: date format. DD is the day of the month, MM the month, and YYYY
 #. the year (e.g., 12/31/2023).
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1748
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1800
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:18
 msgid "MM/DD/YYYY"
 msgstr "MM/DD/AAAA"
@@ -4376,6 +5256,11 @@ msgstr "Este bloco não é mais compatível. O conteúdo dele não será mais ex
 msgid "Site Recommendations"
 msgstr "Recomendações de site"
 
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2924
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
+msgid "Indonesia"
+msgstr "Indonésia"
+
 #: _inc/lib/core-api/wpcom-endpoints/publicize-connection-test-results.php:75
 msgid "Jetpack Social connection error code"
 msgstr "Código do erro de conexão do Jetpack Social"
@@ -4825,7 +5710,7 @@ msgstr "Solicitação inválida"
 msgid "Something went wrong. Please try again."
 msgstr "Ocorreu um erro. Tente novamente."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2815
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2811
 msgid "Jetpack Forms"
 msgstr "Formulários do Jetpack"
 
@@ -4991,7 +5876,7 @@ msgctxt "post type name shown in menu"
 msgid "Feedback"
 msgstr "Mensagens"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2623
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2619
 msgid "Response Date"
 msgstr "Dados das respostas"
 
@@ -5051,14 +5936,14 @@ msgstr "Escolha uma opção"
 msgid "Choose several options"
 msgstr "Escolha várias opções"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2624
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2620
 msgctxt "noun"
 msgid "Consent"
 msgstr "Consentimento"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2338
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2586
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2625
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2334
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2582
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2621
 msgid "IP Address"
 msgstr "Endereço de IP"
 
@@ -5195,15 +6080,15 @@ msgctxt "Module Name"
 msgid "Jetpack Stats"
 msgstr "Estatísticas do Jetpack"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1095
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1147
 msgid "Please enter a valid URL - https://www.example.com"
 msgstr "Digite um URL válido - https://www.exemplo.com"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2079
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2075
 msgid "All sources"
 msgstr "Todas as origens"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:1680
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:1676
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:179
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:1
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:4
@@ -5228,8 +6113,8 @@ msgstr "Dados de resposta"
 
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-admin.php:622
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-admin.php:768
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2570
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2622
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2566
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2618
 msgid "Source"
 msgstr "Fonte"
 
@@ -5311,7 +6196,7 @@ msgstr "A legenda do vídeo."
 msgid "Could not fetch site information from the service"
 msgstr "Não foi possível coletar informações do site do serviço"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1469
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1521
 msgid "Select a file to upload."
 msgstr "Selecione um arquivo para fazer upload."
 
@@ -5710,7 +6595,7 @@ msgstr "Acesso às mais recentes regras de firewall"
 msgid "WordAds"
 msgstr "WordAds"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1823
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1875
 #: jetpack_vendor/automattic/jetpack-backup/build/index.js:9
 msgid "Today"
 msgstr "Hoje"
@@ -6903,8 +7788,8 @@ msgstr "Pesquisar respostas"
 
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:230
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:231
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:1349
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:1350
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:1345
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:1346
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:508
 #: jetpack_vendor/automattic/jetpack-forms/src/dashboard/class-dashboard.php:140
 #: jetpack_vendor/automattic/jetpack-forms/src/dashboard/class-dashboard.php:158
@@ -7274,7 +8159,7 @@ msgstr "A descrição do vídeo."
 msgid "The title of the video."
 msgstr "O título do vídeo."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/blocks/contact-form/class-contact-form-block.php:731
+#: jetpack_vendor/automattic/jetpack-forms/src/blocks/contact-form/class-contact-form-block.php:721
 msgid "Submit a form."
 msgstr "Envie um formulário."
 
@@ -7384,21 +8269,21 @@ msgstr "O Jetpack não está conectado. Nenhum token de blog a ser verificado."
 msgid "Choose an amount"
 msgstr "Escolha um valor"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2333
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2585
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2329
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2581
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1462
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:4
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
 msgid "Consent"
 msgstr "Consentimento"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:1226
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:1222
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:4
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
 msgid "Can we send you an email from time to time?"
 msgstr "Podemos enviar um e-mail para você de vez em quando?"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:1222
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:1218
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:4
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
 msgid "By submitting your information, you're giving us permission to email you. You may unsubscribe at any time."
@@ -8078,7 +8963,7 @@ msgstr "Avaliação: %1$s de %2$s."
 msgid "Connecting…"
 msgstr "Conectando..."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/blocks/contact-form/class-contact-form-block.php:515
+#: jetpack_vendor/automattic/jetpack-forms/src/blocks/contact-form/class-contact-form-block.php:505
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
 #: _inc/blocks/editor-beta.js:27 _inc/blocks/editor-experimental.js:27
 #: _inc/blocks/editor-no-post-editor.js:14 _inc/blocks/editor.js:27
@@ -8731,7 +9616,7 @@ msgstr "Anual"
 msgid "Monthly"
 msgstr "Mensal"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1492
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1544
 #: _inc/blocks/editor-beta.js:106 _inc/blocks/editor-experimental.js:88
 #: _inc/blocks/editor-no-post-editor.js:37 _inc/blocks/editor.js:88
 msgid "Uploading…"
@@ -8745,7 +9630,7 @@ msgstr "Fazendo upload..."
 msgid "Pay with PayPal"
 msgstr "Pagar com o PayPal"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2567
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2563
 msgid "ID"
 msgstr "ID"
 
@@ -10103,8 +10988,8 @@ msgid "Privacy Policy Link"
 msgstr "Link para política de privacidade"
 
 #. translators: %d: Post ID.
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2410
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2426
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2406
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2422
 msgid "Feedback ID %d could not be removed at this time."
 msgstr "ID de feedback %d não pode ser removido neste momento."
 
@@ -10468,7 +11353,7 @@ msgstr "ocorrência de cache"
 msgid "Jetpack Search"
 msgstr "Jetpack Search"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1498
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1550
 #: jetpack_vendor/automattic/jetpack-search/src/widgets/class-search-widget.php:1096
 #: modules/widgets/social-icons.php:411
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
@@ -11853,7 +12738,7 @@ msgstr "Observe que os posts relacionados exibidos agora são apenas para fins d
 msgid "Please visit a single post view to reveal the customization options."
 msgstr "Acesse a visualização de post único para revelar as opções de personalização."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/blocks/contact-form/class-contact-form-block.php:506
+#: jetpack_vendor/automattic/jetpack-forms/src/blocks/contact-form/class-contact-form-block.php:496
 #: modules/related-posts/class.related-posts-customize.php:256
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:6
 msgid "List"
@@ -14994,7 +15879,7 @@ msgid "Email"
 msgstr "E-mail"
 
 #: extensions/blocks/eventbrite/eventbrite.php:197
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1825
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1877
 #: modules/wordads/php/class-wordads-california-privacy.php:267
 #: jetpack_vendor/automattic/jetpack-external-media/src/build/jetpack-external-media-editor/jetpack-external-media-editor.js:11
 #: jetpack_vendor/automattic/jetpack-external-media/src/build/jetpack-external-media-import-page/jetpack-external-media-import-page.js:11
@@ -15369,8 +16254,8 @@ msgstr "Endereço de e-mail"
 msgid "Last Modified"
 msgstr "Modificado pela última vez"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2569
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2621
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2565
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2617
 #: jetpack_vendor/automattic/jetpack-videopress/src/class-admin-ui.php:396
 #: modules/sitemaps/sitemap-stylist.php:450
 #: modules/sitemaps/sitemap-stylist.php:594
@@ -15605,8 +16490,8 @@ msgstr "%1$s às %2$s"
 msgid "Gallery"
 msgstr "Galeria"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2334
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2585
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2330
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2581
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:4
 msgid "No"
 msgstr "Não"
@@ -16839,11 +17724,11 @@ msgctxt "Label for HTML form \"Name\" field in contact form builder"
 msgid "Name"
 msgstr "Nome"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1301
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1326
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1328
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2334
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2585
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1353
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1378
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:1380
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2330
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2581
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-editor-view.php:183
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:4
 #: jetpack_vendor/automattic/jetpack-publicize/build/editor-jetpack-sidebar.js:4
@@ -16892,7 +17777,7 @@ msgctxt "%1$s = blog name"
 msgid "%1$s Sidebar"
 msgstr "%1$s Barra Lateral"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:3118
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:3114
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-form-view.php:71
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-util.php:50
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:4
@@ -16903,11 +17788,11 @@ msgstr "Formulário de Contato"
 msgid "Download"
 msgstr "Fazer download"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2024
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2020
 msgid "Feedback discarded."
 msgstr "Feedback descartado. "
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:1672
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:1668
 #: _inc/lib/core-api/wpcom-endpoints/class-wpcom-rest-api-v2-endpoint-external-media.php:503
 #: _inc/lib/core-api/wpcom-endpoints/class-wpcom-rest-api-v2-endpoint-instagram-gallery.php:125
 #: _inc/blocks/editor-beta.js:39 _inc/blocks/editor-experimental.js:32
@@ -16976,8 +17861,8 @@ msgid "Restore this item from the Trash"
 msgstr "Restaurar este item da Lixeira"
 
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-admin.php:623
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2311
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2568
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2307
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2564
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1444
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-editor-view.php:254
 #: jetpack_vendor/automattic/jetpack-search/src/widgets/class-search-widget.php:999
@@ -18141,11 +19026,11 @@ msgstr "Configurações do Jetpack"
 msgid "My Jetpack"
 msgstr "Meu Jetpack"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:1337
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:1338
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2231
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2249
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2344
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:1333
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:1334
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2227
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2245
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2340
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-form-view.php:208
 #: jetpack_vendor/automattic/jetpack-masterbar/src/admin-menu/class-jetpack-admin-menu.php:159
 #: _inc/blocks/editor-beta.js:22 _inc/blocks/editor-experimental.js:22
