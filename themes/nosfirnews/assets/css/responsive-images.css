@@ -1,0 +1,311 @@
+/**
+ * Responsive Images CSS
+ * Otimizações para exibição responsiva das imagens do tema NosfirNews
+ */
+
+/* ==========================================================================
+   Base Image Styles
+   ========================================================================== */
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.img-responsive {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ==========================================================================
+   Post Thumbnails
+   ========================================================================== */
+
+.post-thumbnail {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.post-thumbnail img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.post-thumbnail:hover img {
+    transform: scale(1.05);
+}
+
+.post-thumbnail-figure {
+    margin: 0;
+    position: relative;
+}
+
+.post-thumbnail-img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+}
+
+/* ==========================================================================
+   Featured Images
+   ========================================================================== */
+
+.featured-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.featured-image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+}
+
+.featured-image-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+    color: white;
+    padding: 2rem 1.5rem 1rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* ==========================================================================
+   Widget Images
+   ========================================================================== */
+
+.widget .post-thumbnail {
+    margin-bottom: 0.75rem;
+}
+
+.widget .post-thumbnail img {
+    aspect-ratio: 16/9;
+    border-radius: 6px;
+}
+
+.widget-area .wp-post-image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+/* ==========================================================================
+   Card Images
+   ========================================================================== */
+
+.card-image,
+.nosfirnews-card .post-thumbnail {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.card-image img,
+.nosfirnews-card .post-thumbnail img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.card-image:hover img,
+.nosfirnews-card:hover .post-thumbnail img {
+    transform: scale(1.05);
+}
+
+/* ==========================================================================
+   Gallery Images
+   ========================================================================== */
+
+.gallery-item img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.gallery-grid .gallery-item img {
+    aspect-ratio: 16/9;
+}
+
+.gallery-masonry .gallery-item img {
+    aspect-ratio: auto;
+    height: auto;
+}
+
+/* ==========================================================================
+   Avatar Images
+   ========================================================================== */
+
+.avatar,
+.author-avatar img,
+.comment-author img {
+    border-radius: 50%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+}
+
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+
+/* Large Devices (1200px and up) */
+@media (min-width: 1200px) {
+    .post-thumbnail img {
+        aspect-ratio: 16/9;
+    }
+    
+    .featured-image {
+        aspect-ratio: 21/9; /* Mais panorâmica em telas grandes */
+    }
+}
+
+/* Medium Devices (768px to 1199px) */
+@media (min-width: 768px) and (max-width: 1199px) {
+    .post-thumbnail {
+        margin-bottom: 1rem;
+    }
+    
+    .featured-image-caption {
+        padding: 1.5rem 1rem 0.75rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* Small Devices (576px to 767px) */
+@media (min-width: 576px) and (max-width: 767px) {
+    .post-thumbnail {
+        margin-bottom: 0.75rem;
+    }
+    
+    .post-thumbnail img {
+        aspect-ratio: 4/3; /* Proporção mais quadrada em tablets */
+    }
+    
+    .featured-image {
+        aspect-ratio: 4/3;
+    }
+    
+    .widget .post-thumbnail img {
+        aspect-ratio: 4/3;
+    }
+}
+
+/* Extra Small Devices (575px and down) */
+@media (max-width: 575px) {
+    .post-thumbnail {
+        margin-bottom: 0.5rem;
+        border-radius: 6px;
+    }
+    
+    .post-thumbnail img {
+        aspect-ratio: 4/3; /* Proporção mais quadrada em mobile */
+    }
+    
+    .featured-image {
+        aspect-ratio: 4/3;
+        border-radius: 8px;
+    }
+    
+    .featured-image-caption {
+        padding: 1rem 0.75rem 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .widget .post-thumbnail img {
+        aspect-ratio: 4/3;
+        border-radius: 4px;
+    }
+    
+    .card-image img,
+    .nosfirnews-card .post-thumbnail img {
+        aspect-ratio: 4/3;
+    }
+    
+    .gallery-item img {
+        aspect-ratio: 1/1; /* Mantém quadrado em mobile */
+    }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+
+@media print {
+    .post-thumbnail,
+    .featured-image-wrapper {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+    
+    .post-thumbnail img,
+    .featured-image {
+        max-height: 300px;
+        object-fit: contain;
+    }
+}
+
+/* ==========================================================================
+   High DPI Displays
+   ========================================================================== */
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .post-thumbnail img,
+    .featured-image,
+    .widget .wp-post-image {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* ==========================================================================
+   Accessibility
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .post-thumbnail img,
+    .card-image img,
+    .nosfirnews-card .post-thumbnail img {
+        transition: none;
+    }
+    
+    .post-thumbnail:hover img,
+    .card-image:hover img,
+    .nosfirnews-card:hover .post-thumbnail img {
+        transform: none;
+    }
+}
+
+/* ==========================================================================
+   Dark Mode Support
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    .post-thumbnail,
+    .featured-image-wrapper,
+    .card-image {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .featured-image-caption {
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+    }
+}

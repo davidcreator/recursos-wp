@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Tamanhos de Imagem - NosfirNews</title>
+    <link rel="stylesheet" href="assets/css/responsive-images.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-section h2 {
+            color: #333;
+            border-bottom: 2px solid #007cba;
+            padding-bottom: 10px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .sample-image {
+            background: linear-gradient(45deg, #007cba, #00a0d2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px;
+        }
+        .size-info {
+            background: #f0f0f0;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Teste de Tamanhos de Imagem - Tema NosfirNews</h1>
+        <p>Esta página testa os novos tamanhos de imagem padronizados implementados no tema.</p>
+
+        <!-- Teste de Post Thumbnails -->
+        <div class="test-section">
+            <h2>Post Thumbnails (300x200px - 16:9)</h2>
+            <div class="grid">
+                <div class="post-thumbnail">
+                    <div class="sample-image" style="width: 300px; height: 200px;">
+                        Thumbnail Padrão<br>300x200px
+                    </div>
+                    <div class="size-info">
+                        <strong>Tamanho:</strong> 300x200px (proporção 3:2)<br>
+                        <strong>Uso:</strong> Thumbnails padrão de posts
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teste de Featured Images -->
+        <div class="test-section">
+            <h2>Featured Images (1200x675px - 16:9)</h2>
+            <div class="featured-image-wrapper">
+                <div class="sample-image featured-image" style="width: 100%; height: 300px;">
+                    Imagem Destacada<br>1200x675px (16:9)
+                </div>
+                <div class="featured-image-caption">
+                    Legenda da imagem destacada com gradiente
+                </div>
+            </div>
+            <div class="size-info">
+                <strong>Tamanho:</strong> 1200x675px (proporção 16:9)<br>
+                <strong>Uso:</strong> Imagens principais de posts e páginas
+            </div>
+        </div>
+
+        <!-- Teste de Card Images -->
+        <div class="test-section">
+            <h2>Card Images (400x225px - 16:9)</h2>
+            <div class="grid">
+                <div class="nosfirnews-card">
+                    <div class="post-thumbnail">
+                        <div class="sample-image" style="width: 400px; height: 225px;">
+                            Card Medium<br>400x225px
+                        </div>
+                    </div>
+                    <div class="size-info">
+                        <strong>Tamanho:</strong> 400x225px (proporção 16:9)<br>
+                        <strong>Uso:</strong> Cards de posts em grid
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teste de Widget Images -->
+        <div class="test-section">
+            <h2>Widget Images (300x169px - 16:9)</h2>
+            <div class="widget">
+                <div class="post-thumbnail">
+                    <div class="sample-image" style="width: 300px; height: 169px;">
+                        Widget Image<br>300x169px
+                    </div>
+                </div>
+                <div class="size-info">
+                    <strong>Tamanho:</strong> 300x169px (proporção 16:9)<br>
+                    <strong>Uso:</strong> Imagens em widgets laterais
+                </div>
+            </div>
+        </div>
+
+        <!-- Teste de Gallery Images -->
+        <div class="test-section">
+            <h2>Gallery Images (800x450px - 16:9)</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <div class="sample-image" style="width: 100%; height: 200px;">
+                        Gallery Image<br>800x450px
+                    </div>
+                </div>
+            </div>
+            <div class="size-info">
+                <strong>Tamanho:</strong> 800x450px (proporção 16:9)<br>
+                <strong>Uso:</strong> Imagens em galerias
+            </div>
+        </div>
+
+        <!-- Teste de Thumbnails Quadrados -->
+        <div class="test-section">
+            <h2>Square Thumbnails (200x200px - 1:1)</h2>
+            <div class="grid">
+                <div class="gallery-item">
+                    <div class="sample-image" style="width: 200px; height: 200px;">
+                        Square Thumb<br>200x200px
+                    </div>
+                    <div class="size-info">
+                        <strong>Tamanho:</strong> 200x200px (proporção 1:1)<br>
+                        <strong>Uso:</strong> Thumbnails quadrados, avatares
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teste Responsivo -->
+        <div class="test-section">
+            <h2>Teste Responsivo</h2>
+            <p>Redimensione a janela do navegador para ver como as imagens se adaptam:</p>
+            <div class="post-thumbnail">
+                <div class="sample-image" style="width: 100%; height: 200px;">
+                    Imagem Responsiva<br>Adapta-se ao tamanho da tela
+                </div>
+            </div>
+            <div class="size-info">
+                <strong>Comportamento:</strong><br>
+                • Desktop (>1200px): 16:9<br>
+                • Tablet (768-1199px): 16:9<br>
+                • Mobile (<768px): 4:3
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Adiciona informações de viewport
+        function updateViewportInfo() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const ratio = (width / height).toFixed(2);
+            
+            document.title = `Teste Imagens - ${width}x${height} (${ratio})`;
+        }
+        
+        window.addEventListener('resize', updateViewportInfo);
+        updateViewportInfo();
+    </script>
+</body>
+</html>

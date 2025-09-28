@@ -199,6 +199,113 @@ function nosfirnews_customize_register( $wp_customize ) {
         'type'     => 'textarea',
     ) );
 
+    // Thumbnail Options Section
+    $wp_customize->add_section( 'nosfirnews_thumbnail_options', array(
+        'title'    => esc_html__( 'Opções de Thumbnail', 'nosfirnews' ),
+        'panel'    => 'nosfirnews_theme_options',
+        'priority' => 20,
+    ) );
+
+    // Featured Image Size
+    $wp_customize->add_setting( 'nosfirnews_featured_image_size', array(
+        'default'           => 'nosfirnews-featured',
+        'sanitize_callback' => 'nosfirnews_sanitize_select',
+    ) );
+
+    $wp_customize->add_control( 'nosfirnews_featured_image_size', array(
+        'label'    => esc_html__( 'Tamanho da Imagem Destacada', 'nosfirnews' ),
+        'section'  => 'nosfirnews_thumbnail_options',
+        'type'     => 'select',
+        'priority' => 10,
+        'choices'  => array(
+            'thumbnail'           => esc_html__( 'Miniatura (300x200)', 'nosfirnews' ),
+            'medium'             => esc_html__( 'Médio (300x300)', 'nosfirnews' ),
+            'medium_large'       => esc_html__( 'Médio Grande (768x0)', 'nosfirnews' ),
+            'large'              => esc_html__( 'Grande (1024x1024)', 'nosfirnews' ),
+            'nosfirnews-small'   => esc_html__( 'Pequeno (400x225)', 'nosfirnews' ),
+            'nosfirnews-medium'  => esc_html__( 'Médio (600x338)', 'nosfirnews' ),
+            'nosfirnews-featured'=> esc_html__( 'Destacado (1200x675)', 'nosfirnews' ),
+            'nosfirnews-widget'  => esc_html__( 'Widget (300x169)', 'nosfirnews' ),
+            'full'               => esc_html__( 'Tamanho Original', 'nosfirnews' ),
+        ),
+    ) );
+
+    // Archive Image Size
+    $wp_customize->add_setting( 'nosfirnews_archive_image_size', array(
+        'default'           => 'nosfirnews-medium',
+        'sanitize_callback' => 'nosfirnews_sanitize_select',
+    ) );
+
+    $wp_customize->add_control( 'nosfirnews_archive_image_size', array(
+        'label'    => esc_html__( 'Tamanho da Imagem no Arquivo', 'nosfirnews' ),
+        'section'  => 'nosfirnews_thumbnail_options',
+        'type'     => 'select',
+        'priority' => 20,
+        'choices'  => array(
+            'thumbnail'           => esc_html__( 'Miniatura (300x200)', 'nosfirnews' ),
+            'medium'             => esc_html__( 'Médio (300x300)', 'nosfirnews' ),
+            'medium_large'       => esc_html__( 'Médio Grande (768x0)', 'nosfirnews' ),
+            'large'              => esc_html__( 'Grande (1024x1024)', 'nosfirnews' ),
+            'nosfirnews-small'   => esc_html__( 'Pequeno (400x225)', 'nosfirnews' ),
+            'nosfirnews-medium'  => esc_html__( 'Médio (600x338)', 'nosfirnews' ),
+            'nosfirnews-featured'=> esc_html__( 'Destacado (1200x675)', 'nosfirnews' ),
+            'nosfirnews-widget'  => esc_html__( 'Widget (300x169)', 'nosfirnews' ),
+        ),
+    ) );
+
+    // Widget Image Size
+    $wp_customize->add_setting( 'nosfirnews_widget_image_size', array(
+        'default'           => 'nosfirnews-small',
+        'sanitize_callback' => 'nosfirnews_sanitize_select',
+    ) );
+
+    $wp_customize->add_control( 'nosfirnews_widget_image_size', array(
+        'label'    => esc_html__( 'Tamanho da Imagem em Widgets', 'nosfirnews' ),
+        'section'  => 'nosfirnews_thumbnail_options',
+        'type'     => 'select',
+        'priority' => 30,
+        'choices'  => array(
+            'thumbnail'           => esc_html__( 'Miniatura (300x200)', 'nosfirnews' ),
+            'medium'             => esc_html__( 'Médio (300x300)', 'nosfirnews' ),
+            'nosfirnews-small'   => esc_html__( 'Pequeno (400x225)', 'nosfirnews' ),
+            'nosfirnews-medium'  => esc_html__( 'Médio (600x338)', 'nosfirnews' ),
+            'nosfirnews-widget'  => esc_html__( 'Widget (300x169)', 'nosfirnews' ),
+        ),
+    ) );
+
+    // Enable Lazy Loading
+    $wp_customize->add_setting( 'nosfirnews_enable_lazy_loading', array(
+        'default'           => true,
+        'sanitize_callback' => 'nosfirnews_sanitize_checkbox',
+    ) );
+
+    $wp_customize->add_control( 'nosfirnews_enable_lazy_loading', array(
+        'label'       => esc_html__( 'Ativar Carregamento Lazy', 'nosfirnews' ),
+        'description' => esc_html__( 'Carrega imagens apenas quando necessário para melhorar a performance.', 'nosfirnews' ),
+        'section'     => 'nosfirnews_thumbnail_options',
+        'type'        => 'checkbox',
+        'priority'    => 40,
+    ) );
+
+    // Image Quality
+    $wp_customize->add_setting( 'nosfirnews_image_quality', array(
+        'default'           => 85,
+        'sanitize_callback' => 'absint',
+    ) );
+
+    $wp_customize->add_control( 'nosfirnews_image_quality', array(
+        'label'       => esc_html__( 'Qualidade da Imagem (%)', 'nosfirnews' ),
+        'description' => esc_html__( 'Defina a qualidade das imagens (1-100). Menor valor = menor tamanho de arquivo.', 'nosfirnews' ),
+        'section'     => 'nosfirnews_thumbnail_options',
+        'type'        => 'range',
+        'priority'    => 50,
+        'input_attrs' => array(
+            'min'  => 1,
+            'max'  => 100,
+            'step' => 1,
+        ),
+    ) );
+
     if ( isset( $wp_customize->selective_refresh ) ) {
         
         // Site title

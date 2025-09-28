@@ -125,6 +125,30 @@ class NosfirNews_Walker_Nav_Menu extends Walker_Nav_Menu {
             $classes[] = 'menu-button';
         }
 
+        // Check for badge/label
+        $menu_badge = get_post_meta( $item->ID, '_menu_item_badge', true );
+        if ( $menu_badge ) {
+            $classes[] = 'has-badge';
+        }
+
+        // Check for custom color
+        $menu_color = get_post_meta( $item->ID, '_menu_item_color', true );
+        if ( $menu_color ) {
+            $classes[] = 'has-custom-color';
+        }
+
+        // Check for hide on mobile
+        $hide_mobile = get_post_meta( $item->ID, '_menu_item_hide_mobile', true );
+        if ( $hide_mobile ) {
+            $classes[] = 'hide-mobile';
+        }
+
+        // Check for hide on desktop
+        $hide_desktop = get_post_meta( $item->ID, '_menu_item_hide_desktop', true );
+        if ( $hide_desktop ) {
+            $classes[] = 'hide-desktop';
+        }
+
         /**
          * Filter the CSS class(es) applied to a menu item's list item element.
          *
@@ -162,17 +186,33 @@ class NosfirNews_Walker_Nav_Menu extends Walker_Nav_Menu {
 
         // Build the link content
         $item_output = isset( $args->before ) ? $args->before : '';
-        $item_output .= '<a' . $attributes . '>';
+        
+        // Add custom color style if exists
+        $link_style = '';
+        if ( $menu_color ) {
+            $link_style = ' style="color: ' . esc_attr( $menu_color ) . ';"';
+        }
+        
+        $item_output .= '<a' . $attributes . $link_style . '>';
 
         // Add menu icon if exists
         if ( $menu_icon ) {
             $item_output .= '<i class="menu-icon ' . esc_attr( $menu_icon ) . '" aria-hidden="true"></i>';
         }
 
-        // Add menu item title
+        // Add menu item title wrapper
+        $item_output .= '<span class="menu-item-text">';
         $item_output .= isset( $args->link_before ) ? $args->link_before : '';
         $item_output .= apply_filters( 'the_title', $item->title, $item->ID );
         $item_output .= isset( $args->link_after ) ? $args->link_after : '';
+        $item_output .= '</span>';
+
+        // Add badge if exists
+        if ( $menu_badge ) {
+            $badge_color = get_post_meta( $item->ID, '_menu_item_badge_color', true );
+            $badge_style = $badge_color ? ' style="background-color: ' . esc_attr( $badge_color ) . ';"' : '';
+            $item_output .= '<span class="menu-badge"' . $badge_style . '>' . esc_html( $menu_badge ) . '</span>';
+        }
 
         // Add dropdown indicator for parent items
         if ( in_array( 'menu-item-has-children', $classes ) ) {

@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - WooCommerce - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-09-02 16:37:58+0000\n"
+"PO-Revision-Date: 2025-09-26 18:02:21+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -4356,7 +4356,7 @@ msgstr "Ao vivo"
 #: includes/admin/settings/class-wc-settings-site-visibility.php:27
 #: assets/client/admin/wp-admin-scripts/settings-embed.js:2
 msgid "Site visibility"
-msgstr "Visibilidade do local"
+msgstr "Visibilidade do site"
 
 #. Translators: %s Domain name from the callback URL.
 #: templates/auth/form-grant-access.php:48

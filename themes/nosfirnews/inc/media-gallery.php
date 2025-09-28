@@ -27,11 +27,11 @@ class NosfirNews_Media_Gallery {
     }
     
     public function init() {
-        // Register custom image sizes for gallery
-        add_image_size('gallery-thumb', 300, 300, true);
-        add_image_size('gallery-medium', 600, 400, true);
-        add_image_size('gallery-large', 1200, 800, true);
-        add_image_size('gallery-full', 1920, 1080, false);
+        // Register custom image sizes for gallery (proporções 16:9 e quadradas)
+        add_image_size('gallery-thumb', 300, 300, true);        // Quadrado para thumbnails
+        add_image_size('gallery-medium', 600, 338, true);       // 16:9 para visualização média
+        add_image_size('gallery-large', 1200, 675, true);       // 16:9 para visualização grande
+        add_image_size('gallery-full', 1920, 1080, false);      // 16:9 para tela cheia
     }
     
     public function enqueue_scripts() {
