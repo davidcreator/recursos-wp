@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: Easy AMP Pro
- * Plugin URI: https://github.com/your-username/easy-amp-pro
+ * Plugin URI: https://github.com/davidcreator/easy-amp-pro
  * Description: Plugin AMP profissional para WordPress que automatiza a geração de marcação válida AMP, fornece ferramentas de validação eficazes e suporte completo para desenvolvimento AMP.
  * Version: 1.0.0
- * Author: Seu Nome
- * Author URI: https://seusite.com
+ * Author: David L. Almeida
+ * Author URI: https://davidalmeida.xyz
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: easy-amp-pro
@@ -205,9 +205,6 @@ class EasyAMPPro {
     private function setup_amp_environment() {
         // Remove incompatible plugins/themes on AMP pages
         $this->remove_incompatible_actions();
-        
-        // Add AMP-specific optimizations
-        add_filter('wp_enqueue_scripts', array($this, 'optimize_amp_scripts'), 999);
     }
     
     /**
