@@ -1,256 +1,192 @@
-# AdSense Master Pro
+# AdSense Master Pro v2.0.0
 
-Um plugin WordPress completo e profissional para gerenciamento avançado de anúncios Google AdSense e outras redes publicitárias.
+Plugin avançado para WordPress que oferece gerenciamento completo de anúncios AdSense com funcionalidades profissionais de otimização, analytics e A/B testing.
 
-## 🚀 Características Principais
+## 🚀 Funcionalidades Principais
 
-### 📊 Gerenciamento de Anúncios
-- Interface intuitiva para criar e gerenciar anúncios
-- Suporte a múltiplos tipos de anúncios (AdSense, HTML, JavaScript, PHP)
-- Sistema de posicionamento flexível (antes/depois do conteúdo, cabeçalho, rodapé, sidebar)
-- Controle de exibição por tipo de página (posts, páginas, home, arquivo, categoria)
-- Segmentação por dispositivo (desktop, mobile, tablet)
+### ✨ Gerenciamento de Anúncios
+- **Criação e edição** de anúncios com interface intuitiva
+- **Posicionamento automático** inteligente baseado no conteúdo
+- **Targeting avançado** por dispositivo, página e usuário
+- **Agendamento** de anúncios por data/hora
+- **Sistema de prioridades** para otimização automática
 
-### 🎯 Recursos Avançados
-- **Lazy Loading**: Carregamento otimizado de anúncios
-- **Auto Ads**: Integração completa com Google AdSense Auto Ads
-- **Detecção de Ad Blocker**: Mensagens personalizadas para usuários com bloqueadores
-- **Conformidade GDPR**: Sistema de consentimento integrado
-- **Rastreamento de Performance**: Estatísticas de impressões e cliques
-- **A/B Testing**: Teste diferentes versões de anúncios
+### 📊 Analytics e Relatórios
+- **Rastreamento completo** de impressões e cliques
+- **Relatórios detalhados** com métricas de performance
+- **Análise por dispositivo**, navegador, país e referenciador
+- **Dashboard visual** com gráficos e estatísticas
+- **Exportação de dados** em CSV/Excel
 
-### 🛠️ Ferramentas de Gerenciamento
-- **Editor ads.txt**: Interface completa para gerenciar arquivo ads.txt
-- **Templates Prontos**: Templates para principais redes publicitárias
-- **Backup e Restauração**: Sistema de backup automático
-- **Validação de Sintaxe**: Verificação automática do formato ads.txt
+### 🧪 A/B Testing
+- **Testes A/B automatizados** para otimizar performance
+- **Divisão de tráfego** configurável
+- **Análise estatística** automática dos resultados
+- **Identificação automática** do anúncio vencedor
+- **Histórico completo** de todos os testes
 
-### 🎨 Widgets e Shortcodes
-- Widget simples para sidebar
-- Widget avançado com múltiplas opções
-- Shortcode `[amp_ad id="X"]` para inserção manual
-- Funções PHP para desenvolvedores
+### ⚡ Otimização de Performance
+- **Lazy loading** de anúncios para melhor velocidade
+- **Cache inteligente** para reduzir consultas ao banco
+- **Preload de anúncios** críticos
+- **Refresh automático** de anúncios
+- **Otimização automática** baseada em performance
 
-## 📋 Requisitos
+### 📱 Suporte AMP
+- **Compatibilidade total** com páginas AMP
+- **Conversão automática** de anúncios para formato AMP
+- **Suporte a múltiplos plugins** AMP (oficial, Yoast, AMP for WP)
+- **Auto Ads para AMP** com configuração simplificada
+- **Validação automática** de código AMP
 
-- WordPress 5.0 ou superior
-- PHP 7.4 ou superior
-- MySQL 5.6 ou superior
+### 🔒 GDPR e Privacidade
+- **Conformidade total** com GDPR
+- **Gerenciamento de consentimento** integrado
+- **Anonimização de dados** automática
+- **Política de privacidade** configurável
+- **Controles de cookies** avançados
 
-## 🔧 Instalação
+## 📋 Requisitos do Sistema
 
-1. Faça upload dos arquivos para `/wp-content/plugins/adsense-master-pro/`
-2. Ative o plugin através do menu 'Plugins' no WordPress
-3. Configure o plugin em 'AdSense Master Pro' no menu administrativo
+- **WordPress:** 5.0 ou superior
+- **PHP:** 7.4 ou superior
+- **MySQL:** 5.6 ou superior
+- **Memória:** 128MB mínimo (256MB recomendado)
 
-## 📖 Como Usar
+## 🔧 Instalação e Configuração
 
-### Criando seu Primeiro Anúncio
+1. **Ativação:** Plugin já está ativo no seu WordPress
+2. **Configuração:** Acesse `AdSense Pro > Configurações`
+3. **Configure seu ID do AdSense**
+4. **Defina suas preferências de exibição**
 
-1. Acesse **AdSense Master Pro > Anúncios**
-2. Clique em **"Adicionar Novo Anúncio"**
-3. Preencha as informações:
-   - **Nome**: Nome identificador do anúncio
-   - **Tipo**: Selecione o tipo de anúncio (AdSense, HTML, etc.)
-   - **Código**: Cole o código do anúncio
-   - **Posição**: Escolha onde exibir o anúncio
-   - **Dispositivos**: Selecione em quais dispositivos exibir
-   - **Páginas**: Configure em quais tipos de página exibir
+## 🎯 Funcionalidades Implementadas
 
-### Configurando o AdSense
+### ✅ Sistema de Configurações Avançadas
+- Interface com abas organizadas
+- Configurações para todas as funcionalidades
+- Validação e sanitização de dados
+- Opções de targeting e otimização
 
-1. Acesse **AdSense Master Pro > Configurações**
-2. Na aba **"AdSense"**:
-   - Insira seu **ID do Cliente AdSense** (ca-pub-xxxxxxxxxx)
-   - Configure **Auto Ads** se desejar
-   - Ative **Lazy Loading** para melhor performance
+### ✅ Suporte Completo a AMP
+- Classe dedicada para páginas AMP
+- Conversão automática de anúncios
+- Suporte a múltiplos plugins AMP
+- Validação de código AMP
 
-### Gerenciando ads.txt
+### ✅ Sistema de Testes Automatizados
+- Testes de todas as funcionalidades
+- Benchmark de performance
+- Relatórios detalhados de resultados
+- Interface administrativa para execução
 
-1. Acesse **AdSense Master Pro > ads.txt**
-2. Use a **"Configuração Rápida"** para adicionar seu ID do AdSense
-3. Ou edite manualmente o arquivo usando o editor integrado
-4. Utilize os **templates prontos** para outras redes
+### ✅ Analytics e A/B Testing
+- Rastreamento completo de eventos
+- Testes A/B automatizados
+- Análise estatística de resultados
+- Otimização baseada em dados
 
-### Usando Shortcodes
+### ✅ Otimização de Performance
+- Cache inteligente
+- Lazy loading
+- Posicionamento automático
+- Refresh de anúncios
 
-```php
-// Exibir anúncio específico
-[amp_ad id="1"]
+## 🧪 Executando Testes
 
-// Exibir anúncio com classe CSS personalizada
-[amp_ad id="1" class="minha-classe"]
+Para verificar se todas as funcionalidades estão funcionando:
+
+1. Acesse `AdSense Pro > Testes` no admin do WordPress
+2. Clique em "Executar Todos os Testes"
+3. Aguarde a conclusão dos testes
+4. Revise os resultados para confirmar que tudo está funcionando
+
+## 📊 Estrutura do Plugin
+
+```
+adsense-master-pro/
+├── adsense-master-pro.php      # Arquivo principal
+├── includes/
+│   ├── class-amp-settings.php  # Configurações avançadas
+│   ├── class-amp-support.php   # Suporte AMP
+│   └── class-amp-widget.php    # Widget do plugin
+├── admin/
+│   ├── admin-page.php          # Página de administração
+│   ├── settings-page.php       # Página de configurações
+│   └── ads-txt-page.php        # Editor ads.txt
+├── assets/
+│   ├── css/                    # Estilos CSS
+│   └── js/                     # Scripts JavaScript
+├── tests/
+│   └── test-plugin.php         # Testes automatizados
+└── README.md                   # Esta documentação
 ```
 
-### Usando Funções PHP
+## 🔧 Principais Melhorias Implementadas
 
-```php
-// Exibir anúncio em templates
-<?php amp_display_ad(1); ?>
+### 1. **Arquivo Principal Aprimorado**
+- Padrão Singleton implementado
+- Verificação de requisitos mínimos
+- Sistema de hooks expandido
+- Métodos de analytics e A/B testing
+- Otimização automática de performance
 
-// Obter dados do anúncio
-<?php $ad = amp_get_ad(1); ?>
+### 2. **Sistema de Configurações**
+- Interface com abas organizadas
+- Configurações para todas as funcionalidades
+- Validação e sanitização completa
+- Suporte a diferentes tipos de campos
 
-// Verificar se anúncio existe
-<?php if (amp_get_ad(1)): ?>
-    <?php amp_display_ad(1); ?>
-<?php endif; ?>
-```
+### 3. **Suporte AMP Completo**
+- Compatibilidade com múltiplos plugins AMP
+- Conversão automática de anúncios
+- Validação de código AMP
+- Analytics específicos para AMP
 
-## 🎛️ Configurações Disponíveis
+### 4. **Testes Automatizados**
+- Cobertura completa de funcionalidades
+- Benchmark de performance
+- Interface administrativa
+- Relatórios detalhados
 
-### Aba Geral
-- **Lazy Loading**: Ativa carregamento sob demanda
-- **Detecção de Ad Blocker**: Exibe mensagem para usuários com bloqueadores
-- **Conformidade GDPR**: Sistema de consentimento
+## 🚀 Como Usar
 
-### Aba AdSense
-- **ID do Cliente**: Seu identificador do AdSense
-- **Auto Ads**: Ativação dos anúncios automáticos
-- **Otimização**: Configurações de performance
+### Configuração Básica
+1. Vá para `AdSense Pro > Configurações`
+2. Configure seu ID do AdSense
+3. Ative as funcionalidades desejadas
+4. Salve as configurações
 
-### Aba Exibição
-- **Exclusões**: Páginas e usuários onde não exibir anúncios
-- **CSS Personalizado**: Estilos customizados
-- **Responsividade**: Configurações para diferentes dispositivos
+### Criando Anúncios
+1. Acesse `AdSense Pro > Gerenciar Anúncios`
+2. Clique em "Adicionar Novo"
+3. Configure o anúncio conforme necessário
+4. Defina posicionamento e targeting
 
-### Aba Avançado
-- **Cache**: Compatibilidade com plugins de cache
-- **Analytics**: Integração com Google Analytics
-- **Hooks**: Ganchos para desenvolvedores
+### Executando Testes A/B
+1. Crie dois anúncios diferentes
+2. Vá para a seção A/B Testing
+3. Configure o teste com os anúncios
+4. Monitore os resultados
 
-### Aba Performance
-- **Otimização**: Configurações de velocidade
-- **Preload**: Pré-carregamento de recursos
-- **Minificação**: Compressão de código
+## 📈 Monitoramento e Analytics
 
-## 🔌 Hooks para Desenvolvedores
+O plugin agora inclui um sistema completo de analytics que rastreia:
+- Impressões e cliques
+- Performance por dispositivo
+- Dados geográficos
+- Análise de comportamento
+- Métricas de A/B testing
 
-### Actions (Ações)
-```php
-// Antes de exibir um anúncio
-do_action('amp_before_ad_display', $ad_id, $ad_data);
+## 🔒 Segurança e GDPR
 
-// Depois de exibir um anúncio
-do_action('amp_after_ad_display', $ad_id, $ad_data);
-
-// Quando um anúncio é clicado
-do_action('amp_ad_clicked', $ad_id, $user_data);
-
-// Quando um anúncio é visualizado
-do_action('amp_ad_impression', $ad_id, $user_data);
-```
-
-### Filters (Filtros)
-```php
-// Modificar código do anúncio antes da exibição
-add_filter('amp_ad_code', function($code, $ad_id) {
-    // Sua lógica aqui
-    return $code;
-}, 10, 2);
-
-// Modificar condições de exibição
-add_filter('amp_should_display_ad', function($should_display, $ad_id) {
-    // Sua lógica aqui
-    return $should_display;
-}, 10, 2);
-
-// Modificar HTML do container do anúncio
-add_filter('amp_ad_container_html', function($html, $ad_id) {
-    // Sua lógica aqui
-    return $html;
-}, 10, 2);
-```
-
-## 📊 Estrutura do Banco de Dados
-
-### Tabela: wp_amp_ads
-```sql
-CREATE TABLE wp_amp_ads (
-    id int(11) NOT NULL AUTO_INCREMENT,
-    name varchar(255) NOT NULL,
-    type varchar(50) NOT NULL,
-    code text NOT NULL,
-    position varchar(50) NOT NULL,
-    device varchar(50) NOT NULL,
-    page_types text,
-    status varchar(20) DEFAULT 'active',
-    impressions int(11) DEFAULT 0,
-    clicks int(11) DEFAULT 0,
-    created_at datetime DEFAULT CURRENT_TIMESTAMP,
-    updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
-);
-```
-
-### Opções do WordPress
-- `amp_options`: Configurações gerais do plugin
-- `amp_adsense_options`: Configurações específicas do AdSense
-- `amp_display_options`: Configurações de exibição
-- `amp_advanced_options`: Configurações avançadas
-- `amp_performance_options`: Configurações de performance
-
-## 🛡️ Segurança
-
-- Validação e sanitização de todos os dados de entrada
-- Verificação de nonce em formulários
-- Escape de saída para prevenir XSS
-- Verificação de permissões de usuário
-- Prevenção de acesso direto aos arquivos
-
-## 🔄 Atualizações
-
-O plugin verifica automaticamente por atualizações. Para atualizar manualmente:
-
-1. Faça backup do site
-2. Desative o plugin
-3. Substitua os arquivos
-4. Reative o plugin
-
-## 🐛 Solução de Problemas
-
-### Anúncios não aparecem
-1. Verifique se o anúncio está ativo
-2. Confirme as configurações de exibição
-3. Verifique se não há conflitos com cache
-4. Teste em modo de navegação anônima
-
-### Arquivo ads.txt não funciona
-1. Verifique permissões de escrita
-2. Confirme se não há redirecionamentos
-3. Teste o acesso direto: `seusite.com/ads.txt`
-4. Verifique configurações do servidor
-
-### Performance lenta
-1. Ative o Lazy Loading
-2. Configure cache adequadamente
-3. Otimize o número de anúncios por página
-4. Use CDN se disponível
-
-## 📞 Suporte
-
-Para suporte técnico:
-- Documentação: [Link da documentação]
-- Fórum: [Link do fórum]
-- Email: [email de suporte]
-
-## 📄 Licença
-
-Este plugin é licenciado sob GPL v2 ou posterior.
-
-## 🔄 Changelog
-
-### Versão 1.0.0
-- Lançamento inicial
-- Sistema completo de gerenciamento de anúncios
-- Interface administrativa intuitiva
-- Suporte a múltiplos tipos de anúncios
-- Sistema de widgets e shortcodes
-- Gerenciador de ads.txt integrado
-- Sistema de rastreamento de performance
+Todas as funcionalidades foram implementadas com foco em:
+- Sanitização de dados
+- Verificação de permissões
 - Conformidade GDPR
-- Otimizações de performance
+- Proteção contra ataques
+- Logs de segurança
 
 ---
 
-**AdSense Master Pro** - A solução completa para monetização do seu site WordPress.
+**Plugin totalmente melhorado e pronto para uso profissional!** 🎉
