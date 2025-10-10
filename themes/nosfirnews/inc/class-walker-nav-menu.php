@@ -47,7 +47,15 @@ class NosfirNews_Walker_Nav_Menu extends Walker_Nav_Menu {
         $indent = str_repeat( "\t", $depth );
         
         // Add different classes based on depth
-        $class_names = '';
+        $class_names = 'sub-menu';
+        
+        if ( $depth === 0 ) {
+            $class_names .= ' dropdown-menu';
+        } elseif ( $depth === 1 ) {
+            $class_names .= ' sub-dropdown-menu';
+        }
+        
+        $output .= "\n$indent<ul class=\"$class_names\">\n";
         if ( $depth === 0 ) {
             $class_names = 'sub-menu dropdown-menu';
         } else {

@@ -286,6 +286,9 @@ add_action( 'admin_enqueue_scripts', 'nosfirnews_admin_scripts' );
 require get_template_directory() . '/inc/template-functions.php';
 require get_template_directory() . '/inc/template-tags.php';
 require get_template_directory() . '/inc/customizer.php';
+require get_template_directory() . '/inc/customizer-advanced.php';
+require get_template_directory() . '/inc/dynamic-widgets.php';
+require get_template_directory() . '/inc/responsive-system.php';
 require get_template_directory() . '/inc/custom-post-types.php';
 require get_template_directory() . '/inc/gutenberg-blocks.php';
 require get_template_directory() . '/inc/advanced-custom-fields.php';
@@ -295,12 +298,15 @@ require get_template_directory() . '/inc/custom-templates.php';
 require get_template_directory() . '/inc/media-gallery.php';
 require get_template_directory() . '/inc/class-walker-nav-menu.php';
 require get_template_directory() . '/inc/menu-custom-fields.php';
+require get_template_directory() . '/inc/menu-customization.php';
+require get_template_directory() . '/inc/page-templates.php';
 
 /**
  * Include admin functions
  */
 if ( is_admin() ) {
     require get_template_directory() . '/inc/admin/theme-options.php';
+    require get_template_directory() . '/inc/admin/advanced-theme-options.php';
     require get_template_directory() . '/inc/admin/metaboxes.php';
 }
 
