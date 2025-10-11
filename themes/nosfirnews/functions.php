@@ -287,6 +287,7 @@ require get_template_directory() . '/inc/template-functions.php';
 require get_template_directory() . '/inc/template-tags.php';
 require get_template_directory() . '/inc/customizer.php';
 require get_template_directory() . '/inc/customizer-advanced.php';
+require get_template_directory() . '/inc/customizer/navigation-layout.php';
 require get_template_directory() . '/inc/dynamic-widgets.php';
 require get_template_directory() . '/inc/responsive-system.php';
 require get_template_directory() . '/inc/custom-post-types.php';

@@ -51,20 +51,68 @@
         <a class="skip-link screen-reader-text" href="#colophon"><?php esc_html_e( 'Skip to footer', 'nosfirnews' ); ?></a>
     </div>
     
-    <header id="masthead" class="site-header" role="banner" itemscope itemtype="https://schema.org/WPHeader">
-        <div class="container">
-            
-            <?php get_template_part( 'template-parts/header/site-branding' ); ?>
-            
-        </div><!-- .container -->
+    <?php
+    // Get navigation position setting
+    $nav_position = get_theme_mod( 'nosfirnews_navigation_position', 'below-header' );
+    $header_classes = nosfirnews_get_header_classes();
+    $nav_classes = nosfirnews_get_navigation_classes();
+    ?>
+    
+    <header id="masthead" class="<?php echo esc_attr( $header_classes ); ?>" role="banner" itemscope itemtype="https://schema.org/WPHeader">
         
-        <nav id="site-navigation" class="main-navigation" role="navigation" aria-label="<?php esc_attr_e( 'Primary Navigation', 'nosfirnews' ); ?>" itemscope itemtype="https://schema.org/SiteNavigationElement">
+        <?php if ( in_array( $nav_position, array( 'right-of-logo', 'next-to-logo', 'center-header', 'right-header' ) ) ) : ?>
+            <!-- Inline Navigation Layout -->
             <div class="container">
                 
-                <?php get_template_part( 'template-parts/header/navigation' ); ?>
+                <?php get_template_part( 'template-parts/header/site-branding' ); ?>
+                
+                <nav id="site-navigation" class="<?php echo esc_attr( $nav_classes ); ?>" role="navigation" aria-label="<?php esc_attr_e( 'Primary Navigation', 'nosfirnews' ); ?>" itemscope itemtype="https://schema.org/SiteNavigationElement">
+                    <div class="container">
+                        
+                        <?php get_template_part( 'template-parts/header/navigation' ); ?>
+                        
+                    </div><!-- .container -->
+                </nav><!-- #site-navigation -->
+                
+                <!-- Mobile Menu Toggle -->
+                <button class="mobile-menu-toggle" aria-controls="site-navigation" aria-expanded="false" aria-label="<?php esc_attr_e( 'Toggle navigation', 'nosfirnews' ); ?>">
+                    <span class="screen-reader-text"><?php esc_html_e( 'Menu', 'nosfirnews' ); ?></span>
+                    <div class="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </button>
                 
             </div><!-- .container -->
-        </nav><!-- #site-navigation -->
+            
+        <?php else : ?>
+            <!-- Default Below Header Layout -->
+            <div class="container">
+                
+                <?php get_template_part( 'template-parts/header/site-branding' ); ?>
+                
+            </div><!-- .container -->
+            
+            <nav id="site-navigation" class="<?php echo esc_attr( $nav_classes ); ?>" role="navigation" aria-label="<?php esc_attr_e( 'Primary Navigation', 'nosfirnews' ); ?>" itemscope itemtype="https://schema.org/SiteNavigationElement">
+                <div class="container">
+                    
+                    <?php get_template_part( 'template-parts/header/navigation' ); ?>
+                    
+                    <!-- Mobile Menu Toggle -->
+                    <button class="mobile-menu-toggle" aria-controls="site-navigation" aria-expanded="false" aria-label="<?php esc_attr_e( 'Toggle navigation', 'nosfirnews' ); ?>">
+                        <span class="screen-reader-text"><?php esc_html_e( 'Menu', 'nosfirnews' ); ?></span>
+                        <div class="hamburger">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </button>
+                    
+                </div><!-- .container -->
+            </nav><!-- #site-navigation -->
+            
+        <?php endif; ?>
         
     </header><!-- #masthead -->
     

@@ -33,7 +33,9 @@
             this.initMobileMenu();
             this.initResponsiveImages();
             this.initResponsiveEmbeds();
-            this.initTouchNavigation();
+            if (this.initTouchNavigation) {
+                this.initTouchNavigation();
+            }
             this.initResponsiveTables();
             this.initLazyLoad();
         },
@@ -258,6 +260,13 @@
                     $embed.wrap('<div class="responsive-embed"></div>');
                 }
             });
+        },
+
+        // Initialize touch navigation
+        initTouchNavigation: function() {
+            if ('ontouchstart' in window) {
+                this.enableTouchNavigation();
+            }
         },
 
         // Enable touch navigation

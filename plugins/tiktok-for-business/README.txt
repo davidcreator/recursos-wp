@@ -3,14 +3,12 @@ Contributors: tiktokforbusiness, woocommerce, automattic
 Tags: tiktok
 Requires at least: 5.7.0
 Tested up to: 6.7.2
-Stable tag: 1.3.6
+Stable tag: 1.3.7
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Languages: Arabic, Cantonese, Czech, Danish, Dutch, English, Finnish, French, German, Hebrew, Indonesian, Italian, Japanese, Korean, Lithuanian, Norwegian, Polish, Portuguese, Romanian, Russian, Serbian, Simplified Chinese, Spanish, Swedish, Thai, Traditional Chinese, Turkish, Vietnamese
-
-This build seamlessly connects your application to TikTok to enable marketing and sales opportunities.
+Sync your catalog to TikTok Shop, create TikTok ads to showcase your products, install the TikTok Pixel and Events API (server-to-server connection) to fuel performance, and measure results at scale!
 
 == Screenshots ==
 
@@ -191,6 +189,9 @@ Order Cancellations, returns, and refunds can only be managed in [Seller Center.
 Please [open a support ticket](https://woo.com/contact-us/).
 
 == Changelog ==
+2025-10-07 - version 1.3.7
+* Update - README
+
 2025-09-10 - version 1.3.6
 * Update - Add partner enrichment API for high value sales team enablement
 

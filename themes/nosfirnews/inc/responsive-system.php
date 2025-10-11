@@ -235,6 +235,57 @@ class NosfirNews_Responsive_System {
             wp_get_theme()->get('Version')
         );
         
+        // Enqueue responsive layouts CSS
+        wp_enqueue_style(
+            'nosfirnews-responsive-layouts',
+            get_template_directory_uri() . '/assets/css/responsive-layouts.css',
+            array('nosfirnews-responsive'),
+            wp_get_theme()->get('Version')
+        );
+        
+        // Enqueue responsive typography CSS
+        wp_enqueue_style(
+            'nosfirnews-responsive-typography',
+            get_template_directory_uri() . '/assets/css/responsive-typography.css',
+            array('nosfirnews-responsive'),
+            wp_get_theme()->get('Version')
+        );
+        
+        // Enqueue navigation layouts styles
+        wp_enqueue_style(
+            'nosfirnews-navigation-layouts',
+            get_template_directory_uri() . '/assets/css/navigation-layouts.css',
+            array('nosfirnews-responsive-typography'),
+            wp_get_theme()->get('Version')
+        );
+        
+        // Enqueue responsive JavaScript
+        wp_enqueue_script(
+            'nosfirnews-responsive-js',
+            get_template_directory_uri() . '/assets/js/responsive.js',
+            array('jquery'),
+            wp_get_theme()->get('Version'),
+            true
+        );
+        
+        // Enqueue mobile navigation script
+        wp_enqueue_script(
+            'nosfirnews-mobile-navigation',
+            get_template_directory_uri() . '/assets/js/mobile-navigation.js',
+            array(),
+            wp_get_theme()->get('Version'),
+            true
+        );
+
+        // Enqueue navigation layouts JavaScript
+        wp_enqueue_script(
+            'nosfirnews-navigation-layouts',
+            get_template_directory_uri() . '/assets/js/navigation-layouts.js',
+            array( 'nosfirnews-mobile-navigation' ),
+            wp_get_theme()->get('Version'),
+            true
+        );
+        
         // Enqueue touch navigation script for mobile
         if ($this->options['enable_touch_navigation']) {
             wp_enqueue_script(
