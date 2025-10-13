@@ -1220,8 +1220,13 @@ class NosfirNews_Advanced_Theme_Options {
         }
         
         wp_enqueue_media();
-        wp_enqueue_script('nosfirnews-advanced-options', get_template_directory_uri() . '/assets/js/advanced-options.js', array('jquery'), '1.0.0', true);
-        wp_enqueue_style('nosfirnews-advanced-options', get_template_directory_uri() . '/assets/css/advanced-options.css', array(), '1.0.0');
+        $script_path = get_template_directory() . '/assets/js/advanced-options.js';
+        $style_path  = get_template_directory() . '/assets/css/advanced-options.css';
+        $script_ver  = function_exists('nosfirnews_asset_version') ? nosfirnews_asset_version($script_path) : '1.0.0';
+        $style_ver   = function_exists('nosfirnews_asset_version') ? nosfirnews_asset_version($style_path)  : '1.0.0';
+
+        wp_enqueue_script('nosfirnews-advanced-options', get_template_directory_uri() . '/assets/js/advanced-options.js', array('jquery'), $script_ver, true);
+        wp_enqueue_style('nosfirnews-advanced-options', get_template_directory_uri() . '/assets/css/advanced-options.css', array(), $style_ver);
         
         wp_localize_script('nosfirnews-advanced-options', 'nosfirnews_ajax', array(
             'ajax_url' => admin_url('admin-ajax.php'),
@@ -1233,6 +1238,68 @@ class NosfirNews_Advanced_Theme_Options {
                 'error' => __('Ocorreu um erro. Tente novamente.', 'nosfirnews')
             )
         ));
+    }
+
+    /**
+     * Get default performance options
+     */
+    private function get_default_performance_options() {
+        return array(
+            'minify_css'        => 0,
+            'minify_js'         => 0,
+            'combine_css'       => 0,
+            'combine_js'        => 0,
+            'lazy_load_images'  => 1,
+            'webp_conversion'   => 0,
+            'image_quality'     => 85,
+            'enable_cache'      => 1,
+            'cache_duration'    => 24,
+            'gzip_compression'  => 1,
+            'optimize_db'       => 0,
+            'limit_revisions'   => 0,
+            'max_revisions'     => 5,
+        );
+    }
+
+    /**
+     * Get default SEO options
+     */
+    private function get_default_seo_options() {
+        return array(
+            'default_meta_description' => '',
+            'auto_meta_description'    => 1,
+            'enable_og'                => 1,
+            'enable_twitter_cards'     => 1,
+            'enable_sitemap'           => 1,
+            'ping_search_engines'      => 1,
+            'enable_breadcrumbs'       => 1,
+            'breadcrumbs_separator'    => '›',
+            'canonical_urls'           => 1,
+            'noindex_search'           => 0,
+            'noindex_archives'         => 0,
+        );
+    }
+
+    /**
+     * Get default security options
+     */
+    private function get_default_security_options() {
+        return array(
+            'limit_login_attempts'   => 1,
+            'max_login_attempts'     => 5,
+            'lockout_duration'       => 30,
+            'hide_login_errors'      => 1,
+            'remove_wp_version'      => 1,
+            'disable_xmlrpc'         => 0,
+            'disable_file_editing'   => 1,
+            'force_ssl_admin'        => 0,
+            'disable_right_click'    => 0,
+            'disable_text_selection' => 0,
+            'disable_image_hotlinking'=> 0,
+            'enable_security_logs'   => 1,
+            'email_notifications'    => 0,
+            'notification_email'     => '',
+        );
     }
 
     /**
@@ -1252,6 +1319,27 @@ class NosfirNews_Advanced_Theme_Options {
         delete_option('nosfirnews_advanced_options');
         
         wp_send_json_success(__('Configurações restauradas para os valores padrão.', 'nosfirnews'));
+    }
+
+    /**
+     * AJAX: Export theme options
+     */
+    public function ajax_export_options() {
+        check_ajax_referer('nosfirnews_advanced_options_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_die(__('Você não tem permissão para realizar esta ação.', 'nosfirnews'));
+        }
+
+        $export = array(
+            'performance' => get_option('nosfirnews_performance_options', $this->get_default_performance_options()),
+            'seo'         => get_option('nosfirnews_seo_options', $this->get_default_seo_options()),
+            'social'      => get_option('nosfirnews_social_options', $this->get_default_social_options()),
+            'security'    => get_option('nosfirnews_security_options', $this->get_default_security_options()),
+            'advanced'    => get_option('nosfirnews_advanced_options', $this->get_default_advanced_options()),
+        );
+
+        wp_send_json_success($export);
     }
 
     /**
