@@ -843,7 +843,7 @@ $sort_by = isset($_GET['sort']) ? sanitize_text_field($_GET['sort']) : 'relevanc
             <form role="search" method="get" class="search-form" action="<?php echo esc_url(home_url('/')); ?>">
                 <input type="search" 
                        class="search-input" 
-                       placeholder="Digite sua busca..." 
+                       placeholder="<?php esc_attr_e( 'Digite sua busca...', 'nosfirnews' ); ?>" 
                        value="<?php echo esc_attr($search_query); ?>" 
                        name="s" 
                        required>
@@ -851,7 +851,7 @@ $sort_by = isset($_GET['sort']) ? sanitize_text_field($_GET['sort']) : 'relevanc
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
                     </svg>
-                    Buscar
+                    <?php esc_html_e( 'Buscar', 'nosfirnews' ); ?>
                 </button>
             </form>
         </div>
@@ -866,7 +866,7 @@ $sort_by = isset($_GET['sort']) ? sanitize_text_field($_GET['sort']) : 'relevanc
                 
                 <!-- Filtro por Categoria -->
                 <div class="filter-section">
-                    <h3 class="filter-title">Categorias</h3>
+                    <h3 class="filter-title"><?php esc_html_e( 'Categorias', 'nosfirnews' ); ?></h3>
                     <div class="filter-group">
                         <?php
                         $categories = get_categories(array(
@@ -896,21 +896,21 @@ $sort_by = isset($_GET['sort']) ? sanitize_text_field($_GET['sort']) : 'relevanc
 
                 <!-- Filtro por Data -->
                 <div class="filter-section">
-                    <h3 class="filter-title">Período</h3>
+                    <h3 class="filter-title"><?php esc_html_e( 'Período', 'nosfirnews' ); ?></h3>
                     <select name="date_filter" class="filter-select" onchange="this.form.submit()">
-                        <option value="">Qualquer período</option>
-                        <option value="today" <?php selected($selected_date, 'today'); ?>>Hoje</option>
-                        <option value="week" <?php selected($selected_date, 'week'); ?>>Esta semana</option>
-                        <option value="month" <?php selected($selected_date, 'month'); ?>>Este mês</option>
-                        <option value="year" <?php selected($selected_date, 'year'); ?>>Este ano</option>
+                        <option value=""><?php esc_html_e( 'Qualquer período', 'nosfirnews' ); ?></option>
+                        <option value="today" <?php selected($selected_date, 'today'); ?>><?php esc_html_e( 'Hoje', 'nosfirnews' ); ?></option>
+                        <option value="week" <?php selected($selected_date, 'week'); ?>><?php esc_html_e( 'Esta semana', 'nosfirnews' ); ?></option>
+                        <option value="month" <?php selected($selected_date, 'month'); ?>><?php esc_html_e( 'Este mês', 'nosfirnews' ); ?></option>
+                        <option value="year" <?php selected($selected_date, 'year'); ?>><?php esc_html_e( 'Este ano', 'nosfirnews' ); ?></option>
                     </select>
                 </div>
 
                 <!-- Filtro por Autor -->
                 <div class="filter-section">
-                    <h3 class="filter-title">Autor</h3>
+                    <h3 class="filter-title"><?php esc_html_e( 'Autor', 'nosfirnews' ); ?></h3>
                     <select name="author" class="filter-select" onchange="this.form.submit()">
-                        <option value="">Qualquer autor</option>
+                        <option value=""><?php esc_html_e( 'Qualquer autor', 'nosfirnews' ); ?></option>
                         <?php
                         $authors = get_users(array(
                             'who' => 'authors',
@@ -934,7 +934,7 @@ $sort_by = isset($_GET['sort']) ? sanitize_text_field($_GET['sort']) : 'relevanc
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px;">
                         <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
                     </svg>
-                    Limpar Filtros
+                    <?php esc_html_e( 'Limpar Filtros', 'nosfirnews' ); ?>
                 </button>
             </form>
         </aside>
@@ -945,9 +945,9 @@ $sort_by = isset($_GET['sort']) ? sanitize_text_field($_GET['sort']) : 'relevanc
                 <!-- Cabeçalho dos Resultados -->
                 <div class="results-header">
                     <div class="results-info">
-                        <h2 class="results-title">Resultados da Busca</h2>
+                        <h2 class="results-title"><?php esc_html_e( 'Resultados da Busca', 'nosfirnews' ); ?></h2>
                         <div class="results-meta">
-                            Mostrando <?php echo (($current_page - 1) * get_option('posts_per_page')) + 1; ?>-<?php echo min($current_page * get_option('posts_per_page'), $search_results_count); ?> de <?php echo $search_results_count; ?> resultados
+                            <?php printf( esc_html__( 'Mostrando %1$d-%2$d de %3$d resultados', 'nosfirnews' ), (($current_page - 1) * get_option('posts_per_page')) + 1, min($current_page * get_option('posts_per_page'), $search_results_count), $search_results_count ); ?>
                         </div>
                     </div>
                     
@@ -1081,31 +1081,31 @@ $sort_by = isset($_GET['sort']) ? sanitize_text_field($_GET['sort']) : 'relevanc
             <?php elseif ($search_query) : ?>
                 <!-- Nenhum Resultado Encontrado -->
                 <div class="no-results">
-                    <h3>Nenhum resultado encontrado</h3>
-                    <p>Não encontramos nenhum conteúdo para "<?php echo esc_html($search_query); ?>". Tente refinar sua busca ou explore nossas sugestões abaixo.</p>
+                    <h3><?php esc_html_e( 'Nenhum resultado encontrado', 'nosfirnews' ); ?></h3>
+                    <p><?php printf( esc_html__( 'Não encontramos nenhum conteúdo para "%s". Tente refinar sua busca ou explore nossas sugestões abaixo.', 'nosfirnews' ), esc_html($search_query) ); ?></p>
                     
                     <div class="search-suggestions">
                         <div class="suggestion-item">
-                            <div class="suggestion-title">Verifique a ortografia</div>
-                            <div class="suggestion-desc">Certifique-se de que todas as palavras estão escritas corretamente</div>
+                            <div class="suggestion-title"><?php esc_html_e( 'Verifique a ortografia', 'nosfirnews' ); ?></div>
+                            <div class="suggestion-desc"><?php esc_html_e( 'Certifique-se de que todas as palavras estão escritas corretamente', 'nosfirnews' ); ?></div>
                         </div>
                         
                         <div class="suggestion-item">
-                            <div class="suggestion-title">Use palavras-chave diferentes</div>
-                            <div class="suggestion-desc">Tente usar sinônimos ou termos relacionados</div>
+                            <div class="suggestion-title"><?php esc_html_e( 'Use palavras-chave diferentes', 'nosfirnews' ); ?></div>
+                            <div class="suggestion-desc"><?php esc_html_e( 'Tente usar sinônimos ou termos relacionados', 'nosfirnews' ); ?></div>
                         </div>
                         
                         <div class="suggestion-item">
-                            <div class="suggestion-title">Seja mais específico</div>
-                            <div class="suggestion-desc">Adicione mais detalhes para refinar sua busca</div>
+                            <div class="suggestion-title"><?php esc_html_e( 'Seja mais específico', 'nosfirnews' ); ?></div>
+                            <div class="suggestion-desc"><?php esc_html_e( 'Adicione mais detalhes para refinar sua busca', 'nosfirnews' ); ?></div>
                         </div>
                     </div>
                 </div>
             <?php else : ?>
                 <!-- Página de Busca Inicial -->
                 <div class="no-results">
-                    <h3>Busque por conteúdo</h3>
-                    <p>Use o formulário acima para encontrar artigos, notícias e conteúdos do nosso site.</p>
+                    <h3><?php esc_html_e( 'Busque por conteúdo', 'nosfirnews' ); ?></h3>
+                    <p><?php esc_html_e( 'Use o formulário acima para encontrar artigos, notícias e conteúdos do nosso site.', 'nosfirnews' ); ?></p>
                 </div>
             <?php endif; ?>
         </main>

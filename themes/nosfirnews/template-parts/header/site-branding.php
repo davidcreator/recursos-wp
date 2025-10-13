@@ -51,10 +51,10 @@ if ( $logo_only_mode ) {
     <?php endif; ?>
     
     <?php if ( $display_site_title || $display_site_description || is_customize_preview() ) : ?>
-        <div class="site-identity" <?php echo ( ! $display_site_title && ! $display_site_description && ! is_customize_preview() ) ? 'style="display: none;"' : ''; ?>>
+        <div class="site-identity<?php echo ( ! $display_site_title && ! $display_site_description && ! is_customize_preview() ) ? ' is-hidden' : ''; ?>">
             
             <?php if ( $display_site_title || is_customize_preview() ) : ?>
-                <div class="site-title-wrapper" <?php echo ( ! $display_site_title && ! is_customize_preview() ) ? 'style="display: none;"' : ''; ?>>
+                <div class="site-title-wrapper<?php echo ( ! $display_site_title && ! is_customize_preview() ) ? ' is-hidden' : ''; ?>">
                     <?php if ( is_front_page() && is_home() ) : ?>
                         <h1 class="site-title" itemprop="name">
                             <a href="<?php echo esc_url( home_url( '/' ) ); ?>" 
@@ -82,7 +82,7 @@ if ( $logo_only_mode ) {
                 $nosfirnews_description = get_bloginfo( 'description', 'display' );
                 if ( $nosfirnews_description || is_customize_preview() ) :
                     ?>
-                    <div class="site-description-wrapper" <?php echo ( ! $display_site_description && ! is_customize_preview() ) ? 'style="display: none;"' : ''; ?>>
+                    <div class="site-description-wrapper<?php echo ( ! $display_site_description && ! is_customize_preview() ) ? ' is-hidden' : ''; ?>">
                         <p class="site-description" itemprop="description">
                             <?php echo $nosfirnews_description; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>
                         </p>
@@ -96,7 +96,7 @@ if ( $logo_only_mode ) {
     <?php endif; ?>
     
     <!-- Hidden microdata for organization -->
-    <div style="display: none;">
+    <div class="hidden-microdata">
         <span itemprop="url"><?php echo esc_url( home_url( '/' ) ); ?></span>
         <?php if ( ! $display_site_title ) : ?>
             <span itemprop="name"><?php bloginfo( 'name' ); ?></span>

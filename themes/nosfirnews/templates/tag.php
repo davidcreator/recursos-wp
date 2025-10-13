@@ -920,15 +920,15 @@ $related_tags = get_tags(array(
         <div class="tag-stats">
             <div class="stat-item">
                 <span class="stat-number"><?php echo $tag_count; ?></span>
-                <span class="stat-label">Posts</span>
+                <span class="stat-label"><?php esc_html_e( 'Posts', 'nosfirnews' ); ?></span>
             </div>
             <div class="stat-item">
                 <span class="stat-number"><?php echo $current_page; ?></span>
-                <span class="stat-label">Página</span>
+                <span class="stat-label"><?php esc_html_e( 'Página', 'nosfirnews' ); ?></span>
             </div>
             <div class="stat-item">
                 <span class="stat-number"><?php echo $total_pages; ?></span>
-                <span class="stat-label">Total</span>
+                <span class="stat-label"><?php esc_html_e( 'Total', 'nosfirnews' ); ?></span>
             </div>
         </div>
     </header>
@@ -941,9 +941,9 @@ $related_tags = get_tags(array(
                 <!-- Cabeçalho dos Posts -->
                 <div class="posts-header">
                     <div class="posts-info">
-                        <h2>Posts com a tag "<?php echo esc_html($tag_name); ?>"</h2>
+                        <h2><?php printf( esc_html__( 'Posts com a tag "%s"', 'nosfirnews' ), esc_html($tag_name) ); ?></h2>
                         <div class="posts-meta">
-                            Mostrando <?php echo (($current_page - 1) * get_option('posts_per_page')) + 1; ?>-<?php echo min($current_page * get_option('posts_per_page'), $posts_count); ?> de <?php echo $posts_count; ?> posts
+                            <?php printf( esc_html__( 'Mostrando %1$d-%2$d de %3$d posts', 'nosfirnews' ), (($current_page - 1) * get_option('posts_per_page')) + 1, min($current_page * get_option('posts_per_page'), $posts_count), $posts_count ); ?>
                         </div>
                     </div>
                     
@@ -1077,13 +1077,13 @@ $related_tags = get_tags(array(
             <?php else : ?>
                 <!-- Nenhum Post Encontrado -->
                 <div class="no-posts">
-                    <h3>Nenhum post encontrado</h3>
-                    <p>Não há posts com a tag "<?php echo esc_html($tag_name); ?>" no momento.</p>
+                    <h3><?php esc_html_e( 'Nenhum post encontrado', 'nosfirnews' ); ?></h3>
+                    <p><?php printf( esc_html__( 'Não há posts com a tag "%s" no momento.', 'nosfirnews' ), esc_html($tag_name) ); ?></p>
                     <a href="<?php echo esc_url(home_url('/tags')); ?>" class="browse-tags">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 2 2 2h11c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
                         </svg>
-                        Explorar todas as tags
+                        <?php esc_html_e( 'Explorar todas as tags', 'nosfirnews' ); ?>
                     </a>
                 </div>
             <?php endif; ?>
@@ -1094,7 +1094,7 @@ $related_tags = get_tags(array(
             <!-- Tags Relacionadas -->
             <?php if (!empty($related_tags)) : ?>
                 <div class="sidebar-section">
-                    <h3 class="sidebar-title">Tags Relacionadas</h3>
+                    <h3 class="sidebar-title"><?php esc_html_e( 'Tags Relacionadas', 'nosfirnews' ); ?></h3>
                     <div class="related-tags">
                         <?php foreach ($related_tags as $related_tag) : ?>
                             <a href="<?php echo get_tag_link($related_tag->term_id); ?>" 
@@ -1109,7 +1109,7 @@ $related_tags = get_tags(array(
 
             <!-- Posts Populares -->
             <div class="sidebar-section">
-                <h3 class="sidebar-title">Posts Populares</h3>
+                <h3 class="sidebar-title"><?php esc_html_e( 'Posts Populares', 'nosfirnews' ); ?></h3>
                 <ul class="popular-posts">
                     <?php
                     $popular_posts = new WP_Query(array(
@@ -1139,7 +1139,7 @@ $related_tags = get_tags(array(
                                     </a>
                                 </h4>
                                 <div class="popular-post-meta">
-                                    <?php echo get_the_date(); ?> • <?php echo get_comments_number(); ?> comentários
+                                    <?php echo get_the_date(); ?> • <?php printf( _n( '%s comentário', '%s comentários', get_comments_number(), 'nosfirnews' ), get_comments_number() ); ?>
                                 </div>
                             </div>
                         </li>
@@ -1153,18 +1153,17 @@ $related_tags = get_tags(array(
 
             <!-- Newsletter -->
             <div class="sidebar-section">
-                <h3 class="sidebar-title">Newsletter</h3>
-                <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; text-align: center;">
-                    <p style="margin-bottom: 15px; color: #666; font-size: 0.9rem;">
-                        Receba as últimas notícias e atualizações diretamente no seu email.
+                <h3 class="sidebar-title"><?php esc_html_e( 'Newsletter', 'nosfirnews' ); ?></h3>
+                <div class="newsletter-card">
+                    <p class="newsletter-text">
+                        <?php esc_html_e( 'Receba as últimas notícias e atualizações diretamente no seu email.', 'nosfirnews' ); ?>
                     </p>
-                    <form style="display: flex; flex-direction: column; gap: 10px;">
+                    <form class="newsletter-form">
                         <input type="email" 
-                               placeholder="Seu email" 
-                               style="padding: 10px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 0.9rem;">
-                        <button type="submit" 
-                                style="background: #667eea; color: white; padding: 10px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
-                            Inscrever-se
+                               placeholder="<?php esc_attr_e( 'Seu email', 'nosfirnews' ); ?>" 
+                               class="newsletter-input">
+                        <button type="submit" class="newsletter-button">
+                            <?php esc_html_e( 'Inscrever-se', 'nosfirnews' ); ?>
                         </button>
                     </form>
                 </div>

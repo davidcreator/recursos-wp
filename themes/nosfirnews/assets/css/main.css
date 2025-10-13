@@ -563,3 +563,57 @@ a:focus {
         width: 100%;
     }
 }
+
+/* Utility classes */
+.hidden-microdata {
+    display: none;
+}
+
+.is-hidden {
+    display: none !important;
+}
+
+.mt-0 {
+    margin-top: 0 !important;
+}
+
+/* Newsletter (Tag page sidebar) */
+.newsletter-card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.newsletter-text {
+    margin-bottom: 15px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.newsletter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.newsletter-input {
+    padding: 10px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+.newsletter-button {
+    background: #667eea;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.newsletter-button:hover {
+    background: #556cd6;
+}

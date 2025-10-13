@@ -84,7 +84,7 @@
         <?php nosfirnews_entry_footer(); ?>
         
         <!-- Hidden microdata -->
-        <div class="hidden-microdata" style="display: none;">
+        <div class="hidden-microdata">
             <span itemprop="author" itemscope itemtype="https://schema.org/Person">
                 <span itemprop="name"><?php the_author(); ?></span>
             </span>

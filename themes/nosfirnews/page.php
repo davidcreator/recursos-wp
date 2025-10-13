@@ -50,7 +50,7 @@ get_header(); ?>
             <!-- Sidebar -->
             <?php 
             if ( ! is_page_template( 'page-templates/full-width.php' ) ) : ?>
-                <aside id="secondary" class="widget-area sidebar col-md-4" role="complementary" style="margin-top: 0;">
+                <aside id="secondary" class="widget-area sidebar col-md-4 mt-0" role="complementary">
                     <div class="sticky-sidebar">
                         <?php dynamic_sidebar( 'sidebar-1' ); ?>
                     </div>

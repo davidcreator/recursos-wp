@@ -56,7 +56,7 @@
         </div><!-- .container -->
         
         <!-- Hidden microdata for organization -->
-        <div class="hidden-microdata" style="display: none;" itemscope itemtype="https://schema.org/Organization">
+        <div class="hidden-microdata" itemscope itemtype="https://schema.org/Organization">
             <span itemprop="name"><?php bloginfo( 'name' ); ?></span>
             <span itemprop="url"><?php echo esc_url( home_url( '/' ) ); ?></span>
             <?php if ( get_bloginfo( 'description' ) ) : ?>

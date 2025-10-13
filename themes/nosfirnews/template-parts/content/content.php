@@ -120,7 +120,7 @@
         
         <!-- Hidden microdata for listing pages -->
         <?php if ( ! is_singular() ) : ?>
-            <div class="hidden-microdata" style="display: none;">
+            <div class="hidden-microdata">
                 <span itemprop="author" itemscope itemtype="https://schema.org/Person">
                     <span itemprop="name"><?php the_author(); ?></span>
                 </span>

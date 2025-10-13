@@ -396,7 +396,7 @@ function nosfirnews_enqueue_block_editor_assets() {
         'nosfirnews-blocks-js',
         get_template_directory_uri() . '/assets/js/blocks.js',
         array( 'wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-i18n' ),
-        '1.0.0',
+        function_exists( 'nosfirnews_asset_version' ) ? nosfirnews_asset_version( 'assets/js/blocks.js' ) : '1.0.0',
         true
     );
     
@@ -404,7 +404,7 @@ function nosfirnews_enqueue_block_editor_assets() {
         'nosfirnews-blocks-css',
         get_template_directory_uri() . '/assets/css/blocks.css',
         array(),
-        '1.0.0'
+        function_exists( 'nosfirnews_asset_version' ) ? nosfirnews_asset_version( 'assets/css/blocks.css' ) : '1.0.0'
     );
 }
 add_action( 'enqueue_block_editor_assets', 'nosfirnews_enqueue_block_editor_assets' );
@@ -417,7 +417,7 @@ function nosfirnews_enqueue_block_assets() {
         'nosfirnews-blocks-css',
         get_template_directory_uri() . '/assets/css/blocks.css',
         array(),
-        '1.0.0'
+        function_exists( 'nosfirnews_asset_version' ) ? nosfirnews_asset_version( 'assets/css/blocks.css' ) : '1.0.0'
     );
 }
 add_action( 'enqueue_block_assets', 'nosfirnews_enqueue_block_assets' );
