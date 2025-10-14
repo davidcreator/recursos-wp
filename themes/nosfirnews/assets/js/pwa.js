@@ -27,7 +27,8 @@
         registerServiceWorker: function() {
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('/wp-content/themes/nosfirnews/sw.js')
+                    const swUrl = (window.nosfirNewsConfig && window.nosfirNewsConfig.swUrl) ? window.nosfirNewsConfig.swUrl : (window.location.origin + '/wp-content/themes/nosfirnews/sw.js');
+                    navigator.serviceWorker.register(swUrl)
                         .then(registration => {
                             console.log('Service Worker registered successfully:', registration);
                             this.swRegistration = registration;
@@ -118,6 +119,15 @@
             }
         },
 
+        // Setup update notification (defensive, non-UI)
+        setupUpdateNotification: function() {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    console.log('New Service Worker activated.');
+                });
+            }
+        },
+
         // Setup install prompt
         setupInstallPrompt: function() {
             window.addEventListener('beforeinstallprompt', (e) => {
@@ -136,6 +146,10 @@
 
         // Initialize install button
         initInstallButton: function() {
+            const cfg = window.nosfirNewsConfig || {};
+            if (cfg.showInstallButton === false) {
+                return;
+            }
             // Check if already installed
             if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) {
                 this.isInstalled = true;
@@ -225,6 +239,10 @@
 
         // Show install button
         showInstallButton: function() {
+            const cfg = window.nosfirNewsConfig || {};
+            if (cfg.showInstallButton === false) {
+                return;
+            }
             $('.pwa-install-btn').show().on('click', (e) => {
                 e.preventDefault();
                 this.promptInstall();

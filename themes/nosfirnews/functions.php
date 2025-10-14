@@ -273,8 +273,22 @@ function nosfirnews_scripts() {
     // Enqueue mobile menu script
     wp_enqueue_script( 'nosfirnews-mobile-menu', get_template_directory_uri() . '/assets/js/mobile-menu.js', array(), nosfirnews_asset_version( 'assets/js/mobile-menu.js' ), true );
     
-    // Enqueue PWA script
-    wp_enqueue_script( 'nosfirnews-pwa', get_template_directory_uri() . '/assets/js/pwa.js', array( 'jquery' ), nosfirnews_asset_version( 'assets/js/pwa.js' ), true );
+    // Enqueue PWA script if enabled in advanced options
+    $advanced_opts = get_option( 'nosfirnews_advanced_options', array() );
+    $enable_pwa = isset( $advanced_opts['enable_pwa'] ) ? (bool) $advanced_opts['enable_pwa'] : true;
+    if ( $enable_pwa ) {
+        wp_enqueue_script( 'nosfirnews-pwa', get_template_directory_uri() . '/assets/js/pwa.js', array( 'jquery' ), nosfirnews_asset_version( 'assets/js/pwa.js' ), true );
+        // Provide config to PWA script
+        $vapid_key = isset( $advanced_opts['vapid_public_key'] ) && $advanced_opts['vapid_public_key'] !== ''
+            ? $advanced_opts['vapid_public_key']
+            : get_option( 'nosfirnews_pwa_vapid_public_key', '' ); // fallback legacy option
+        $show_install = isset( $advanced_opts['show_pwa_install_button'] ) ? (bool) $advanced_opts['show_pwa_install_button'] : true;
+        wp_localize_script( 'nosfirnews-pwa', 'nosfirNewsConfig', array(
+            'swUrl' => trailingslashit( get_template_directory_uri() ) . 'sw.js',
+            'vapidPublicKey' => $vapid_key,
+            'showInstallButton' => $show_install,
+        ) );
+    }
     
     // Enqueue comment reply script
     if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
@@ -288,6 +302,59 @@ function nosfirnews_scripts() {
     ) );
 }
 add_action( 'wp_enqueue_scripts', 'nosfirnews_scripts' );
+
+/**
+ * Performance optimizations
+ */
+function nosfirnews_performance_optimizations() {
+    $perf_opts = get_option( 'nosfirnews_performance_options', array() );
+
+    // Disable emojis
+    if ( isset( $perf_opts['disable_emojis'] ) ? (bool) $perf_opts['disable_emojis'] : true ) {
+        remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+        remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
+        remove_action( 'wp_print_styles', 'print_emoji_styles' );
+        remove_action( 'admin_print_styles', 'print_emoji_styles' );
+        remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
+        remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
+        remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
+    }
+
+    // Deregister wp-embed if not needed
+    if ( ! is_admin() && ( isset( $perf_opts['disable_wp_embed'] ) ? (bool) $perf_opts['disable_wp_embed'] : true ) ) {
+        wp_deregister_script( 'wp-embed' );
+    }
+
+    // Remove query strings from static resources
+    if ( ! is_admin() && ( isset( $perf_opts['remove_query_strings'] ) ? (bool) $perf_opts['remove_query_strings'] : true ) ) {
+        add_filter( 'script_loader_src', 'nosfirnews_remove_query_strings' );
+        add_filter( 'style_loader_src', 'nosfirnews_remove_query_strings' );
+    }
+}
+add_action( 'init', 'nosfirnews_performance_optimizations' );
+
+// Resource hints: preconnect to Google Fonts
+function nosfirnews_resource_hints( $hints, $relation_type ) {
+    if ( 'preconnect' === $relation_type ) {
+        $hints[] = 'https://fonts.gstatic.com';
+        $hints[] = 'https://fonts.googleapis.com';
+    }
+    if ( 'dns-prefetch' === $relation_type ) {
+        $hints[] = 'https://fonts.gstatic.com';
+        $hints[] = 'https://fonts.googleapis.com';
+    }
+    return $hints;
+}
+// Add resource hints conditionally based on performance option
+function nosfirnews_maybe_add_resource_hints( $hints, $relation_type ) {
+    $perf_opts = get_option( 'nosfirnews_performance_options', array() );
+    $enable_hints = isset( $perf_opts['resource_hints_fonts'] ) ? (bool) $perf_opts['resource_hints_fonts'] : true;
+    if ( ! $enable_hints ) {
+        return $hints;
+    }
+    return nosfirnews_resource_hints( $hints, $relation_type );
+}
+add_filter( 'wp_resource_hints', 'nosfirnews_maybe_add_resource_hints', 10, 2 );
 
 /**
  * Enqueue admin scripts and styles
@@ -427,17 +494,7 @@ function nosfirnews_add_security_headers() {
 }
 add_action( 'send_headers', 'nosfirnews_add_security_headers' );
 
-/**
- * Performance optimizations
- */
-function nosfirnews_performance_optimizations() {
-    // Remove query strings from static resources
-    if ( ! is_admin() ) {
-        add_filter( 'script_loader_src', 'nosfirnews_remove_query_strings' );
-        add_filter( 'style_loader_src', 'nosfirnews_remove_query_strings' );
-    }
-}
-add_action( 'init', 'nosfirnews_performance_optimizations' );
+ 
 
 function nosfirnews_remove_query_strings( $src ) {
     $output = preg_split( "/(&ver|\?ver)/", $src );

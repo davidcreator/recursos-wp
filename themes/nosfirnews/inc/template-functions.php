@@ -112,6 +112,148 @@ function nosfirnews_get_the_archive_title( $title ) {
 add_filter( 'get_the_archive_title', 'nosfirnews_get_the_archive_title' );
 
 /**
+ * Output JSON-LD Schema for SEO
+ */
+function nosfirnews_output_json_ld_schema() {
+    // Get SEO options
+    $seo = get_option( 'nosfirnews_seo_options', array() );
+    $enable_schema = isset( $seo['enable_schema'] ) ? (int) $seo['enable_schema'] : 1;
+    if ( ! $enable_schema ) {
+        return;
+    }
+
+    $organization_name = ! empty( $seo['organization_name'] ) ? $seo['organization_name'] : get_bloginfo( 'name' );
+    $organization_logo = ! empty( $seo['organization_logo'] ) ? $seo['organization_logo'] : ( function_exists( 'get_site_icon_url' ) && get_site_icon_url() ? get_site_icon_url() : '' );
+
+    $schemas = array();
+
+    // Organization
+    $org = array(
+        '@context' => 'https://schema.org',
+        '@type'    => 'Organization',
+        'name'     => $organization_name,
+        'url'      => home_url( '/' ),
+    );
+    if ( $organization_logo ) {
+        $org['logo'] = array(
+            '@type' => 'ImageObject',
+            'url'   => esc_url( $organization_logo ),
+        );
+    }
+    $schemas[] = $org;
+
+    // WebSite with SearchAction
+    $schemas[] = array(
+        '@context' => 'https://schema.org',
+        '@type'    => 'WebSite',
+        'url'      => home_url( '/' ),
+        'name'     => get_bloginfo( 'name' ),
+        'potentialAction' => array(
+            '@type' => 'SearchAction',
+            'target' => add_query_arg( 's', '{search_term_string}', home_url( '/' ) ),
+            'query-input' => 'required name=search_term_string',
+        ),
+    );
+
+    // Breadcrumbs (basic)
+    if ( ! is_front_page() ) {
+        $breadcrumb_items = array();
+        $breadcrumb_items[] = array(
+            '@type' => 'ListItem',
+            'position' => 1,
+            'name' => __( 'Home', 'nosfirnews' ),
+            'item' => home_url( '/' ),
+        );
+
+        $position = 2;
+        if ( is_single() ) {
+            $cats = get_the_category();
+            if ( ! empty( $cats ) ) {
+                $breadcrumb_items[] = array(
+                    '@type' => 'ListItem',
+                    'position' => $position++,
+                    'name' => $cats[0]->name,
+                    'item' => get_category_link( $cats[0]->term_id ),
+                );
+            }
+            $breadcrumb_items[] = array(
+                '@type' => 'ListItem',
+                'position' => $position,
+                'name' => get_the_title(),
+                'item' => get_permalink(),
+            );
+        } elseif ( is_page() ) {
+            $ancestors = array_reverse( get_post_ancestors( get_the_ID() ) );
+            foreach ( $ancestors as $ancestor ) {
+                $breadcrumb_items[] = array(
+                    '@type' => 'ListItem',
+                    'position' => $position++,
+                    'name' => get_the_title( $ancestor ),
+                    'item' => get_permalink( $ancestor ),
+                );
+            }
+            $breadcrumb_items[] = array(
+                '@type' => 'ListItem',
+                'position' => $position,
+                'name' => get_the_title(),
+                'item' => get_permalink(),
+            );
+        } elseif ( is_category() ) {
+            $cat = get_queried_object();
+            if ( $cat && isset( $cat->term_id ) ) {
+                $breadcrumb_items[] = array(
+                    '@type' => 'ListItem',
+                    'position' => $position,
+                    'name' => single_cat_title( '', false ),
+                    'item' => get_category_link( $cat->term_id ),
+                );
+            }
+        }
+
+        if ( count( $breadcrumb_items ) > 1 ) {
+            $schemas[] = array(
+                '@context' => 'https://schema.org',
+                '@type'    => 'BreadcrumbList',
+                'itemListElement' => $breadcrumb_items,
+            );
+        }
+    }
+
+    // Article/BlogPosting for single posts
+    if ( is_single() && get_post_type() === 'post' ) {
+        $image = get_the_post_thumbnail_url( get_the_ID(), 'full' );
+        $author_id = get_post_field( 'post_author', get_the_ID() );
+        $schemas[] = array(
+            '@context' => 'https://schema.org',
+            '@type'    => 'Article',
+            'headline' => get_the_title(),
+            'datePublished' => get_the_date( 'c' ),
+            'dateModified'  => get_the_modified_date( 'c' ),
+            'author' => array(
+                '@type' => 'Person',
+                'name'  => get_the_author_meta( 'display_name', $author_id ),
+            ),
+            'publisher' => array(
+                '@type' => 'Organization',
+                'name'  => $organization_name,
+                'logo'  => $organization_logo ? array(
+                    '@type' => 'ImageObject',
+                    'url'   => esc_url( $organization_logo ),
+                ) : null,
+            ),
+            'mainEntityOfPage' => get_permalink(),
+            'image' => $image ? esc_url( $image ) : null,
+        );
+    }
+
+    // Output all schemas in a single script tag
+    if ( ! empty( $schemas ) ) {
+        echo "\n<script type=\"application/ld+json\">" . wp_json_encode( $schemas ) . "</script>\n";
+    }
+}
+add_action( 'wp_head', 'nosfirnews_output_json_ld_schema', 99 );
+
+/**
  * Custom breadcrumbs function
  */
 function nosfirnews_breadcrumbs() {

@@ -276,7 +276,47 @@ class NosfirNews_Advanced_Theme_Options {
                             <p class="description"><?php _e('Número máximo de revisões a manter por post.', 'nosfirnews'); ?></p>
                         </div>
                     </div>
-                    
+
+                    <div class="nosfirnews-option-group">
+                        <h3><?php _e('Otimizações de Frontend', 'nosfirnews'); ?></h3>
+
+                        <div class="nosfirnews-option">
+                            <label class="nosfirnews-toggle">
+                                <input type="checkbox" name="nosfirnews_performance_options[disable_emojis]" value="1" <?php checked($options['disable_emojis'] ?? 1, 1); ?> />
+                                <span class="nosfirnews-toggle-slider"></span>
+                                <span class="nosfirnews-toggle-label"><?php _e('Desativar Emojis do WordPress', 'nosfirnews'); ?></span>
+                            </label>
+                            <p class="description"><?php _e('Remove scripts e styles de emojis para reduzir requisições.', 'nosfirnews'); ?></p>
+                        </div>
+
+                        <div class="nosfirnews-option">
+                            <label class="nosfirnews-toggle">
+                                <input type="checkbox" name="nosfirnews_performance_options[disable_wp_embed]" value="1" <?php checked($options['disable_wp_embed'] ?? 1, 1); ?> />
+                                <span class="nosfirnews-toggle-slider"></span>
+                                <span class="nosfirnews-toggle-label"><?php _e('Desativar wp-embed no frontend', 'nosfirnews'); ?></span>
+                            </label>
+                            <p class="description"><?php _e('Remove o script wp-embed para reduzir peso e evitar embeds desnecessários.', 'nosfirnews'); ?></p>
+                        </div>
+
+                        <div class="nosfirnews-option">
+                            <label class="nosfirnews-toggle">
+                                <input type="checkbox" name="nosfirnews_performance_options[remove_query_strings]" value="1" <?php checked($options['remove_query_strings'] ?? 1, 1); ?> />
+                                <span class="nosfirnews-toggle-slider"></span>
+                                <span class="nosfirnews-toggle-label"><?php _e('Remover Query Strings de Recursos Estáticos', 'nosfirnews'); ?></span>
+                            </label>
+                            <p class="description"><?php _e('Remove ?ver= e similares de URLs de CSS/JS para melhor cache.', 'nosfirnews'); ?></p>
+                        </div>
+
+                        <div class="nosfirnews-option">
+                            <label class="nosfirnews-toggle">
+                                <input type="checkbox" name="nosfirnews_performance_options[resource_hints_fonts]" value="1" <?php checked($options['resource_hints_fonts'] ?? 1, 1); ?> />
+                                <span class="nosfirnews-toggle-slider"></span>
+                                <span class="nosfirnews-toggle-label"><?php _e('Adicionar Resource Hints para Google Fonts', 'nosfirnews'); ?></span>
+                            </label>
+                            <p class="description"><?php _e('Inclui preconnect/dns-prefetch para acelerar conexões com fonts.gstatic.com e fonts.googleapis.com.', 'nosfirnews'); ?></p>
+                        </div>
+                    </div>
+
                     <?php submit_button(__('Salvar Configurações de Performance', 'nosfirnews')); ?>
                 </form>
             </div>
@@ -840,7 +880,37 @@ class NosfirNews_Advanced_Theme_Options {
                             <p class="description"><?php _e('Chave para autenticação em APIs personalizadas.', 'nosfirnews'); ?></p>
                         </div>
                     </div>
-                    
+
+                    <div class="nosfirnews-option-group">
+                        <h3><?php _e('Progressive Web App (PWA)', 'nosfirnews'); ?></h3>
+
+                        <div class="nosfirnews-option">
+                            <label class="nosfirnews-toggle">
+                                <input type="checkbox" name="nosfirnews_advanced_options[enable_pwa]" value="1" <?php checked($options['enable_pwa'] ?? 1, 1); ?> />
+                                <span class="nosfirnews-toggle-slider"></span>
+                                <span class="nosfirnews-toggle-label"><?php _e('Ativar PWA', 'nosfirnews'); ?></span>
+                            </label>
+                            <p class="description"><?php _e('Habilita o Service Worker e funcionalidades de PWA como cache offline e notificações.', 'nosfirnews'); ?></p>
+                        </div>
+
+                        <div class="nosfirnews-option">
+                            <label for="vapid_public_key"><?php _e('Chave Pública VAPID', 'nosfirnews'); ?></label>
+                            <input type="text" id="vapid_public_key" name="nosfirnews_advanced_options[vapid_public_key]" 
+                                   value="<?php echo esc_attr($options['vapid_public_key'] ?? ''); ?>" 
+                                   class="regular-text" />
+                            <p class="description"><?php _e('Chave pública VAPID para notificações push. Deixe em branco para desativar push.', 'nosfirnews'); ?></p>
+                        </div>
+
+                        <div class="nosfirnews-option">
+                            <label class="nosfirnews-toggle">
+                                <input type="checkbox" name="nosfirnews_advanced_options[show_pwa_install_button]" value="1" <?php checked($options['show_pwa_install_button'] ?? 1, 1); ?> />
+                                <span class="nosfirnews-toggle-slider"></span>
+                                <span class="nosfirnews-toggle-label"><?php _e('Mostrar botão de instalação PWA', 'nosfirnews'); ?></span>
+                            </label>
+                            <p class="description"><?php _e('Exibe um botão para instalar o aplicativo no navegador quando suportado.', 'nosfirnews'); ?></p>
+                        </div>
+                    </div>
+
                     <div class="nosfirnews-option-group">
                         <h3><?php _e('Configurações de Banco de Dados', 'nosfirnews'); ?></h3>
                         
@@ -998,7 +1068,12 @@ class NosfirNews_Advanced_Theme_Options {
             'gzip_compression' => 1,
             'optimize_db' => 0,
             'limit_revisions' => 0,
-            'max_revisions' => 5
+            'max_revisions' => 5,
+            // Frontend toggles
+            'disable_emojis' => 1,
+            'disable_wp_embed' => 1,
+            'remove_query_strings' => 1,
+            'resource_hints_fonts' => 1
         );
     }
 
@@ -1089,7 +1164,11 @@ class NosfirNews_Advanced_Theme_Options {
             'db_cleanup_frequency' => 'weekly',
             'backup_before_optimize' => 1,
             'memory_limit' => '256M',
-            'max_execution_time' => 30
+            'max_execution_time' => 30,
+            // PWA settings
+            'enable_pwa' => 1,
+            'vapid_public_key' => '',
+            'show_pwa_install_button' => 1
         );
     }
 
@@ -1112,6 +1191,11 @@ class NosfirNews_Advanced_Theme_Options {
         $sanitized['optimize_db'] = isset($input['optimize_db']) ? 1 : 0;
         $sanitized['limit_revisions'] = isset($input['limit_revisions']) ? 1 : 0;
         $sanitized['max_revisions'] = absint($input['max_revisions'] ?? 5);
+        // Frontend toggles
+        $sanitized['disable_emojis'] = isset($input['disable_emojis']) ? 1 : 0;
+        $sanitized['disable_wp_embed'] = isset($input['disable_wp_embed']) ? 1 : 0;
+        $sanitized['remove_query_strings'] = isset($input['remove_query_strings']) ? 1 : 0;
+        $sanitized['resource_hints_fonts'] = isset($input['resource_hints_fonts']) ? 1 : 0;
         
         return $sanitized;
     }
@@ -1207,6 +1291,10 @@ class NosfirNews_Advanced_Theme_Options {
         $sanitized['backup_before_optimize'] = isset($input['backup_before_optimize']) ? 1 : 0;
         $sanitized['memory_limit'] = in_array($input['memory_limit'] ?? '256M', array('128M', '256M', '512M', '1024M')) ? $input['memory_limit'] : '256M';
         $sanitized['max_execution_time'] = absint($input['max_execution_time'] ?? 30);
+        // PWA settings
+        $sanitized['enable_pwa'] = isset($input['enable_pwa']) ? 1 : 0;
+        $sanitized['vapid_public_key'] = sanitize_text_field($input['vapid_public_key'] ?? '');
+        $sanitized['show_pwa_install_button'] = isset($input['show_pwa_install_button']) ? 1 : 0;
         
         return $sanitized;
     }
@@ -1240,67 +1328,7 @@ class NosfirNews_Advanced_Theme_Options {
         ));
     }
 
-    /**
-     * Get default performance options
-     */
-    private function get_default_performance_options() {
-        return array(
-            'minify_css'        => 0,
-            'minify_js'         => 0,
-            'combine_css'       => 0,
-            'combine_js'        => 0,
-            'lazy_load_images'  => 1,
-            'webp_conversion'   => 0,
-            'image_quality'     => 85,
-            'enable_cache'      => 1,
-            'cache_duration'    => 24,
-            'gzip_compression'  => 1,
-            'optimize_db'       => 0,
-            'limit_revisions'   => 0,
-            'max_revisions'     => 5,
-        );
-    }
-
-    /**
-     * Get default SEO options
-     */
-    private function get_default_seo_options() {
-        return array(
-            'default_meta_description' => '',
-            'auto_meta_description'    => 1,
-            'enable_og'                => 1,
-            'enable_twitter_cards'     => 1,
-            'enable_sitemap'           => 1,
-            'ping_search_engines'      => 1,
-            'enable_breadcrumbs'       => 1,
-            'breadcrumbs_separator'    => '›',
-            'canonical_urls'           => 1,
-            'noindex_search'           => 0,
-            'noindex_archives'         => 0,
-        );
-    }
-
-    /**
-     * Get default security options
-     */
-    private function get_default_security_options() {
-        return array(
-            'limit_login_attempts'   => 1,
-            'max_login_attempts'     => 5,
-            'lockout_duration'       => 30,
-            'hide_login_errors'      => 1,
-            'remove_wp_version'      => 1,
-            'disable_xmlrpc'         => 0,
-            'disable_file_editing'   => 1,
-            'force_ssl_admin'        => 0,
-            'disable_right_click'    => 0,
-            'disable_text_selection' => 0,
-            'disable_image_hotlinking'=> 0,
-            'enable_security_logs'   => 1,
-            'email_notifications'    => 0,
-            'notification_email'     => '',
-        );
-    }
+    
 
     /**
      * AJAX: Reset theme options
@@ -1342,29 +1370,7 @@ class NosfirNews_Advanced_Theme_Options {
         wp_send_json_success($export);
     }
 
-    /**
-     * AJAX: Export theme options
-     */
-    public function ajax_export_options() {
-        check_ajax_referer('nosfirnews_advanced_options_nonce', 'nonce');
-        
-        if (!current_user_can('manage_options')) {
-            wp_die(__('Você não tem permissão para realizar esta ação.', 'nosfirnews'));
-        }
-        
-        $export_data = array(
-            'performance' => get_option('nosfirnews_performance_options', array()),
-            'seo' => get_option('nosfirnews_seo_options', array()),
-            'social' => get_option('nosfirnews_social_options', array()),
-            'security' => get_option('nosfirnews_security_options', array()),
-            'advanced' => get_option('nosfirnews_advanced_options', array()),
-            'export_date' => current_time('mysql'),
-            'site_url' => get_site_url(),
-            'theme_version' => wp_get_theme()->get('Version')
-        );
-        
-        wp_send_json_success($export_data);
-    }
+    
 
     /**
      * AJAX: Import theme options
