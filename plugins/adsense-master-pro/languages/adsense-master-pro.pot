@@ -1,0 +1,213 @@
+# Copyright (C) 2024 AdSense Master Pro
+# This file is distributed under the same license as the AdSense Master Pro package.
+msgid ""
+msgstr ""
+"Project-Id-Version: AdSense Master Pro 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/adsense-master-pro\n"
+"POT-Creation-Date: 2024-01-01 12:00+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2024-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: adsense-master-pro.php:50
+msgid "AdSense Master Pro"
+msgstr ""
+
+#: adsense-master-pro.php:51
+msgid "Anúncios"
+msgstr ""
+
+#: adsense-master-pro.php:52
+msgid "Configurações"
+msgstr ""
+
+#: adsense-master-pro.php:53
+msgid "ads.txt"
+msgstr ""
+
+#: includes/admin-page.php:15
+msgid "AdSense Master Pro - Gerenciar Anúncios"
+msgstr ""
+
+#: includes/admin-page.php:25
+msgid "Adicionar Novo Anúncio"
+msgstr ""
+
+#: includes/admin-page.php:35
+msgid "Total de Anúncios"
+msgstr ""
+
+#: includes/admin-page.php:40
+msgid "Anúncios Ativos"
+msgstr ""
+
+#: includes/admin-page.php:45
+msgid "Total de Impressões"
+msgstr ""
+
+#: includes/admin-page.php:50
+msgid "Total de Cliques"
+msgstr ""
+
+#: includes/admin-page.php:65
+msgid "Nome"
+msgstr ""
+
+#: includes/admin-page.php:66
+msgid "Posição"
+msgstr ""
+
+#: includes/admin-page.php:67
+msgid "Status"
+msgstr ""
+
+#: includes/admin-page.php:68
+msgid "Impressões"
+msgstr ""
+
+#: includes/admin-page.php:69
+msgid "Cliques"
+msgstr ""
+
+#: includes/admin-page.php:70
+msgid "Ações"
+msgstr ""
+
+#: includes/admin-page.php:85
+msgid "Ativo"
+msgstr ""
+
+#: includes/admin-page.php:85
+msgid "Inativo"
+msgstr ""
+
+#: includes/admin-page.php:90
+msgid "Editar"
+msgstr ""
+
+#: includes/admin-page.php:91
+msgid "Duplicar"
+msgstr ""
+
+#: includes/admin-page.php:92
+msgid "Pré-visualizar"
+msgstr ""
+
+#: includes/admin-page.php:93
+msgid "Excluir"
+msgstr ""
+
+#: includes/admin-page.php:100
+msgid "Nenhum anúncio encontrado."
+msgstr ""
+
+#: includes/admin-page.php:101
+msgid "Comece criando seu primeiro anúncio!"
+msgstr ""
+
+#: includes/settings-page.php:15
+msgid "AdSense Master Pro - Configurações"
+msgstr ""
+
+#: includes/settings-page.php:25
+msgid "Configurações salvas com sucesso!"
+msgstr ""
+
+#: includes/settings-page.php:35
+msgid "Geral"
+msgstr ""
+
+#: includes/settings-page.php:36
+msgid "AdSense"
+msgstr ""
+
+#: includes/settings-page.php:37
+msgid "Exibição"
+msgstr ""
+
+#: includes/settings-page.php:38
+msgid "Avançado"
+msgstr ""
+
+#: includes/settings-page.php:39
+msgid "Performance"
+msgstr ""
+
+#: includes/ads-txt-page.php:25
+msgid "Arquivo ads.txt salvo com sucesso!"
+msgstr ""
+
+#: includes/ads-txt-page.php:27
+msgid "Erro ao salvar o arquivo ads.txt."
+msgstr ""
+
+#: includes/ads-txt-page.php:29
+msgid "Não foi possível escrever no diretório raiz do WordPress."
+msgstr ""
+
+#: includes/ads-txt-page.php:40
+msgid "Linha do AdSense adicionada com sucesso!"
+msgstr ""
+
+#: includes/ads-txt-page.php:75
+msgid "AdSense Master Pro - Gerenciar ads.txt"
+msgstr ""
+
+#: includes/ads-txt-page.php:80
+msgid "Status do Arquivo ads.txt"
+msgstr ""
+
+#: includes/ads-txt-page.php:87
+msgid "Arquivo Existe"
+msgstr ""
+
+#: includes/ads-txt-page.php:88
+msgid "Arquivo ads.txt encontrado"
+msgstr ""
+
+#: includes/ads-txt-page.php:88
+msgid "Arquivo ads.txt não encontrado"
+msgstr ""
+
+#: includes/widget.php:15
+msgid "AdSense Master Pro - Anúncio"
+msgstr ""
+
+#: includes/widget.php:17
+msgid "Exibe um anúncio específico do AdSense Master Pro"
+msgstr ""
+
+#: includes/widget.php:40
+msgid "Nenhum anúncio selecionado. Configure o widget no painel administrativo."
+msgstr ""
+
+#: includes/widget.php:50
+msgid "Título:"
+msgstr ""
+
+#: includes/widget.php:55
+msgid "Exibir título"
+msgstr ""
+
+#: includes/widget.php:59
+msgid "Selecionar Anúncio:"
+msgstr ""
+
+#: includes/widget.php:61
+msgid "-- Selecione um anúncio --"
+msgstr ""
+
+#: includes/widget.php:69
+msgid "Nenhum anúncio ativo encontrado."
+msgstr ""
+
+#: includes/widget.php:71
+msgid "Criar um novo anúncio"
+msgstr ""
+
+#: includes/widget.php:76
+msgid "Este widget exibirá o anúncio selecionado respeitando todas as configurações de exibição definidas no plugin."
+msgstr ""

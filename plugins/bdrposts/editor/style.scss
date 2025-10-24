@@ -1,0 +1,422 @@
+/**
+ * BRDPosts Frontend Styles
+ * Estilos para exibição no frontend
+ */
+
+/* === Wrapper Principal === */
+.brdposts-wrapper {
+    margin: 20px 0;
+    width: 100%;
+}
+
+/* === Layout Grid === */
+.brdposts-grid {
+    display: grid;
+    gap: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.brdposts-columns-1 .brdposts-grid {
+    grid-template-columns: 1fr;
+}
+
+.brdposts-columns-2 .brdposts-grid {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.brdposts-columns-3 .brdposts-grid {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.brdposts-columns-4 .brdposts-grid {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* === Layout Masonry === */
+.brdposts-masonry {
+    column-count: 3;
+    column-gap: 30px;
+}
+
+.brdposts-columns-2 .brdposts-masonry {
+    column-count: 2;
+}
+
+.brdposts-columns-4 .brdposts-masonry {
+    column-count: 4;
+}
+
+.brdposts-masonry .brdposts-item {
+    break-inside: avoid;
+    margin-bottom: 30px;
+}
+
+/* === Layout Slider === */
+.brdposts-slider {
+    position: relative;
+    overflow: hidden;
+    padding: 0 50px;
+}
+
+.swiper-wrapper {
+    display: flex;
+}
+
+.swiper-slide {
+    width: 100%;
+    flex-shrink: 0;
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: background 0.3s ease;
+}
+
+.swiper-button-prev:hover,
+.swiper-button-next:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.swiper-button-prev {
+    left: 10px;
+}
+
+.swiper-button-next {
+    right: 10px;
+}
+
+.swiper-pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* === Layout Ticker === */
+.brdposts-ticker {
+    overflow: hidden;
+    background: #f5f5f5;
+    padding: 15px 0;
+    position: relative;
+}
+
+.brdposts-ticker-content {
+    display: flex;
+    animation: ticker-scroll 30s linear infinite;
+    white-space: nowrap;
+}
+
+.brdposts-ticker-item {
+    padding: 0 30px;
+    display: inline-block;
+}
+
+.brdposts-ticker-item a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.brdposts-ticker-item a:hover {
+    color: #0073aa;
+}
+
+@keyframes ticker-scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+/* === Post Item === */
+.brdposts-item {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.brdposts-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* === Thumbnail === */
+.brdposts-thumbnail {
+    position: relative;
+    overflow: hidden;
+    background: #f0f0f0;
+}
+
+.brdposts-thumbnail img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.brdposts-item:hover .brdposts-thumbnail img {
+    transform: scale(1.05);
+}
+
+/* === Content === */
+.brdposts-content {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* === Title === */
+.brdposts-title {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.4;
+    margin: 0 0 15px;
+}
+
+.brdposts-title a {
+    color: #333;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.brdposts-title a:hover {
+    color: #0073aa;
+}
+
+/* === Meta === */
+.brdposts-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: #666;
+}
+
+.brdposts-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.brdposts-meta .dashicons {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+}
+
+.brdposts-meta a {
+    color: #666;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.brdposts-meta a:hover {
+    color: #0073aa;
+}
+
+/* === Excerpt === */
+.brdposts-excerpt {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    flex: 1;
+}
+
+/* === Read More Button === */
+.brdposts-read-more {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #0073aa;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background 0.3s ease;
+    align-self: flex-start;
+}
+
+.brdposts-read-more:hover {
+    background: #005177;
+    color: #fff;
+}
+
+/* === Pagination === */
+.brdposts-pagination {
+    margin-top: 40px;
+    text-align: center;
+}
+
+.brdposts-pagination .page-numbers {
+    display: inline-block;
+    padding: 8px 15px;
+    margin: 0 5px;
+    background: #f5f5f5;
+    color: #333;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.brdposts-pagination .page-numbers:hover,
+.brdposts-pagination .page-numbers.current {
+    background: #0073aa;
+    color: #fff;
+}
+
+/* === Responsive === */
+@media (max-width: 1024px) {
+    .brdposts-columns-4 .brdposts-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .brdposts-columns-4 .brdposts-masonry {
+        column-count: 3;
+    }
+}
+
+@media (max-width: 768px) {
+    .brdposts-columns-3 .brdposts-grid,
+    .brdposts-columns-4 .brdposts-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .brdposts-columns-3 .brdposts-masonry,
+    .brdposts-columns-4 .brdposts-masonry {
+        column-count: 2;
+    }
+    
+    .brdposts-grid {
+        gap: 20px;
+    }
+    
+    .brdposts-masonry {
+        column-gap: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .brdposts-columns-2 .brdposts-grid,
+    .brdposts-columns-3 .brdposts-grid,
+    .brdposts-columns-4 .brdposts-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .brdposts-masonry {
+        column-count: 1;
+    }
+    
+    .brdposts-content {
+        padding: 15px;
+    }
+    
+    .brdposts-title {
+        font-size: 18px;
+    }
+    
+    .brdposts-meta {
+        gap: 10px;
+        font-size: 13px;
+    }
+    
+    .swiper-button-prev,
+    .swiper-button-next {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+/* === Sub-layouts === */
+
+/* Left Image */
+.brdposts-sublayout-left-image .brdposts-item {
+    flex-direction: row;
+}
+
+.brdposts-sublayout-left-image .brdposts-thumbnail {
+    width: 40%;
+    flex-shrink: 0;
+}
+
+.brdposts-sublayout-left-image .brdposts-content {
+    width: 60%;
+}
+
+/* Right Image */
+.brdposts-sublayout-right-image .brdposts-item {
+    flex-direction: row-reverse;
+}
+
+.brdposts-sublayout-right-image .brdposts-thumbnail {
+    width: 40%;
+    flex-shrink: 0;
+}
+
+.brdposts-sublayout-right-image .brdposts-content {
+    width: 60%;
+}
+
+/* Overlay Content */
+.brdposts-sublayout-overlay .brdposts-item {
+    position: relative;
+}
+
+.brdposts-sublayout-overlay .brdposts-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    color: #fff;
+}
+
+.brdposts-sublayout-overlay .brdposts-title a,
+.brdposts-sublayout-overlay .brdposts-excerpt,
+.brdposts-sublayout-overlay .brdposts-meta,
+.brdposts-sublayout-overlay .brdposts-meta a {
+    color: #fff;
+}
+
+.brdposts-sublayout-overlay .brdposts-read-more {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.brdposts-sublayout-overlay .brdposts-read-more:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive para sub-layouts */
+@media (max-width: 768px) {
+    .brdposts-sublayout-left-image .brdposts-item,
+    .brdposts-sublayout-right-image .brdposts-item {
+        flex-direction: column;
+    }
+    
+    .brdposts-sublayout-left-image .brdposts-thumbnail,
+    .brdposts-sublayout-right-image .brdposts-thumbnail,
+    .brdposts-sublayout-left-image .brdposts-content,
+    .brdposts-sublayout-right-image .brdposts-content {
+        width: 100%;
+    }
+}
