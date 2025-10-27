@@ -1,0 +1,645 @@
+# Portuguese (Brazil) translation for NosfirNews Theme
+# Copyright (C) 2024 NosfirNews Theme
+# This file is distributed under the same license as the NosfirNews Theme package.
+msgid ""
+msgstr ""
+"Project-Id-Version: NosfirNews Theme 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-12 12:00+0000\n"
+"PO-Revision-Date: 2024-12-12 12:00+0000\n"
+"Last-Translator: NosfirNews Team\n"
+"Language-Team: Portuguese (Brazil)\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Manual\n"
+
+#: functions.php:52
+msgid "Primary Menu"
+msgstr "Menu Principal"
+
+#: functions.php:53
+msgid "Footer Menu"
+msgstr "Menu do Rodapé"
+
+#: functions.php:54
+msgid "Social Links Menu"
+msgstr "Menu de Redes Sociais"
+
+#: functions.php:120
+msgid "Primary"
+msgstr "Primária"
+
+#: functions.php:125
+msgid "Secondary"
+msgstr "Secundária"
+
+#: functions.php:130
+msgid "Accent"
+msgstr "Destaque"
+
+#: functions.php:183
+msgid "Main Sidebar"
+msgstr "Barra Lateral Principal"
+
+#: functions.php:185
+msgid "Add widgets here to appear in your sidebar."
+msgstr "Adicione widgets aqui para aparecerem na sua barra lateral."
+
+#: functions.php:193
+msgid "Footer Widget Area 1"
+msgstr "Área de Widgets do Rodapé 1"
+
+#: functions.php:195 functions.php:205 functions.php:215
+msgid "Add widgets here to appear in your footer."
+msgstr "Adicione widgets aqui para aparecerem no seu rodapé."
+
+#: functions.php:203
+msgid "Footer Widget Area 2"
+msgstr "Área de Widgets do Rodapé 2"
+
+#: functions.php:213
+msgid "Footer Widget Area 3"
+msgstr "Área de Widgets do Rodapé 3"
+
+#: header.php:46
+msgid "Skip to main content"
+msgstr "Pular para o conteúdo principal"
+
+#: header.php:47
+msgid "Skip to navigation"
+msgstr "Pular para a navegação"
+
+#: header.php:49
+msgid "Skip to sidebar"
+msgstr "Pular para a barra lateral"
+
+#: header.php:51
+msgid "Skip to footer"
+msgstr "Pular para o rodapé"
+
+#: header.php:69 header.php:97
+msgid "Primary Navigation"
+msgstr "Navegação Principal"
+
+#: header.php:78 header.php:103
+msgid "Toggle navigation"
+msgstr "Alternar navegação"
+
+#: header.php:79 header.php:104
+msgid "Menu"
+msgstr "Menu"
+
+#: footer.php:21
+msgid "Footer widgets"
+msgstr "Widgets do rodapé"
+
+#: footer.php:24
+msgid "Footer widget area 1"
+msgstr "Área de widgets do rodapé 1"
+
+#: footer.php:30
+msgid "Footer widget area 2"
+msgstr "Área de widgets do rodapé 2"
+
+#: footer.php:36
+msgid "Footer widget area 3"
+msgstr "Área de widgets do rodapé 3"
+
+#: footer.php:48 footer.php:52
+msgid "Back to top"
+msgstr "Voltar ao topo"
+
+#: 404.php:15
+msgid "404 Error Page"
+msgstr "Página de Erro 404"
+
+#: 404.php:29
+msgid "Oops! That page can&rsquo;t be found."
+msgstr "Ops! Esta página não foi encontrada."
+
+#: 404.php:30
+msgid "The page you are looking for might have been removed, had its name changed, or is temporarily unavailable."
+msgstr "A página que você está procurando pode ter sido removida, teve seu nome alterado ou está temporariamente indisponível."
+
+#: 404.php:37
+msgid "Search our site"
+msgstr "Pesquisar no site"
+
+#: 404.php:38
+msgid "Try searching for what you need:"
+msgstr "Tente pesquisar pelo que você precisa:"
+
+#: 404.php:44
+msgid "Quick Actions"
+msgstr "Ações Rápidas"
+
+#: 404.php:51
+msgid "Go to Homepage"
+msgstr "Ir para a Página Inicial"
+
+#: 404.php:58
+msgid "Go Back"
+msgstr "Voltar"
+
+#: 404.php:67
+msgid "View Blog"
+msgstr "Ver Blog"
+
+#: 404.php:79
+msgid "Recent Posts"
+msgstr "Posts Recentes"
+
+#: 404.php:104
+msgid "No recent posts found."
+msgstr "Nenhum post recente encontrado."
+
+#: 404.php:110
+msgid "Popular Categories"
+msgstr "Categorias Populares"
+
+#: 404.php:127
+msgid "Need Help?"
+msgstr "Precisa de Ajuda?"
+
+#: 404.php:128
+msgid "If you believe this is an error, please contact us:"
+msgstr "Se você acredita que isso é um erro, entre em contato conosco:"
+
+#: 404.php:136
+msgid "Email Support"
+msgstr "Suporte por Email"
+
+#: 404.php:148
+msgid "Contact Page"
+msgstr "Página de Contato"
+
+#: index.php:20
+msgid "Main content"
+msgstr "Conteúdo principal"
+
+#: index.php:36
+msgid "Blog posts"
+msgstr "Posts do blog"
+
+#: archive.php:15
+msgid "Archive page"
+msgstr "Página de arquivo"
+
+#: archive.php:65
+msgid "%d post"
+msgid_plural "%d posts"
+msgstr[0] "%d post"
+msgstr[1] "%d posts"
+
+#: archive.php:76
+msgid "Page %1$d of %2$d"
+msgstr "Página %1$d de %2$d"
+
+#: archive.php:91 archive.php:92
+msgid "Subscribe to RSS feed"
+msgstr "Assinar feed RSS"
+
+#: archive.php:98
+msgid "RSS Feed"
+msgstr "Feed RSS"
+
+#: archive.php:105
+msgid "Sort posts by"
+msgstr "Ordenar posts por"
+
+#: archive.php:108
+msgid "Latest first"
+msgstr "Mais recentes primeiro"
+
+#: archive.php:111
+msgid "Alphabetical"
+msgstr "Alfabética"
+
+#: archive.php:114
+msgid "Most commented"
+msgstr "Mais comentados"
+
+#: archive.php:134
+msgid "Archive posts"
+msgstr "Posts do arquivo"
+
+#: archive.php:196
+msgid "Nothing found"
+msgstr "Nada encontrado"
+
+#: inc/template-tags.php:28
+msgctxt "post date"
+msgid "Posted on %s"
+msgstr "Publicado em %s"
+
+#: inc/template-tags.php:44
+msgctxt "post author"
+msgid "by %s"
+msgstr "por %s"
+
+#: inc/template-tags.php:61
+msgid ", "
+msgstr ", "
+
+#: inc/template-tags.php:64
+msgid "Posted in %1$s"
+msgstr "Publicado em %1$s"
+
+#: inc/template-tags.php:68
+msgctxt "list item separator"
+msgid ", "
+msgstr ", "
+
+#: inc/template-tags.php:71
+msgid "Tagged %1$s"
+msgstr "Marcado com %1$s"
+
+#: inc/template-tags.php:81
+msgid "Leave a Comment<span class=\"screen-reader-text\"> on %s</span>"
+msgstr "Deixe um Comentário<span class=\"screen-reader-text\"> em %s</span>"
+
+#: inc/template-tags.php:98
+msgid "Edit <span class=\"screen-reader-text\">%s</span>"
+msgstr "Editar <span class=\"screen-reader-text\">%s</span>"
+
+#: templates/search.php
+msgid "Digite sua busca..."
+msgstr "Digite sua busca..."
+
+#: templates/search.php
+msgid "Buscar"
+msgstr "Buscar"
+
+#: templates/search.php
+msgid "Categorias"
+msgstr "Categorias"
+
+#: templates/search.php
+msgid "Período"
+msgstr "Período"
+
+#: templates/search.php
+msgid "Qualquer período"
+msgstr "Qualquer período"
+
+#: templates/search.php
+msgid "Hoje"
+msgstr "Hoje"
+
+#: templates/search.php
+msgid "Esta semana"
+msgstr "Esta semana"
+
+#: templates/search.php
+msgid "Este mês"
+msgstr "Este mês"
+
+#: templates/search.php
+msgid "Este ano"
+msgstr "Este ano"
+
+#: templates/search.php
+msgid "Autor"
+msgstr "Autor"
+
+#: templates/search.php
+msgid "Qualquer autor"
+msgstr "Qualquer autor"
+
+#: templates/search.php
+msgid "Limpar Filtros"
+msgstr "Limpar Filtros"
+
+#: templates/search.php
+msgid "Resultados da Busca"
+msgstr "Resultados da Busca"
+
+#: templates/search.php
+msgid "Mostrando %1$d-%2$d de %3$d resultados"
+msgstr "Mostrando %1$d-%2$d de %3$d resultados"
+
+#: templates/search.php
+msgid "Nenhum resultado encontrado"
+msgstr "Nenhum resultado encontrado"
+
+#: templates/search.php
+msgid "Não encontramos nenhum conteúdo para \"%s\". Tente refinar sua busca ou explore nossas sugestões abaixo."
+msgstr "Não encontramos nenhum conteúdo para \"%s\". Tente refinar sua busca ou explore nossas sugestões abaixo."
+
+#: templates/search.php
+msgid "Verifique a ortografia"
+msgstr "Verifique a ortografia"
+
+#: templates/search.php
+msgid "Certifique-se de que todas as palavras estão escritas corretamente"
+msgstr "Certifique-se de que todas as palavras estão escritas corretamente"
+
+#: templates/search.php
+msgid "Use palavras-chave diferentes"
+msgstr "Use palavras-chave diferentes"
+
+#: templates/search.php
+msgid "Tente usar sinônimos ou termos relacionados"
+msgstr "Tente usar sinônimos ou termos relacionados"
+
+#: templates/search.php
+msgid "Seja mais específico"
+msgstr "Seja mais específico"
+
+#: templates/search.php
+msgid "Adicione mais detalhes para refinar sua busca"
+msgstr "Adicione mais detalhes para refinar sua busca"
+
+#: templates/search.php
+msgid "Busque por conteúdo"
+msgstr "Busque por conteúdo"
+
+#: templates/search.php:200
+msgid "Use o formulário acima para encontrar artigos, notícias e conteúdos do nosso site."
+msgstr "Use o formulário acima para encontrar artigos, notícias e conteúdos do nosso site."
+
+#: templates/tag.php:924
+msgid "Posts"
+msgstr "Posts"
+
+#: templates/tag.php:927
+msgid "Página"
+msgstr "Página"
+
+#: templates/tag.php:930
+msgid "Total"
+msgstr "Total"
+
+#: templates/tag.php:945
+msgid "Posts com a tag \"%s\""
+msgstr "Posts com a tag \"%s\""
+
+#: templates/tag.php:947
+msgid "Mostrando %1$d-%2$d de %3$d posts"
+msgstr "Mostrando %1$d-%2$d de %3$d posts"
+
+#: templates/tag.php:1081
+msgid "Nenhum post encontrado"
+msgstr "Nenhum post encontrado"
+
+#: templates/tag.php:1082
+msgid "Não há posts com a tag \"%s\" no momento."
+msgstr "Não há posts com a tag \"%s\" no momento."
+
+#: templates/tag.php:1087
+msgid "Explorar todas as tags"
+msgstr "Explorar todas as tags"
+
+#: templates/tag.php:1098
+msgid "Tags Relacionadas"
+msgstr "Tags Relacionadas"
+
+#: templates/tag.php:1113
+msgid "Posts Populares"
+msgstr "Posts Populares"
+
+#: templates/tag.php:1143
+msgid "%s comentário"
+msgid_plural "%s comentários"
+msgstr[0] "%s comentário"
+msgstr[1] "%s comentários"
+
+#: templates/tag.php:1157
+msgid "Newsletter"
+msgstr "Newsletter"
+
+#: templates/tag.php:1160
+msgid "Receba as últimas notícias e atualizações diretamente no seu email."
+msgstr "Receba as últimas notícias e atualizações diretamente no seu email."
+
+#: templates/tag.php:1164
+msgid "Seu email"
+msgstr "Seu email"
+
+#: templates/tag.php:1168
+msgid "Inscrever-se"
+msgstr "Inscrever-se"
+
+#: inc/template-functions.php:79
+msgctxt "yearly archives date format"
+msgid "Y"
+msgstr "Y"
+
+#: inc/template-functions.php:81
+msgctxt "monthly archives date format"
+msgid "F Y"
+msgstr "F Y"
+
+#: inc/template-functions.php:83
+msgctxt "daily archives date format"
+msgid "F j, Y"
+msgstr "j \\d\\e F \\d\\e Y"
+
+#: inc/template-functions.php:86
+msgctxt "post format archive title"
+msgid "Asides"
+msgstr "Apartes"
+
+#: inc/template-functions.php:88
+msgctxt "post format archive title"
+msgid "Galleries"
+msgstr "Galerias"
+
+#: inc/template-functions.php:90
+msgctxt "post format archive title"
+msgid "Links"
+msgstr "Links"
+
+#: inc/template-functions.php:92
+msgctxt "post format archive title"
+msgid "Images"
+msgstr "Imagens"
+
+#: inc/template-functions.php:94
+msgctxt "post format archive title"
+msgid "Quotes"
+msgstr "Citações"
+
+#: inc/template-functions.php:96
+msgctxt "post format archive title"
+msgid "Statuses"
+msgstr "Status"
+
+#: inc/template-functions.php:98
+msgctxt "post format archive title"
+msgid "Videos"
+msgstr "Vídeos"
+
+#: inc/template-functions.php:100
+msgctxt "post format archive title"
+msgid "Audios"
+msgstr "Áudios"
+
+#: inc/template-functions.php:102
+msgctxt "post format archive title"
+msgid "Chats"
+msgstr "Conversas"
+
+#: inc/template-functions.php:123 functions.php:542
+msgctxt "breadcrumb"
+msgid "Home"
+msgstr "Início"
+
+#: inc/template-functions.php:148
+msgid "Search Results"
+msgstr "Resultados da Pesquisa"
+
+#: inc/template-functions.php:150
+msgid "404 Error"
+msgstr "Erro 404"
+
+#: inc/template-functions.php:167
+msgid "%d minute read"
+msgstr "%d minuto de leitura"
+
+#: inc/template-functions.php:169
+msgid "%d minutes read"
+msgstr "%d minutos de leitura"
+
+#: inc/template-functions.php:227
+msgid "Share this article:"
+msgstr "Compartilhe este artigo:"
+
+#: inc/template-functions.php:251
+msgid "Copy link"
+msgstr "Copiar link"
+
+#: inc/template-functions.php:252
+msgid "Copy Link"
+msgstr "Copiar Link"
+
+#: inc/template-functions.php:285
+msgid "Related Articles"
+msgstr "Artigos Relacionados"
+
+#: functions.php:387
+msgid "REST API disabled."
+msgstr "API REST desabilitada."
+
+#: functions.php:396
+msgid "Something is wrong!"
+msgstr "Algo está errado!"
+
+#: functions.php:654
+msgid "Placeholder"
+msgstr "Placeholder"
+
+#: functions.php:668
+msgid "SKU:"
+msgstr "SKU:"
+
+#: functions.php:674
+msgid "Categorias:"
+msgstr "Categorias:"
+
+#: functions.php:686
+msgid "Tags:"
+msgstr "Tags:"
+
+#: functions.php:703
+msgid "Detalhes do Produto"
+msgstr "Detalhes do Produto"
+
+#: functions.php:708
+msgid "Especificações"
+msgstr "Especificações"
+
+#: functions.php:713
+msgid "Entrega e Devolução"
+msgstr "Entrega e Devolução"
+
+#: functions.php:725
+msgid "Informações de Entrega"
+msgstr "Informações de Entrega"
+
+#: functions.php:727
+msgid "Entrega grátis para compras acima de R$ 99,00"
+msgstr "Entrega grátis para compras acima de R$ 99,00"
+
+#: functions.php:728
+msgid "Prazo de entrega: 3 a 7 dias úteis"
+msgstr "Prazo de entrega: 3 a 7 dias úteis"
+
+#: functions.php:729
+msgid "Entrega expressa disponível"
+msgstr "Entrega expressa disponível"
+
+#: functions.php:732
+msgid "Política de Devolução"
+msgstr "Política de Devolução"
+
+#: functions.php:734
+msgid "30 dias para devolução ou troca"
+msgstr "30 dias para devolução ou troca"
+
+#: functions.php:735
+msgid "Produto deve estar em perfeitas condições"
+msgstr "Produto deve estar em perfeitas condições"
+
+#: functions.php:736
+msgid "Devolução gratuita em caso de defeito"
+msgstr "Devolução gratuita em caso de defeito"
+
+#: functions.php:747
+msgid "Últimas unidades!"
+msgstr "Últimas unidades!"
+
+#: functions.php:749
+msgid "Em estoque"
+msgstr "Em estoque"
+
+#: functions.php:752
+msgid "Produto esgotado"
+msgstr "Produto esgotado"
+
+#: functions.php:765
+msgid "Adicionar aos Favoritos"
+msgstr "Adicionar aos Favoritos"
+
+#: functions.php:790
+msgid "Oferta"
+msgstr "Oferta"
+
+#: functions.php:802
+msgid "Resultados da busca por: \"%s\""
+msgstr "Resultados da busca por: \"%s\""
+
+#: functions.php:952
+msgid "Hero (1920x1080)"
+msgstr "Hero (1920x1080)"
+
+#: functions.php:953
+msgid "Destacado (1200x675)"
+msgstr "Destacado (1200x675)"
+
+#: functions.php:954
+msgid "Médio (600x338)"
+msgstr "Médio (600x338)"
+
+#: functions.php:955
+msgid "Pequeno (400x225)"
+msgstr "Pequeno (400x225)"
+
+#: functions.php:956
+msgid "Card (400x225)"
+msgstr "Card (400x225)"
+
+#: functions.php:957
+msgid "Miniatura (200x200)"
+msgstr "Miniatura (200x200)"
+
+#: functions.php:958
+msgid "Galeria (800x450)"
+msgstr "Galeria (800x450)"
+
+#: functions.php:959
+msgid "Widget (300x169)"
+msgstr "Widget (300x169)"

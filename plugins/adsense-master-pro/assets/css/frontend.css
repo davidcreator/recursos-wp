@@ -1,0 +1,388 @@
+/* AdSense Master Pro - Frontend Styles */
+
+/* Container base para anúncios */
+.amp-ad-container {
+    margin: 15px 0;
+    clear: both;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Alinhamentos */
+.amp-ad-left {
+    text-align: left;
+}
+
+.amp-ad-center {
+    text-align: center;
+}
+
+.amp-ad-right {
+    text-align: right;
+}
+
+/* Conteúdo do anúncio */
+.amp-ad-content {
+    display: inline-block;
+    max-width: 100%;
+}
+
+/* Labels de anúncios */
+.amp-ad-label {
+    font-size: 11px;
+    color: #999;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    display: block;
+    text-align: center;
+}
+
+/* Anúncios sticky/fixos */
+.amp-ad-sticky {
+    position: fixed !important;
+    z-index: 9999;
+}
+
+.amp-ad-sticky-top {
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.amp-ad-sticky-bottom {
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.amp-ad-sticky-left {
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.amp-ad-sticky-right {
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Anúncios flutuantes */
+.amp-ad-floating {
+    position: fixed;
+    z-index: 9998;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 10px;
+}
+
+.amp-ad-floating .amp-close-ad {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 20px;
+    height: 20px;
+    background: #333;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 12px;
+    line-height: 1;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .amp-ad-container {
+        margin: 10px 0;
+    }
+    
+    .amp-ad-content {
+        max-width: 100%;
+    }
+    
+    /* Ocultar anúncios em mobile se configurado */
+    .amp-hide-mobile {
+        display: none !important;
+    }
+}
+
+@media (min-width: 769px) {
+    /* Ocultar anúncios em desktop se configurado */
+    .amp-hide-desktop {
+        display: none !important;
+    }
+}
+
+/* Animações de entrada */
+.amp-ad-fade-in {
+    animation: ampFadeIn 0.5s ease-in;
+}
+
+.amp-ad-slide-down {
+    animation: ampSlideDown 0.5s ease-out;
+}
+
+.amp-ad-slide-up {
+    animation: ampSlideUp 0.5s ease-out;
+}
+
+@keyframes ampFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes ampSlideDown {
+    from { 
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes ampSlideUp {
+    from { 
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilos para anúncios em artigos */
+.amp-ad-in-content {
+    margin: 20px 0;
+    padding: 10px 0;
+}
+
+.amp-ad-before-paragraph {
+    margin-bottom: 15px;
+}
+
+.amp-ad-after-paragraph {
+    margin-top: 15px;
+}
+
+/* Estilos para anúncios entre posts */
+.amp-ad-between-posts {
+    margin: 30px 0;
+    padding: 20px 0;
+    border-top: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+/* Proteção contra ad blockers */
+.amp-ad-placeholder {
+    background: #f5f5f5;
+    border: 2px dashed #ccc;
+    padding: 20px;
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+    margin: 15px 0;
+}
+
+.amp-adblock-message {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    color: #856404;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+    text-align: center;
+}
+
+/* Rotação de anúncios */
+.amp-ad-rotator {
+    position: relative;
+}
+
+.amp-ad-rotator .amp-ad-item {
+    display: none;
+}
+
+.amp-ad-rotator .amp-ad-item.active {
+    display: block;
+}
+
+/* Anúncios AMP */
+.amp-page .amp-ad-container {
+    text-align: center;
+}
+
+.amp-page amp-ad {
+    margin: 15px auto;
+}
+
+/* Loading placeholder */
+.amp-ad-loading {
+    background: #f0f0f0;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 14px;
+}
+
+.amp-ad-loading:before {
+    content: "Carregando anúncio...";
+}
+
+/* Anúncios nativos */
+.amp-native-ad {
+    background: #f9f9f9;
+    border: 1px solid #e5e5e5;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.amp-native-ad .amp-ad-label {
+    background: #e5e5e5;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 10px;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+/* Anúncios de banner */
+.amp-banner-ad {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.amp-banner-ad img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 3px;
+}
+
+/* Anúncios de vídeo */
+.amp-video-ad {
+    position: relative;
+    margin: 20px 0;
+}
+
+.amp-video-ad video {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+/* Consentimento GDPR */
+.amp-gdpr-notice {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #333;
+    color: #fff;
+    padding: 15px;
+    z-index: 10000;
+    text-align: center;
+}
+
+.amp-gdpr-notice .amp-gdpr-buttons {
+    margin-top: 10px;
+}
+
+.amp-gdpr-notice .amp-gdpr-button {
+    background: #0073aa;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    margin: 0 5px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.amp-gdpr-notice .amp-gdpr-button:hover {
+    background: #005a87;
+}
+
+/* Estados de erro */
+.amp-ad-error {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+    text-align: center;
+}
+
+/* Personalização de tema */
+.dark-theme .amp-ad-container {
+    background: rgba(255,255,255,0.05);
+}
+
+.dark-theme .amp-ad-label {
+    color: #ccc;
+}
+
+.dark-theme .amp-gdpr-notice {
+    background: #1a1a1a;
+    border-top: 1px solid #333;
+}
+
+/* Compatibilidade com temas populares */
+.theme-twentytwentyone .amp-ad-container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.theme-astra .amp-ad-container {
+    margin: 1.5em 0;
+}
+
+.theme-generatepress .amp-ad-container {
+    margin: 20px 0;
+}
+
+/* Print styles */
+@media print {
+    .amp-ad-container,
+    .amp-ad-sticky,
+    .amp-ad-floating,
+    .amp-gdpr-notice {
+        display: none !important;
+    }
+}
+
+/* Acessibilidade */
+@media (prefers-reduced-motion: reduce) {
+    .amp-ad-fade-in,
+    .amp-ad-slide-down,
+    .amp-ad-slide-up {
+        animation: none;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .amp-ad-container {
+        border: 2px solid;
+    }
+    
+    .amp-ad-label {
+        background: #000;
+        color: #fff;
+        padding: 2px 5px;
+    }
+}
+
+/* Lazy loading placeholder */
+.amp-ad-lazy {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 400% 100%;
+    animation: loading-gradient 1.5s linear infinite;
+}   

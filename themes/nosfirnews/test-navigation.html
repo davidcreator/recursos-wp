@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Layouts de Navegação - NosfirNews</title>
+    <link rel="stylesheet" href="assets/css/navigation-layouts.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --text-color: #333;
+            --background-color: #fff;
+            --border-color: #e1e1e1;
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --container-max-width: 1200px;
+            --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-base);
+            line-height: 1.6;
+            color: var(--text-color);
+            background: var(--background-color);
+        }
+
+        .container {
+            max-width: var(--container-max-width);
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+        }
+
+        .test-controls {
+            background: #f8f9fa;
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+            border: 1px solid var(--border-color);
+        }
+
+        .test-controls h2 {
+            margin-bottom: var(--spacing-md);
+            color: var(--primary-color);
+        }
+
+        .control-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: var(--spacing-xs);
+            font-weight: 600;
+        }
+
+        .control-group select,
+        .control-group input {
+            padding: var(--spacing-sm);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .site-branding {
+            display: flex;
+            align-items: center;
+        }
+
+        .site-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .main-navigation ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-navigation a {
+            display: block;
+            padding: var(--spacing-sm) var(--spacing-md);
+            text-decoration: none;
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+
+        .main-navigation a:hover {
+            color: var(--secondary-color);
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-sm);
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .content-area {
+            padding: var(--spacing-xl) 0;
+            min-height: 500px;
+        }
+
+        .content-area h1 {
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .content-area p {
+            margin-bottom: var(--spacing-md);
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-controls">
+        <div class="container">
+            <h2>Controles de Teste - Layouts de Navegação</h2>
+            
+            <div class="control-group">
+                <label for="nav-position">Posição da Navegação:</label>
+                <select id="nav-position">
+                    <option value="below-header">Abaixo do Header</option>
+                    <option value="inline-header">Inline com Header</option>
+                    <option value="right-of-logo">À Direita do Logo</option>
+                    <option value="next-to-logo">Próximo ao Logo</option>
+                    <option value="center-header">Centro do Header</option>
+                    <option value="right-header">Direita do Header</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="nav-alignment">Alinhamento:</label>
+                <select id="nav-alignment">
+                    <option value="left">Esquerda</option>
+                    <option value="center">Centro</option>
+                    <option value="right">Direita</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="nav-style">Estilo Visual:</label>
+                <select id="nav-style">
+                    <option value="default">Padrão</option>
+                    <option value="minimal">Minimal</option>
+                    <option value="boxed">Boxed</option>
+                    <option value="underlined">Underlined</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <header id="masthead" class="site-header">
+        <div class="header-content nav-position-below-header">
+            <div class="container">
+                <div class="site-branding">
+                    <a href="#" class="site-title">NosfirNews</a>
+                </div>
+            </div>
+        </div>
+
+        <nav id="site-navigation" class="main-navigation nav-position-below-header">
+            <div class="container">
+                <button class="mobile-menu-toggle" aria-controls="primary-menu" aria-expanded="false">
+                    <span>☰</span>
+                    <span class="screen-reader-text">Menu</span>
+                </button>
+                
+                <ul id="primary-menu">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Notícias</a></li>
+                    <li><a href="#">Esportes</a></li>
+                    <li><a href="#">Tecnologia</a></li>
+                    <li><a href="#">Cultura</a></li>
+                    <li><a href="#">Contato</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="site-content">
+        <div class="container">
+            <div class="content-area">
+                <h1>Teste de Layouts de Navegação</h1>
+                <p>Esta página demonstra os diferentes layouts de navegação disponíveis no tema NosfirNews. Use os controles acima para testar diferentes configurações.</p>
+                
+                <p>O sistema de navegação inclui:</p>
+                <ul>
+                    <li><strong>Posições flexíveis:</strong> Abaixo do header, inline com header, à direita do logo, próximo ao logo, centro e direita</li>
+                    <li><strong>Alinhamentos:</strong> Esquerda, centro e direita</li>
+                    <li><strong>Estilos visuais:</strong> Padrão, minimal, boxed e underlined</li>
+                    <li><strong>Responsividade:</strong> Adaptação automática para dispositivos móveis</li>
+                    <li><strong>Acessibilidade:</strong> Navegação por teclado e leitores de tela</li>
+                </ul>
+
+                <p>O layout é totalmente responsivo e se adapta automaticamente a diferentes tamanhos de tela, garantindo uma experiência consistente em todos os dispositivos.</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="assets/js/navigation-layouts.js"></script>
+    <script>
+        // Controles de teste
+        document.addEventListener('DOMContentLoaded', function() {
+            const positionSelect = document.getElementById('nav-position');
+            const alignmentSelect = document.getElementById('nav-alignment');
+            const styleSelect = document.getElementById('nav-style');
+            const headerContent = document.querySelector('.header-content');
+            const navigation = document.querySelector('.main-navigation');
+
+            function updateLayout() {
+                const position = positionSelect.value;
+                const alignment = alignmentSelect.value;
+                const style = styleSelect.value;
+
+                // Remove todas as classes de posição
+                headerContent.className = 'header-content';
+                navigation.className = 'main-navigation';
+
+                // Adiciona novas classes
+                headerContent.classList.add(`nav-position-${position}`);
+                navigation.classList.add(`nav-position-${position}`);
+                
+                if (position === 'inline-header') {
+                    headerContent.classList.add('header-inline-nav');
+                }
+
+                // Adiciona classes de alinhamento e estilo
+                navigation.classList.add(`nav-align-${alignment}`);
+                navigation.classList.add(`nav-style-${style}`);
+
+                // Reorganiza o DOM baseado na posição
+                if (position === 'inline-header' || position.includes('logo') || position.includes('header')) {
+                    // Move navegação para dentro do header-content
+                    if (!headerContent.contains(navigation)) {
+                        headerContent.appendChild(navigation);
+                    }
+                } else {
+                    // Move navegação para fora do header-content
+                    if (headerContent.contains(navigation)) {
+                        headerContent.parentNode.appendChild(navigation);
+                    }
+                }
+            }
+
+            positionSelect.addEventListener('change', updateLayout);
+            alignmentSelect.addEventListener('change', updateLayout);
+            styleSelect.addEventListener('change', updateLayout);
+
+            // Inicializa o layout
+            updateLayout();
+        });
+    </script>
+</body>
+</html>
