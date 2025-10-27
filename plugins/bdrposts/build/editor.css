@@ -1,60 +1,358 @@
-/* BRDPosts Editor Styles */
+/* =========================================
+   BDRPosts - Editor Styles (Gutenberg)
+   ========================================= */
 
-.brdposts-editor-preview {
-  background: #fff;
-  border: 2px dashed #ddd;
-  border-radius: 8px;
-  padding: 20px;
-  margin: 20px 0;
+/* === Editor Wrapper === */
+.bdrposts-editor-wrapper {
+    width: 100%;
 }
 
-.brdposts-editor-preview .brdposts-wrapper { width: 100%; }
+/* === Preview Container === */
+.bdrposts-editor-preview {
+    background: #fff;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 24px;
+    margin: 20px 0;
+    min-height: 200px;
+}
 
-/* Header and notes */
-.brdposts-editor-header { border-bottom: 2px solid #0073aa; padding-bottom: 12px; margin-bottom: 16px; }
-.brdposts-editor-header h3 { margin: 0; color: #0073aa; }
-.brdposts-editor-note { text-align: center; color: #999; font-size: 13px; font-style: italic; margin-top: 12px; }
+/* === Header === */
+.bdrposts-editor-header {
+    border-bottom: 3px solid #0073aa;
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+}
 
-/* Grid preview */
-.brdposts-preview-grid { display: grid; gap: 16px; }
-.brdposts-columns-1 .brdposts-preview-grid { grid-template-columns: 1fr; }
-.brdposts-columns-2 .brdposts-preview-grid { grid-template-columns: repeat(2, 1fr); }
-.brdposts-columns-3 .brdposts-preview-grid { grid-template-columns: repeat(3, 1fr); }
-.brdposts-columns-4 .brdposts-preview-grid { grid-template-columns: repeat(4, 1fr); }
+.bdrposts-editor-header h3 {
+    margin: 0 0 8px;
+    color: #0073aa;
+    font-size: 20px;
+    font-weight: 700;
+}
 
-/* Item preview */
-.brdposts-preview-item { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 6px; overflow: hidden; }
-.brdposts-preview-thumbnail { width: 100%; height: 150px; background: #e0e0e0; }
-.brdposts-preview-content { padding: 12px; }
-.brdposts-preview-content h4 { margin: 0 0 8px; font-size: 16px; }
-.brdposts-preview-content div { font-size: 14px; color: #666; }
+.bdrposts-editor-header p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}
 
-/* Masonry preview */
-.brdposts-layout-masonry .brdposts-preview-grid { columns: 3; column-gap: 16px; }
-.brdposts-layout-masonry .brdposts-preview-item { break-inside: avoid; margin-bottom: 16px; }
+/* === Loading State === */
+.bdrposts-loading {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+}
 
-/* Slider preview */
-.brdposts-layout-slider .brdposts-preview-grid { grid-template-columns: 1fr !important; position: relative; padding: 0 50px; }
+.bdrposts-loading .components-spinner {
+    margin: 0 auto 16px;
+}
 
-/* Ticker preview */
-.brdposts-layout-ticker .brdposts-preview-grid { grid-template-columns: 1fr !important; background: #f5f5f5; padding: 12px; border-radius: 4px; }
-.brdposts-layout-ticker .brdposts-preview-item { background: transparent; border: none; display: flex; align-items: center; gap: 12px; }
-.brdposts-layout-ticker .brdposts-preview-thumbnail { width: 60px; height: 60px; }
+.bdrposts-loading p {
+    margin: 0;
+    font-size: 14px;
+}
 
-/* Inspector tweaks */
-.components-panel__body-title button { font-weight: 600; }
-.components-base-control__label { font-weight: 600; margin-bottom: 8px; }
-.components-toggle-control { margin-bottom: 14px; }
-.components-range-control__wrapper { margin-top: 8px; }
-.components-checkbox-control { margin-bottom: 8px; }
+/* === No Posts === */
+.bdrposts-no-posts {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+    font-style: italic;
+}
 
-/* Responsive preview */
+/* === Editor Note === */
+.bdrposts-editor-note {
+    text-align: center;
+    color: #999;
+    font-size: 13px;
+    font-style: italic;
+    margin: 20px 0 0;
+    padding-top: 16px;
+    border-top: 1px solid #e0e0e0;
+}
+
+/* === Inspector Controls === */
+.components-panel__body-title {
+    font-weight: 600;
+}
+
+.components-panel__body-title button {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.components-base-control {
+    margin-bottom: 20px;
+}
+
+.components-base-control__label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #1e1e1e;
+    display: block;
+}
+
+.components-base-control__help {
+    margin-top: 8px;
+    font-size: 12px;
+    font-style: italic;
+    color: #757575;
+}
+
+/* === Toggle Control === */
+.components-toggle-control {
+    margin-bottom: 16px;
+}
+
+.components-toggle-control .components-base-control__field {
+    display: flex;
+    align-items: center;
+}
+
+.components-toggle-control .components-toggle-control__label {
+    font-weight: 500;
+}
+
+/* === Range Control === */
+.components-range-control__wrapper {
+    margin-top: 10px;
+}
+
+.components-range-control__number {
+    min-width: 60px;
+}
+
+/* === Select Control === */
+.components-select-control__input {
+    min-height: 40px;
+    padding: 8px 32px 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.components-select-control__input:focus {
+    border-color: #0073aa;
+    box-shadow: 0 0 0 1px #0073aa;
+}
+
+/* === Text Control === */
+.components-text-control__input {
+    min-height: 40px;
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.components-text-control__input:focus {
+    border-color: #0073aa;
+    box-shadow: 0 0 0 1px #0073aa;
+}
+
+/* === Panel Sections === */
+.components-panel__body {
+    border-top: 1px solid #e0e0e0;
+}
+
+.components-panel__body:first-child {
+    border-top: none;
+}
+
+.components-panel__body + .components-panel__body {
+    margin-top: 0;
+}
+
+.components-panel__body-toggle {
+    padding: 16px;
+}
+
+/* === Checkbox Control === */
+.components-checkbox-control {
+    margin-bottom: 12px;
+}
+
+.components-checkbox-control .components-base-control__field {
+    margin-bottom: 0;
+}
+
+/* === Icon Indicators === */
+.components-panel__icon {
+    color: #0073aa;
+}
+
+/* === Help Text Styling === */
+.components-base-control__help {
+    line-height: 1.5;
+}
+
+/* === Disabled State === */
+.components-base-control.is-disabled .components-base-control__label {
+    color: #999;
+}
+
+/* === Error State === */
+.components-base-control.has-error .components-base-control__label {
+    color: #cc1818;
+}
+
+.components-base-control.has-error .components-text-control__input,
+.components-base-control.has-error .components-select-control__input {
+    border-color: #cc1818;
+}
+
+/* === Section Dividers === */
+.components-panel__body-content > .components-base-control:not(:last-child) {
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* === Nested Controls === */
+.components-base-control + .components-base-control {
+    margin-top: 16px;
+}
+
+/* === Responsive Inspector === */
 @media (max-width: 782px) {
-  .brdposts-columns-3 .brdposts-preview-grid,
-  .brdposts-columns-4 .brdposts-preview-grid { grid-template-columns: repeat(2, 1fr); }
+    .components-panel__body-toggle {
+        padding: 12px;
+    }
+    
+    .components-base-control {
+        margin-bottom: 16px;
+    }
+    
+    .components-select-control__input,
+    .components-text-control__input {
+        min-height: 36px;
+        padding: 6px 10px;
+        font-size: 13px;
+    }
 }
-@media (max-width: 600px) {
-  .brdposts-columns-2 .brdposts-preview-grid,
-  .brdposts-columns-3 .brdposts-preview-grid,
-  .brdposts-columns-4 .brdposts-preview-grid { grid-template-columns: 1fr; }
+
+/* === Custom Spacing for BDRPosts === */
+.bdrposts-editor-wrapper .components-panel__body-content {
+    padding: 16px;
+}
+
+/* === Better Visual Hierarchy === */
+.components-panel__body-title button[aria-expanded="true"] {
+    color: #0073aa;
+}
+
+/* === Focus Styles === */
+.components-toggle-control__input:focus {
+    box-shadow: 0 0 0 2px #0073aa;
+    outline: none;
+}
+
+/* === Smooth Transitions === */
+.components-panel__body {
+    transition: border-color 0.3s ease;
+}
+
+.components-panel__body:hover {
+    border-color: #ccc;
+}
+
+/* === Improved Readability === */
+.components-base-control__label {
+    line-height: 1.4;
+}
+
+/* === Better Button Spacing === */
+.components-button {
+    margin-right: 8px;
+}
+
+.components-button:last-child {
+    margin-right: 0;
+}
+
+/* === Group Styling === */
+.components-panel__body-content > div {
+    position: relative;
+}
+
+/* === Icon Support === */
+.bdrposts-icon-preview {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+    color: #0073aa;
+}
+
+/* === Compact Mode === */
+.interface-complementary-area .bdrposts-editor-wrapper {
+    font-size: 13px;
+}
+
+/* === Server Side Render Wrapper === */
+.wp-block-bdrposts-post-block {
+    position: relative;
+}
+
+/* === Block Toolbar === */
+.block-editor-block-toolbar {
+    margin-bottom: 16px;
+}
+
+/* === Alignment Controls === */
+.wp-block-bdrposts-post-block.alignwide,
+.wp-block-bdrposts-post-block.alignfull {
+    width: 100%;
+}
+
+/* === Preview Enhancements === */
+.bdrposts-editor-preview .bdrposts-wrapper {
+    pointer-events: none;
+    user-select: none;
+}
+
+.bdrposts-editor-preview .bdrposts-item {
+    opacity: 0.95;
+}
+
+/* === Loading Animation === */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.bdrposts-editor-preview .bdrposts-item {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* === Tooltip Styles === */
+.components-tooltip {
+    font-size: 12px;
+}
+
+/* === Custom Scrollbar for Inspector === */
+.interface-complementary-area::-webkit-scrollbar {
+    width: 8px;
+}
+
+.interface-complementary-area::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.interface-complementary-area::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+
+.interface-complementary-area::-webkit-scrollbar-thumb:hover {
+    background: #999;
 }

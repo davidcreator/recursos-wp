@@ -1,14 +1,14 @@
 <?php
 /**
  * Plugin Name: BDRPosts
- * Plugin URI: https://github.com/seu-usuario/brdposts
+ * Plugin URI: https://github.com/davidcreator/recursos-wp/bdrposts
  * Description: Plugin flexível para exibir posts, páginas e custom post types com múltiplos layouts usando o editor Gutenberg
  * Version: 1.0.0
- * Author: Seu Nome
- * Author URI: https://seusite.com
+ * Author: David L. Almeida
+ * Author URI: https://davidcreator.com
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: brdposts
+ * Text Domain: bdrposts
  * Domain Path: /languages
  */
 
@@ -18,14 +18,14 @@ if (!defined('ABSPATH')) {
 }
 
 // Define constantes do plugin
-define('BRDPOSTS_VERSION', '1.0.0');
-define('BRDPOSTS_PLUGIN_DIR', plugin_dir_path(__FILE__));
-define('BRDPOSTS_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('BDRPOSTS_VERSION', '1.0.0');
+define('BDRPOSTS_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('BDRPOSTS_PLUGIN_URL', plugin_dir_url(__FILE__));
 
 /**
- * Classe principal do plugin BRDPosts
+ * Classe principal do plugin BDRPosts
  */
-class BRDPosts {
+class BDRPosts {
     
     private static $instance = null;
     
@@ -47,26 +47,96 @@ class BRDPosts {
         add_action('enqueue_block_editor_assets', array($this, 'enqueue_block_editor_assets'));
         add_action('enqueue_block_assets', array($this, 'enqueue_block_assets'));
         add_action('init', array($this, 'register_block'));
+        add_action('rest_api_init', array($this, 'register_rest_routes'));
         
         // Shortcode support
-        add_shortcode('brdposts', array($this, 'shortcode_render'));
+        add_shortcode('bdrposts', array($this, 'shortcode_render'));
+        
+        // Cria diretório build se não existir
+        $this->ensure_build_directory();
+    }
+    
+    /**
+     * Garante que o diretório build existe
+     */
+    private function ensure_build_directory() {
+        $build_dir = BDRPOSTS_PLUGIN_DIR . 'build';
+        if (!file_exists($build_dir)) {
+            wp_mkdir_p($build_dir);
+        }
     }
     
     /**
      * Carrega tradução
      */
     public function load_textdomain() {
-        load_plugin_textdomain('brdposts', false, dirname(plugin_basename(__FILE__)) . '/languages');
+        load_plugin_textdomain('bdrposts', false, dirname(plugin_basename(__FILE__)) . '/languages');
+    }
+    
+    /**
+     * Registra rotas REST API
+     */
+    public function register_rest_routes() {
+        register_rest_route('bdrposts/v1', '/post-types', array(
+            'methods' => 'GET',
+            'callback' => array($this, 'get_post_types'),
+            'permission_callback' => function() {
+                return current_user_can('edit_posts');
+            }
+        ));
+        
+        register_rest_route('bdrposts/v1', '/taxonomies/(?P<post_type>[a-zA-Z0-9_-]+)', array(
+            'methods' => 'GET',
+            'callback' => array($this, 'get_taxonomies'),
+            'permission_callback' => function() {
+                return current_user_can('edit_posts');
+            }
+        ));
+    }
+    
+    /**
+     * Retorna post types disponíveis
+     */
+    public function get_post_types() {
+        $post_types = get_post_types(array('public' => true), 'objects');
+        $result = array();
+        
+        foreach ($post_types as $post_type) {
+            $result[] = array(
+                'value' => $post_type->name,
+                'label' => $post_type->label
+            );
+        }
+        
+        return rest_ensure_response($result);
+    }
+    
+    /**
+     * Retorna taxonomias de um post type
+     */
+    public function get_taxonomies($request) {
+        $post_type = $request->get_param('post_type');
+        $taxonomies = get_object_taxonomies($post_type, 'objects');
+        $result = array();
+        
+        foreach ($taxonomies as $taxonomy) {
+            $result[] = array(
+                'value' => $taxonomy->name,
+                'label' => $taxonomy->label
+            );
+        }
+        
+        return rest_ensure_response($result);
     }
     
     /**
      * Registra o bloco Gutenberg
      */
     public function register_block() {
-        register_block_type('brdposts/post-block', array(
-            'editor_script' => 'brdposts-block-editor',
-            'editor_style' => 'brdposts-block-editor-style',
-            'style' => 'brdposts-block-style',
+        register_block_type('bdrposts/post-block', array(
+            'editor_script' => 'bdrposts-block-editor',
+            'editor_style' => 'bdrposts-block-editor-style',
+            'style' => 'bdrposts-block-style',
             'render_callback' => array($this, 'render_block'),
             'attributes' => $this->get_block_attributes()
         ));
@@ -77,138 +147,39 @@ class BRDPosts {
      */
     private function get_block_attributes() {
         return array(
-            'layout' => array(
-                'type' => 'string',
-                'default' => 'grid'
-            ),
-            'subLayout' => array(
-                'type' => 'string',
-                'default' => 'title-meta'
-            ),
-            'postType' => array(
-                'type' => 'string',
-                'default' => 'post'
-            ),
-            'postsPerPage' => array(
-                'type' => 'number',
-                'default' => 6
-            ),
-            'columns' => array(
-                'type' => 'number',
-                'default' => 3
-            ),
-            'order' => array(
-                'type' => 'string',
-                'default' => 'DESC'
-            ),
-            'orderBy' => array(
-                'type' => 'string',
-                'default' => 'date'
-            ),
-            'categories' => array(
-                'type' => 'array',
-                'default' => array()
-            ),
-            'tags' => array(
-                'type' => 'array',
-                'default' => array()
-            ),
-            'authors' => array(
-                'type' => 'array',
-                'default' => array()
-            ),
-            'offset' => array(
-                'type' => 'number',
-                'default' => 0
-            ),
-            'includePosts' => array(
-                'type' => 'array',
-                'default' => array()
-            ),
-            'excludePosts' => array(
-                'type' => 'array',
-                'default' => array()
-            ),
-            'excludeCurrent' => array(
-                'type' => 'boolean',
-                'default' => false
-            ),
-            'showImage' => array(
-                'type' => 'boolean',
-                'default' => true
-            ),
-            'imageSize' => array(
-                'type' => 'string',
-                'default' => 'medium'
-            ),
-            'linkImage' => array(
-                'type' => 'boolean',
-                'default' => true
-            ),
-            'showTitle' => array(
-                'type' => 'boolean',
-                'default' => true
-            ),
-            'linkTitle' => array(
-                'type' => 'boolean',
-                'default' => true
-            ),
-            'showExcerpt' => array(
-                'type' => 'boolean',
-                'default' => true
-            ),
-            'excerptLength' => array(
-                'type' => 'number',
-                'default' => 20
-            ),
-            'showMeta' => array(
-                'type' => 'boolean',
-                'default' => true
-            ),
-            'showDate' => array(
-                'type' => 'boolean',
-                'default' => true
-            ),
-            'showAuthor' => array(
-                'type' => 'boolean',
-                'default' => true
-            ),
-            'showCategories' => array(
-                'type' => 'boolean',
-                'default' => true
-            ),
-            'showTags' => array(
-                'type' => 'boolean',
-                'default' => false
-            ),
-            'linkAuthor' => array(
-                'type' => 'boolean',
-                'default' => true
-            ),
-            'taxonomy' => array(
-                'type' => 'string',
-                'default' => ''
-            ),
-            'taxonomyTerms' => array(
-                'type' => 'array',
-                'default' => array()
-            ),
-            'showReadMore' => array(
-                'type' => 'boolean',
-                'default' => true
-            ),
-            'readMoreText' => array(
-                'type' => 'string',
-                'default' => 'Ler Mais'
-            ),
-            'enablePagination' => array(
-                'type' => 'boolean',
-                'default' => false
-            ),
-            'showReadingTime' => array(
-                'type' => 'boolean',
-                'default' => false
-            )
+            'layout' => array('type' => 'string', 'default' => 'grid'),
+            'subLayout' => array('type' => 'string', 'default' => 'title-meta'),
+            'postType' => array('type' => 'string', 'default' => 'post'),
+            'postsPerPage' => array('type' => 'number', 'default' => 6),
+            'columns' => array('type' => 'number', 'default' => 3),
+            'order' => array('type' => 'string', 'default' => 'DESC'),
+            'orderBy' => array('type' => 'string', 'default' => 'date'),
+            'categories' => array('type' => 'array', 'default' => array()),
+            'tags' => array('type' => 'array', 'default' => array()),
+            'authors' => array('type' => 'array', 'default' => array()),
+            'offset' => array('type' => 'number', 'default' => 0),
+            'includePosts' => array('type' => 'array', 'default' => array()),
+            'excludePosts' => array('type' => 'array', 'default' => array()),
+            'excludeCurrent' => array('type' => 'boolean', 'default' => false),
+            'showImage' => array('type' => 'boolean', 'default' => true),
+            'imageSize' => array('type' => 'string', 'default' => 'medium'),
+            'linkImage' => array('type' => 'boolean', 'default' => true),
+            'showTitle' => array('type' => 'boolean', 'default' => true),
+            'linkTitle' => array('type' => 'boolean', 'default' => true),
+            'showExcerpt' => array('type' => 'boolean', 'default' => true),
+            'excerptLength' => array('type' => 'number', 'default' => 20),
+            'showMeta' => array('type' => 'boolean', 'default' => true),
+            'showDate' => array('type' => 'boolean', 'default' => true),
+            'showAuthor' => array('type' => 'boolean', 'default' => true),
+            'showCategories' => array('type' => 'boolean', 'default' => true),
+            'showTags' => array('type' => 'boolean', 'default' => false),
+            'linkAuthor' => array('type' => 'boolean', 'default' => true),
+            'taxonomy' => array('type' => 'string', 'default' => ''),
+            'taxonomyTerms' => array('type' => 'array', 'default' => array()),
+            'showReadMore' => array('type' => 'boolean', 'default' => true),
+            'readMoreText' => array('type' => 'string', 'default' => 'Ler Mais'),
+            'enablePagination' => array('type' => 'boolean', 'default' => false),
+            'showReadingTime' => array('type' => 'boolean', 'default' => false)
         );
     }
     
@@ -216,19 +187,33 @@ class BRDPosts {
      * Enfileira assets do editor
      */
     public function enqueue_block_editor_assets() {
-        wp_enqueue_script(
-            'brdposts-block-editor',
-            BRDPOSTS_PLUGIN_URL . 'build/index.js',
-            array('wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-data'),
-            BRDPOSTS_VERSION
-        );
+        $js_file = BDRPOSTS_PLUGIN_DIR . 'build/index.js';
+        $css_file = BDRPOSTS_PLUGIN_DIR . 'build/editor.css';
         
-        wp_enqueue_style(
-            'brdposts-block-editor-style',
-            BRDPOSTS_PLUGIN_URL . 'build/editor.css',
-            array('wp-edit-blocks'),
-            BRDPOSTS_VERSION
-        );
+        // Verifica se os arquivos existem, senão usa inline
+        if (file_exists($js_file)) {
+            wp_enqueue_script(
+                'bdrposts-block-editor',
+                BDRPOSTS_PLUGIN_URL . 'build/index.js',
+                array('wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-data', 'wp-api-fetch'),
+                BDRPOSTS_VERSION
+            );
+        }
+        
+        if (file_exists($css_file)) {
+            wp_enqueue_style(
+                'bdrposts-block-editor-style',
+                BDRPOSTS_PLUGIN_URL . 'build/editor.css',
+                array('wp-edit-blocks'),
+                BDRPOSTS_VERSION
+            );
+        }
+        
+        // Passa dados para o JavaScript
+        wp_localize_script('bdrposts-block-editor', 'bdrpostsData', array(
+            'restUrl' => rest_url('bdrposts/v1/'),
+            'nonce' => wp_create_nonce('wp_rest')
+        ));
     }
     
     /**
@@ -237,35 +222,113 @@ class BRDPosts {
     public function enqueue_block_assets() {
         // Swiper CSS/JS para slider
         wp_enqueue_style(
-            'brdposts-swiper-style',
+            'bdrposts-swiper-style',
             'https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css',
             array(),
-            BRDPOSTS_VERSION
+            '9.0.0'
         );
+        
         wp_enqueue_script(
-            'brdposts-swiper',
+            'bdrposts-swiper',
             'https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js',
             array(),
-            BRDPOSTS_VERSION,
+            '9.0.0',
             true
         );
 
         // Estilos do bloco
-        wp_enqueue_style(
-            'brdposts-block-style',
-            BRDPOSTS_PLUGIN_URL . 'build/style.css',
-            array(),
-            BRDPOSTS_VERSION
-        );
+        $style_file = BDRPOSTS_PLUGIN_DIR . 'build/style.css';
+        if (file_exists($style_file)) {
+            wp_enqueue_style(
+                'bdrposts-block-style',
+                BDRPOSTS_PLUGIN_URL . 'build/style.css',
+                array(),
+                BDRPOSTS_VERSION
+            );
+        } else {
+            // CSS inline como fallback
+            wp_add_inline_style('wp-block-library', $this->get_inline_styles());
+        }
         
-        // JS do frontend (depende do Swiper)
-        wp_enqueue_script(
-            'brdposts-frontend',
-            BRDPOSTS_PLUGIN_URL . 'build/frontend.js',
-            array('jquery', 'brdposts-swiper'),
-            BRDPOSTS_VERSION,
-            true
-        );
+        // JS do frontend
+        $js_file = BDRPOSTS_PLUGIN_DIR . 'build/frontend.js';
+        if (file_exists($js_file)) {
+            wp_enqueue_script(
+                'bdrposts-frontend',
+                BDRPOSTS_PLUGIN_URL . 'build/frontend.js',
+                array('jquery', 'bdrposts-swiper'),
+                BDRPOSTS_VERSION,
+                true
+            );
+        } else {
+            wp_add_inline_script('bdrposts-swiper', $this->get_inline_script());
+        }
+    }
+    
+    /**
+     * Retorna CSS inline como fallback
+     */
+    private function get_inline_styles() {
+        return '
+        .brdposts-wrapper{width:100%}
+        .brdposts-grid{display:grid;gap:20px}
+        .brdposts-columns-1 .brdposts-grid{grid-template-columns:1fr}
+        .brdposts-columns-2 .bdrposts-grid{grid-template-columns:repeat(2,1fr)}
+        .brdposts-columns-3 .brdposts-grid{grid-template-columns:repeat(3,1fr)}
+        .bdrposts-columns-4 .brdposts-grid{grid-template-columns:repeat(4,1fr)}
+        .bdrposts-masonry{column-gap:20px}
+        .bdrposts-columns-2 .bdrposts-masonry{column-count:2}
+        .bdrposts-columns-3 .bdrposts-masonry{column-count:3}
+        .bdrposts-columns-4 .bdrposts-masonry{column-count:4}
+        .bdrposts-masonry .bdrposts-item{break-inside:avoid;margin-bottom:20px}
+        .bdrposts-item{background:#fff;border:1px solid #e5e5e5;border-radius:6px;overflow:hidden;transition:transform .3s,box-shadow .3s}
+        .bdrposts-item:hover{transform:translateY(-5px);box-shadow:0 10px 30px rgba(0,0,0,.1)}
+        .bdrposts-thumbnail{width:100%;display:block;overflow:hidden}
+        .bdrposts-thumbnail img{width:100%;height:auto;display:block;transition:transform .3s}
+        .bdrposts-item:hover .bdrposts-thumbnail img{transform:scale(1.05)}
+        .bdrposts-content{padding:16px}
+        .bdrposts-title{margin:0 0 10px;font-size:20px;line-height:1.4}
+        .bdrposts-title a{text-decoration:none;color:inherit;transition:color .3s}
+        .bdrposts-title a:hover{color:#0073aa}
+        .bdrposts-excerpt{color:#555;line-height:1.6;margin:10px 0}
+        .bdrposts-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:#777;margin-bottom:10px}
+        .bdrposts-meta a{color:inherit;text-decoration:none}
+        .bdrposts-meta a:hover{color:#0073aa}
+        .bdrposts-read-more{display:inline-block;margin-top:12px;padding:8px 12px;border-radius:4px;background:#0073aa;color:#fff;text-decoration:none;transition:background .3s}
+        .bdrposts-read-more:hover{background:#005177}
+        .bdrposts-ticker{overflow:hidden;background:#f5f5f5;padding:15px 0}
+        .bdrposts-ticker-content{display:inline-block;white-space:nowrap;animation:ticker-scroll 30s linear infinite}
+        .bdrposts-ticker-item{display:inline-block;margin-right:30px}
+        @keyframes ticker-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+        @media(max-width:768px){.bdrposts-columns-3 .bdrposts-grid,.bdrposts-columns-4 .bdrposts-grid{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:600px){.bdrposts-columns-2 .bdrposts-grid,.bdrposts-columns-3 .bdrposts-grid,.bdrposts-columns-4 .bdrposts-grid{grid-template-columns:1fr}}
+        ';
+    }
+    
+    /**
+     * Retorna JS inline como fallback
+     */
+    private function get_inline_script() {
+        return '
+        (function(){
+            function init(){
+                if(typeof Swiper!=="undefined"){
+                    document.querySelectorAll(".bdrposts-slider.swiper").forEach(function(el){
+                        new Swiper(el,{loop:true,slidesPerView:1,pagination:{el:el.querySelector(".swiper-pagination"),clickable:true},navigation:{nextEl:el.querySelector(".swiper-button-next"),prevEl:el.querySelector(".swiper-button-prev")}});
+                    });
+                }
+                document.querySelectorAll(".bdrposts-ticker .bdrposts-ticker-content").forEach(function(el){
+                    var w=0;
+                    el.querySelectorAll(".bdrposts-ticker-item").forEach(function(i){w+=i.offsetWidth+30});
+                    el.style.width=(w+50)+"px";
+                    var o=0;
+                    function step(){o-=1;if(-o>w)o=0;el.style.transform="translateX("+o+"px)";requestAnimationFrame(step)}
+                    requestAnimationFrame(step);
+                });
+            }
+            if(document.readyState==="complete"||document.readyState==="interactive"){init()}else{document.addEventListener("DOMContentLoaded",init)}
+        })();
+        ';
     }
     
     /**
@@ -276,15 +339,23 @@ class BRDPosts {
         $query = new WP_Query($args);
         
         if (!$query->have_posts()) {
-            return '<p>' . __('Nenhum post encontrado.', 'brdposts') . '</p>';
+            return '<div class="bdrposts-wrapper"><p>' . __('Nenhum post encontrado.', 'bdrposts') . '</p></div>';
         }
         
         ob_start();
         
         $layout = isset($attributes['layout']) ? $attributes['layout'] : 'grid';
+        $sub_layout = isset($attributes['subLayout']) ? $attributes['subLayout'] : 'title-meta';
         $columns = isset($attributes['columns']) ? $attributes['columns'] : 3;
         
-        echo '<div class="brdposts-wrapper brdposts-layout-' . esc_attr($layout) . ' brdposts-columns-' . esc_attr($columns) . '">';
+        $wrapper_classes = array(
+            'bdrposts-wrapper',
+            'bdrposts-layout-' . esc_attr($layout),
+            'bdrposts-sublayout-' . esc_attr($sub_layout),
+            'bdrposts-columns-' . esc_attr($columns)
+        );
+        
+        echo '<div class="' . implode(' ', $wrapper_classes) . '">';
         
         switch ($layout) {
             case 'masonry':
@@ -318,63 +389,72 @@ class BRDPosts {
     private function build_query_args($attributes) {
         $args = array(
             'post_type' => isset($attributes['postType']) ? $attributes['postType'] : 'post',
-            'posts_per_page' => isset($attributes['postsPerPage']) ? $attributes['postsPerPage'] : 6,
+            'posts_per_page' => isset($attributes['postsPerPage']) ? intval($attributes['postsPerPage']) : 6,
             'order' => isset($attributes['order']) ? $attributes['order'] : 'DESC',
             'orderby' => isset($attributes['orderBy']) ? $attributes['orderBy'] : 'date',
-            'offset' => isset($attributes['offset']) ? $attributes['offset'] : 0,
+            'offset' => isset($attributes['offset']) ? intval($attributes['offset']) : 0,
             'post_status' => 'publish'
         );
         
+        // Paginação
+        if (isset($attributes['enablePagination']) && $attributes['enablePagination']) {
+            $paged = get_query_var('paged') ? get_query_var('paged') : 1;
+            $args['paged'] = $paged;
+            unset($args['offset']);
+        }
+        
         // Categorias
-        if (!empty($attributes['categories'])) {
-            $args['cat'] = implode(',', $attributes['categories']);
+        if (!empty($attributes['categories']) && is_array($attributes['categories'])) {
+            $args['cat'] = implode(',', array_map('intval', $attributes['categories']));
         }
         
         // Tags
-        if (!empty($attributes['tags'])) {
-            $args['tag__in'] = $attributes['tags'];
+        if (!empty($attributes['tags']) && is_array($attributes['tags'])) {
+            $args['tag__in'] = array_map('intval', $attributes['tags']);
         }
         
         // Autores
-        if (!empty($attributes['authors'])) {
-            $args['author__in'] = $attributes['authors'];
+        if (!empty($attributes['authors']) && is_array($attributes['authors'])) {
+            $args['author__in'] = array_map('intval', $attributes['authors']);
         }
         
         // Include/Exclude posts
-        if (!empty($attributes['includePosts'])) {
-            $args['post__in'] = $attributes['includePosts'];
+        if (!empty($attributes['includePosts']) && is_array($attributes['includePosts'])) {
+            $args['post__in'] = array_map('intval', $attributes['includePosts']);
         }
         
-        if (!empty($attributes['excludePosts'])) {
-            $args['post__not_in'] = $attributes['excludePosts'];
+        if (!empty($attributes['excludePosts']) && is_array($attributes['excludePosts'])) {
+            $args['post__not_in'] = array_map('intval', $attributes['excludePosts']);
         }
         
         // Excluir post atual
         if (isset($attributes['excludeCurrent']) && $attributes['excludeCurrent'] && is_singular()) {
+            if (!isset($args['post__not_in'])) {
+                $args['post__not_in'] = array();
+            }
             $args['post__not_in'][] = get_the_ID();
         }
 
-        // Taxonomy filtering (custom taxonomies)
-        if (!empty($attributes['taxonomy']) && !empty($attributes['taxonomyTerms'])) {
+        // Taxonomy filtering
+        if (!empty($attributes['taxonomy']) && !empty($attributes['taxonomyTerms']) && is_array($attributes['taxonomyTerms'])) {
             $args['tax_query'] = array(
                 array(
-                    'taxonomy' => $attributes['taxonomy'],
+                    'taxonomy' => sanitize_text_field($attributes['taxonomy']),
                     'field'    => 'term_id',
-                    'terms'    => $attributes['taxonomyTerms'],
+                    'terms'    => array_map('intval', $attributes['taxonomyTerms']),
                     'operator' => 'IN',
                 ),
             );
         }
         
-        // Hook customizado para desenvolvedores
-        return apply_filters('brdposts_query_args', $args, $attributes);
+        return apply_filters('bdrposts_query_args', $args, $attributes);
     }
     
     /**
      * Renderiza layout Grid
      */
     private function render_grid_layout($query, $attributes) {
-        echo '<div class="brdposts-grid">';
+        echo '<div class="bdrposts-grid">';
         
         while ($query->have_posts()) {
             $query->the_post();
@@ -388,7 +468,7 @@ class BRDPosts {
      * Renderiza layout Masonry
      */
     private function render_masonry_layout($query, $attributes) {
-        echo '<div class="brdposts-masonry">';
+        echo '<div class="bdrposts-masonry">';
         
         while ($query->have_posts()) {
             $query->the_post();
@@ -402,7 +482,8 @@ class BRDPosts {
      * Renderiza layout Slider
      */
     private function render_slider_layout($query, $attributes) {
-        echo '<div class="brdposts-slider swiper">';
+        $slider_id = 'bdrposts-slider-' . wp_rand(1000, 9999);
+        echo '<div class="bdrposts-slider swiper" id="' . $slider_id . '">';
         echo '<div class="swiper-wrapper">';
         
         while ($query->have_posts()) {
@@ -423,15 +504,18 @@ class BRDPosts {
      * Renderiza layout Ticker
      */
     private function render_ticker_layout($query, $attributes) {
-        echo '<div class="brdposts-ticker">';
-        echo '<div class="brdposts-ticker-content">';
+        echo '<div class="bdrposts-ticker">';
+        echo '<div class="bdrposts-ticker-content">';
         
+        $items = array();
         while ($query->have_posts()) {
             $query->the_post();
-            echo '<span class="brdposts-ticker-item">';
-            echo '<a href="' . esc_url(get_permalink()) . '">' . get_the_title() . '</a>';
-            echo '</span>';
+            $items[] = '<span class="bdrposts-ticker-item"><a href="' . esc_url(get_permalink()) . '">' . get_the_title() . '</a></span>';
         }
+        
+        // Duplica itens para loop infinito
+        echo implode('', $items);
+        echo implode('', $items);
         
         echo '</div>';
         echo '</div>';
@@ -447,30 +531,35 @@ class BRDPosts {
         $show_meta = isset($attributes['showMeta']) ? $attributes['showMeta'] : true;
         $show_read_more = isset($attributes['showReadMore']) ? $attributes['showReadMore'] : true;
         
-        echo '<article class="brdposts-item">';
+        echo '<article class="bdrposts-item" id="post-' . get_the_ID() . '">';
         
         // Imagem destacada
         if ($show_image && has_post_thumbnail()) {
             $image_size = isset($attributes['imageSize']) ? $attributes['imageSize'] : 'medium';
             $link_image = isset($attributes['linkImage']) ? $attributes['linkImage'] : true;
             
-            echo '<div class="brdposts-thumbnail">';
+            echo '<div class="bdrposts-thumbnail">';
             if ($link_image) {
-                echo '<a href="' . esc_url(get_permalink()) . '">';
+                echo '<a href="' . esc_url(get_permalink()) . '" aria-label="' . esc_attr(get_the_title()) . '">';
             }
-            the_post_thumbnail($image_size);
+            the_post_thumbnail($image_size, array('loading' => 'lazy'));
             if ($link_image) {
                 echo '</a>';
             }
             echo '</div>';
         }
         
-        echo '<div class="brdposts-content">';
+        echo '<div class="bdrposts-content">';
+        
+        // Meta no topo (se sub-layout for meta-title)
+        if ($show_meta && isset($attributes['subLayout']) && $attributes['subLayout'] === 'meta-title') {
+            $this->render_post_meta($attributes);
+        }
         
         // Título
         if ($show_title) {
             $link_title = isset($attributes['linkTitle']) ? $attributes['linkTitle'] : true;
-            echo '<h3 class="brdposts-title">';
+            echo '<h3 class="bdrposts-title">';
             if ($link_title) {
                 echo '<a href="' . esc_url(get_permalink()) . '">' . get_the_title() . '</a>';
             } else {
@@ -479,26 +568,26 @@ class BRDPosts {
             echo '</h3>';
         }
         
-        // Meta informações
-        if ($show_meta) {
+        // Meta (posição padrão)
+        if ($show_meta && (!isset($attributes['subLayout']) || $attributes['subLayout'] !== 'meta-title')) {
             $this->render_post_meta($attributes);
         }
         
         // Excerpt
         if ($show_excerpt) {
-            $excerpt_length = isset($attributes['excerptLength']) ? $attributes['excerptLength'] : 20;
-            echo '<div class="brdposts-excerpt">';
+            $excerpt_length = isset($attributes['excerptLength']) ? intval($attributes['excerptLength']) : 20;
+            echo '<div class="bdrposts-excerpt">';
             echo wp_trim_words(get_the_excerpt(), $excerpt_length, '...');
             echo '</div>';
         }
         
         // Botão Ler Mais
         if ($show_read_more) {
-            $read_more_text = isset($attributes['readMoreText']) ? $attributes['readMoreText'] : 'Ler Mais';
-            echo '<a href="' . esc_url(get_permalink()) . '" class="brdposts-read-more">' . esc_html($read_more_text) . '</a>';
+            $read_more_text = isset($attributes['readMoreText']) ? $attributes['readMoreText'] : __('Ler Mais', 'bdrposts');
+            echo '<a href="' . esc_url(get_permalink()) . '" class="bdrposts-read-more">' . esc_html($read_more_text) . '</a>';
         }
         
-        echo '</div>'; // .brdposts-content
+        echo '</div>'; // .bdrposts-content
         echo '</article>';
     }
     
@@ -509,64 +598,55 @@ class BRDPosts {
         $show_date = isset($attributes['showDate']) ? $attributes['showDate'] : true;
         $show_author = isset($attributes['showAuthor']) ? $attributes['showAuthor'] : true;
         $show_categories = isset($attributes['showCategories']) ? $attributes['showCategories'] : true;
+        $show_tags = isset($attributes['showTags']) ? $attributes['showTags'] : false;
         $show_reading_time = isset($attributes['showReadingTime']) ? $attributes['showReadingTime'] : false;
+        $link_author = isset($attributes['linkAuthor']) ? $attributes['linkAuthor'] : true;
         
-        echo '<div class="brdposts-meta">';
+        $meta_items = array();
         
         if ($show_date) {
-            echo '<span class="brdposts-meta-date">';
-            echo '<i class="dashicons dashicons-calendar"></i> ';
-            echo get_the_date();
-            echo '</span>';
+            $meta_items[] = '<span class="bdrposts-meta-date"><time datetime="' . esc_attr(get_the_date('c')) . '">' . get_the_date() . '</time></span>';
         }
         
         if ($show_author) {
-            echo '<span class="brdposts-meta-author">';
-            echo '<i class="dashicons dashicons-admin-users"></i> ';
             $author_name = get_the_author();
-            if (!isset($attributes['linkAuthor']) || $attributes['linkAuthor']) {
-                echo '<a href="' . esc_url(get_author_posts_url(get_the_author_meta('ID'))) . '">' . esc_html($author_name) . '</a>';
+            if ($link_author) {
+                $meta_items[] = '<span class="bdrposts-meta-author"><a href="' . esc_url(get_author_posts_url(get_the_author_meta('ID'))) . '">' . esc_html($author_name) . '</a></span>';
             } else {
-                echo esc_html($author_name);
+                $meta_items[] = '<span class="bdrposts-meta-author">' . esc_html($author_name) . '</span>';
             }
-            echo '</span>';
         }
         
         if ($show_categories) {
             $categories = get_the_category();
             if (!empty($categories)) {
-                echo '<span class="brdposts-meta-categories">';
-                echo '<i class="dashicons dashicons-category"></i> ';
-                foreach ($categories as $i => $category) {
-                    if ($i > 0) echo ', ';
-                    echo '<a href="' . esc_url(get_category_link($category->term_id)) . '">' . esc_html($category->name) . '</a>';
+                $cat_links = array();
+                foreach ($categories as $category) {
+                    $cat_links[] = '<a href="' . esc_url(get_category_link($category->term_id)) . '">' . esc_html($category->name) . '</a>';
                 }
-                echo '</span>';
+                $meta_items[] = '<span class="bdrposts-meta-categories">' . implode(', ', $cat_links) . '</span>';
             }
         }
 
-        if (!empty($attributes['showTags'])) {
+        if ($show_tags) {
             $tags = get_the_tags();
             if (!empty($tags)) {
-                echo '<span class="brdposts-meta-tags">';
-                echo '<i class="dashicons dashicons-tag"></i> ';
-                foreach ($tags as $i => $tag) {
-                    if ($i > 0) echo ', ';
-                    echo '<a href="' . esc_url(get_tag_link($tag->term_id)) . '">' . esc_html($tag->name) . '</a>';
+                $tag_links = array();
+                foreach ($tags as $tag) {
+                    $tag_links[] = '<a href="' . esc_url(get_tag_link($tag->term_id)) . '">' . esc_html($tag->name) . '</a>';
                 }
-                echo '</span>';
+                $meta_items[] = '<span class="bdrposts-meta-tags">' . implode(', ', $tag_links) . '</span>';
             }
         }
         
         if ($show_reading_time) {
             $reading_time = $this->calculate_reading_time(get_post_field('post_content', get_the_ID()));
-            echo '<span class="brdposts-meta-reading-time">';
-            echo '<i class="dashicons dashicons-clock"></i> ';
-            echo $reading_time . ' min';
-            echo '</span>';
+            $meta_items[] = '<span class="bdrposts-meta-reading-time">' . sprintf(__('%s min de leitura', 'bdrposts'), $reading_time) . '</span>';
         }
         
-        echo '</div>';
+        if (!empty($meta_items)) {
+            echo '<div class="bdrposts-meta">' . implode('<span class="bdrposts-meta-separator"> • </span>', $meta_items) . '</div>';
+        }
     }
     
     /**
@@ -574,7 +654,7 @@ class BRDPosts {
      */
     private function calculate_reading_time($content) {
         $word_count = str_word_count(strip_tags($content));
-        $reading_time = ceil($word_count / 200); // 200 palavras por minuto
+        $reading_time = ceil($word_count / 200);
         return max(1, $reading_time);
     }
     
@@ -586,14 +666,15 @@ class BRDPosts {
             return '';
         }
         
-        $output = '<div class="brdposts-pagination">';
+        $output = '<nav class="bdrposts-pagination" role="navigation" aria-label="' . esc_attr__('Navegação de posts', 'bdrposts') . '">';
         $output .= paginate_links(array(
             'total' => $query->max_num_pages,
             'current' => max(1, get_query_var('paged')),
-            'prev_text' => '&laquo; ' . __('Anterior', 'brdposts'),
-            'next_text' => __('Próximo', 'brdposts') . ' &raquo;'
+            'prev_text' => '&laquo; ' . __('Anterior', 'bdrposts'),
+            'next_text' => __('Próximo', 'bdrposts') . ' &raquo;',
+            'type' => 'list'
         ));
-        $output .= '</div>';
+        $output .= '</nav>';
         
         return $output;
     }
@@ -602,13 +683,61 @@ class BRDPosts {
      * Suporte a shortcode
      */
     public function shortcode_render($atts) {
-        $attributes = shortcode_atts($this->get_block_attributes(), $atts);
+        $defaults = array();
+        foreach ($this->get_block_attributes() as $key => $value) {
+            $defaults[$key] = $value['default'];
+        }
+        
+        $attributes = shortcode_atts($defaults, $atts);
+        
+        // Converte strings para arrays onde necessário
+        $array_fields = array('categories', 'tags', 'authors', 'includePosts', 'excludePosts', 'taxonomyTerms');
+        foreach ($array_fields as $field) {
+            if (isset($attributes[$field]) && is_string($attributes[$field])) {
+                $attributes[$field] = array_filter(array_map('intval', explode(',', $attributes[$field])));
+            }
+        }
+        
+        // Converte strings para booleanos
+        $bool_fields = array('excludeCurrent', 'showImage', 'linkImage', 'showTitle', 'linkTitle', 'showExcerpt', 'showMeta', 'showDate', 'showAuthor', 'showCategories', 'showTags', 'linkAuthor', 'showReadMore', 'enablePagination', 'showReadingTime');
+        foreach ($bool_fields as $field) {
+            if (isset($attributes[$field])) {
+                $attributes[$field] = filter_var($attributes[$field], FILTER_VALIDATE_BOOLEAN);
+            }
+        }
+        
         return $this->render_block($attributes);
     }
 }
 
-// Inicializa o plugin
+/**
+ * Inicializa o plugin
+ */
 function brdposts_init() {
-    return BRDPosts::get_instance();
+    return BDRPosts::get_instance();
 }
 add_action('plugins_loaded', 'brdposts_init');
+
+/**
+ * Hook de ativação
+ */
+register_activation_hook(__FILE__, function() {
+    // Cria diretório build se não existir
+    $build_dir = BDRPOSTS_PLUGIN_DIR . 'build';
+    if (!file_exists($build_dir)) {
+        wp_mkdir_p($build_dir);
+    }
+    
+    // Salva versão
+    update_option('bdrposts_version', BDRPOSTS_VERSION);
+    
+    // Flush rewrite rules
+    flush_rewrite_rules();
+});
+
+/**
+ * Hook de desativação
+ */
+register_deactivation_hook(__FILE__, function() {
+    flush_rewrite_rules();
+});
