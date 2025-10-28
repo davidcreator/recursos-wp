@@ -1,8 +1,8 @@
 (function() {
     const { registerBlockType } = wp.blocks;
     const { InspectorControls } = wp.blockEditor || wp.editor;
-    const { ServerSideRender } = wp.serverSideRender ? wp.serverSideRender : (wp.editor ? wp.editor.ServerSideRender : null);
-    const { PanelBody, SelectControl, ToggleControl, RangeControl, TextControl, Spinner } = wp.components;
+    const { ServerSideRender } = wp.serverSideRender || wp.editor || { ServerSideRender: null };
+    const { PanelBody, SelectControl, ToggleControl, RangeControl, TextControl, Spinner, CheckboxControl } = wp.components;
     const { __ } = wp.i18n;
     const { useState, useEffect } = wp.element;
     const apiFetch = wp.apiFetch;
@@ -55,19 +55,43 @@
             const { attributes, setAttributes } = props;
             const [postTypes, setPostTypes] = useState([]);
             const [taxonomies, setTaxonomies] = useState([]);
+            const [categories, setCategories] = useState([]);
+            const [tags, setTags] = useState([]);
+            const [taxonomyTerms, setTaxonomyTerms] = useState([]);
+            const [loading, setLoading] = useState(true);
 
+            // Carrega post types
             useEffect(() => {
-                // Carrega post types
                 apiFetch({ path: '/bdrposts/v1/post-types' })
-                    .then(data => setPostTypes(data))
-                    .catch(() => setPostTypes([
-                        { label: 'Post', value: 'post' },
-                        { label: 'Page', value: 'page' }
-                    ]));
+                    .then(data => {
+                        setPostTypes(data);
+                        setLoading(false);
+                    })
+                    .catch(() => {
+                        setPostTypes([
+                            { label: 'Post', value: 'post' },
+                            { label: 'Página', value: 'page' }
+                        ]);
+                        setLoading(false);
+                    });
             }, []);
 
+            // Carrega categorias
             useEffect(() => {
-                // Carrega taxonomias quando post type muda
+                apiFetch({ path: '/bdrposts/v1/categories' })
+                    .then(data => setCategories(data))
+                    .catch(() => setCategories([]));
+            }, []);
+
+            // Carrega tags
+            useEffect(() => {
+                apiFetch({ path: '/bdrposts/v1/tags' })
+                    .then(data => setTags(data))
+                    .catch(() => setTags([]));
+            }, []);
+
+            // Carrega taxonomias quando post type muda
+            useEffect(() => {
                 if (attributes.postType) {
                     apiFetch({ path: `/bdrposts/v1/taxonomies/${attributes.postType}` })
                         .then(data => setTaxonomies(data))
@@ -75,14 +99,27 @@
                 }
             }, [attributes.postType]);
 
-            const parseCommaSeparated = (value) => {
-                if (!value) return [];
-                return value.split(',').map(v => parseInt(v.trim(), 10)).filter(v => !isNaN(v));
-            };
+            // Carrega termos da taxonomia quando taxonomia muda
+            useEffect(() => {
+                if (attributes.taxonomy) {
+                    apiFetch({ path: `/bdrposts/v1/terms/${attributes.taxonomy}` })
+                        .then(data => setTaxonomyTerms(data))
+                        .catch(() => setTaxonomyTerms([]));
+                } else {
+                    setTaxonomyTerms([]);
+                }
+            }, [attributes.taxonomy]);
 
-            const arrayToString = (arr) => {
-                if (!arr || !Array.isArray(arr)) return '';
-                return arr.join(',');
+            // Função para toggle de checkbox em arrays
+            const toggleArrayValue = (array, value) => {
+                const newArray = [...array];
+                const index = newArray.indexOf(value);
+                if (index > -1) {
+                    newArray.splice(index, 1);
+                } else {
+                    newArray.push(value);
+                }
+                return newArray;
             };
 
             return wp.element.createElement('div', { className: 'bdrposts-editor-wrapper' },
@@ -134,7 +171,7 @@
                             value: attributes.postType,
                             options: postTypes.length > 0 ? postTypes : [
                                 { label: 'Post', value: 'post' },
-                                { label: 'Page', value: 'page' }
+                                { label: 'Página', value: 'page' }
                             ],
                             onChange: (v) => setAttributes({ postType: v })
                         }),
@@ -181,41 +218,80 @@
                         title: __('Filtros', 'bdrposts'), 
                         initialOpen: false 
                     },
-                        wp.element.createElement(TextControl, {
-                            label: __('IDs de Categorias', 'bdrposts'),
-                            help: __('Separados por vírgula (ex: 1,2,3)', 'bdrposts'),
-                            value: arrayToString(attributes.categories),
-                            onChange: (v) => setAttributes({ categories: parseCommaSeparated(v) })
-                        }),
-                        wp.element.createElement(TextControl, {
-                            label: __('IDs de Tags', 'bdrposts'),
-                            help: __('Separados por vírgula', 'bdrposts'),
-                            value: arrayToString(attributes.tags),
-                            onChange: (v) => setAttributes({ tags: parseCommaSeparated(v) })
-                        }),
+                        // Categorias
+                        categories.length > 0 && wp.element.createElement('div', { style: { marginBottom: '16px' } },
+                            wp.element.createElement('label', { 
+                                style: { display: 'block', fontWeight: '600', marginBottom: '8px' } 
+                            }, __('Categorias', 'bdrposts')),
+                            categories.map(cat => 
+                                wp.element.createElement(CheckboxControl, {
+                                    key: cat.value,
+                                    label: cat.label,
+                                    checked: attributes.categories.includes(cat.value),
+                                    onChange: (checked) => {
+                                        const newCategories = checked 
+                                            ? [...attributes.categories, cat.value]
+                                            : attributes.categories.filter(id => id !== cat.value);
+                                        setAttributes({ categories: newCategories });
+                                    }
+                                })
+                            )
+                        ),
+                        
+                        // Tags
+                        tags.length > 0 && wp.element.createElement('div', { style: { marginBottom: '16px' } },
+                            wp.element.createElement('label', { 
+                                style: { display: 'block', fontWeight: '600', marginBottom: '8px' } 
+                            }, __('Tags', 'bdrposts')),
+                            tags.slice(0, 10).map(tag => 
+                                wp.element.createElement(CheckboxControl, {
+                                    key: tag.value,
+                                    label: tag.label,
+                                    checked: attributes.tags.includes(tag.value),
+                                    onChange: (checked) => {
+                                        const newTags = checked 
+                                            ? [...attributes.tags, tag.value]
+                                            : attributes.tags.filter(id => id !== tag.value);
+                                        setAttributes({ tags: newTags });
+                                    }
+                                })
+                            )
+                        ),
+                        
                         wp.element.createElement(TextControl, {
                             label: __('IDs de Autores', 'bdrposts'),
                             help: __('Separados por vírgula', 'bdrposts'),
-                            value: arrayToString(attributes.authors),
-                            onChange: (v) => setAttributes({ authors: parseCommaSeparated(v) })
+                            value: attributes.authors.join(','),
+                            onChange: (v) => {
+                                const ids = v ? v.split(',').map(id => parseInt(id.trim(), 10)).filter(id => !isNaN(id)) : [];
+                                setAttributes({ authors: ids });
+                            }
                         }),
                         wp.element.createElement(TextControl, {
                             label: __('Incluir Posts (IDs)', 'bdrposts'),
                             help: __('Separados por vírgula', 'bdrposts'),
-                            value: arrayToString(attributes.includePosts),
-                            onChange: (v) => setAttributes({ includePosts: parseCommaSeparated(v) })
+                            value: attributes.includePosts.join(','),
+                            onChange: (v) => {
+                                const ids = v ? v.split(',').map(id => parseInt(id.trim(), 10)).filter(id => !isNaN(id)) : [];
+                                setAttributes({ includePosts: ids });
+                            }
                         }),
                         wp.element.createElement(TextControl, {
                             label: __('Excluir Posts (IDs)', 'bdrposts'),
                             help: __('Separados por vírgula', 'bdrposts'),
-                            value: arrayToString(attributes.excludePosts),
-                            onChange: (v) => setAttributes({ excludePosts: parseCommaSeparated(v) })
+                            value: attributes.excludePosts.join(','),
+                            onChange: (v) => {
+                                const ids = v ? v.split(',').map(id => parseInt(id.trim(), 10)).filter(id => !isNaN(id)) : [];
+                                setAttributes({ excludePosts: ids });
+                            }
                         }),
                         wp.element.createElement(ToggleControl, {
                             label: __('Excluir Post Atual', 'bdrposts'),
                             checked: attributes.excludeCurrent,
                             onChange: (v) => setAttributes({ excludeCurrent: v })
                         }),
+                        
+                        // Taxonomia customizada
                         taxonomies.length > 0 && wp.element.createElement(SelectControl, {
                             label: __('Taxonomia Customizada', 'bdrposts'),
                             value: attributes.taxonomy,
@@ -223,8 +299,28 @@
                                 { label: __('Nenhuma', 'bdrposts'), value: '' },
                                 ...taxonomies
                             ],
-                            onChange: (v) => setAttributes({ taxonomy: v })
-                        })
+                            onChange: (v) => setAttributes({ taxonomy: v, taxonomyTerms: [] })
+                        }),
+                        
+                        // Termos da taxonomia
+                        attributes.taxonomy && taxonomyTerms.length > 0 && wp.element.createElement('div', { style: { marginBottom: '16px' } },
+                            wp.element.createElement('label', { 
+                                style: { display: 'block', fontWeight: '600', marginBottom: '8px' } 
+                            }, __('Termos', 'bdrposts')),
+                            taxonomyTerms.map(term => 
+                                wp.element.createElement(CheckboxControl, {
+                                    key: term.value,
+                                    label: term.label,
+                                    checked: attributes.taxonomyTerms.includes(term.value),
+                                    onChange: (checked) => {
+                                        const newTerms = checked 
+                                            ? [...attributes.taxonomyTerms, term.value]
+                                            : attributes.taxonomyTerms.filter(id => id !== term.value);
+                                        setAttributes({ taxonomyTerms: newTerms });
+                                    }
+                                })
+                            )
+                        )
                     ),
 
                     // Elementos Panel
@@ -348,17 +444,24 @@
                         wp.element.createElement('h3', {}, __('📋 BDR Posts', 'bdrposts')),
                         wp.element.createElement('p', {}, __('Visualização do bloco', 'bdrposts'))
                     ),
-                    ServerSideRender 
-                        ? wp.element.createElement(ServerSideRender, {
-                            block: 'bdrposts/post-block',
-                            attributes: attributes,
-                            EmptyResponsePlaceholder: () => wp.element.createElement('p', {}, __('Nenhum post encontrado.', 'bdrposts')),
-                            LoadingResponsePlaceholder: () => wp.element.createElement('div', { className: 'bdrposts-loading' }, 
-                                wp.element.createElement(Spinner, {}),
-                                wp.element.createElement('p', {}, __('Carregando...', 'bdrposts'))
+                    loading ? wp.element.createElement('div', { className: 'bdrposts-loading' }, 
+                        wp.element.createElement(Spinner, {}),
+                        wp.element.createElement('p', {}, __('Carregando...', 'bdrposts'))
+                    ) : (
+                        ServerSideRender 
+                            ? wp.element.createElement(ServerSideRender, {
+                                block: 'bdrposts/post-block',
+                                attributes: attributes,
+                                EmptyResponsePlaceholder: () => wp.element.createElement('p', { className: 'bdrposts-no-posts' }, __('Nenhum post encontrado.', 'bdrposts')),
+                                LoadingResponsePlaceholder: () => wp.element.createElement('div', { className: 'bdrposts-loading' }, 
+                                    wp.element.createElement(Spinner, {}),
+                                    wp.element.createElement('p', {}, __('Carregando...', 'bdrposts'))
+                                )
+                            })
+                            : wp.element.createElement('p', { style: { textAlign: 'center', padding: '20px', color: '#666' } }, 
+                                __('Preview não disponível. O bloco será renderizado no frontend.', 'bdrposts')
                             )
-                        })
-                        : wp.element.createElement('p', {}, __('Preview não disponível. O bloco será renderizado no frontend.', 'bdrposts')),
+                    ),
                     wp.element.createElement('p', { className: 'bdrposts-editor-note' },
                         __('Use os controles à direita para personalizar a exibição', 'bdrposts')
                     )

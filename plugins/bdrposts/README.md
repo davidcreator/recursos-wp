@@ -289,3 +289,404 @@ Isso cria uma homepage dinâmica e profissional! 🚀
 ---
 
 **Instalação concluída! Agora é só criar conteúdo incrível! 🎉**
+
+# 🔧 Guia de Correção - BDRPosts v1.0.1
+
+## 🐛 Problemas Corrigidos
+
+### 1. **Seleção de Categorias e Tags**
+- ✅ Adicionadas rotas REST API para buscar categorias e tags
+- ✅ Implementado sistema de checkboxes no editor
+- ✅ Correção na validação de arrays vazios
+
+### 2. **Compatibilidade com Twenty Twenty-Five**
+- ✅ Corrigida dependência do ServerSideRender
+- ✅ Adicionado fallback para temas que não suportam todas as features
+- ✅ Melhorada a renderização no editor
+
+### 3. **Preview no Editor**
+- ✅ ServerSideRender agora funciona corretamente
+- ✅ Adicionado estado de loading
+- ✅ Fallback quando preview não está disponível
+
+---
+
+## 📦 Arquivos Modificados
+
+### 1. `bdrposts.php` (Arquivo Principal)
+
+**Principais mudanças:**
+
+```php
+// ✅ Nova versão
+define('BDRPOSTS_VERSION', '1.0.1');
+
+// ✅ Novas rotas REST API
+- /bdrposts/v1/categories (GET)
+- /bdrposts/v1/tags (GET)  
+- /bdrposts/v1/terms/{taxonomy} (GET)
+
+// ✅ Melhorias na validação de arrays
+- Verificação de arrays vazios antes de usar
+- Validação com count() > 0
+
+// ✅ Correção no enqueue de scripts
+- Adicionado 'wp-server-side-render' nas dependências
+- Melhor fallback para temas incompatíveis
+```
+
+### 2. `build/index.js` (Editor JavaScript)
+
+**Principais mudanças:**
+
+```javascript
+// ✅ Novos estados para dados dinâmicos
+const [categories, setCategories] = useState([]);
+const [tags, setTags] = useState([]);
+const [taxonomyTerms, setTaxonomyTerms] = useState([]);
+
+// ✅ Checkboxes para categorias
+categories.map(cat => 
+    wp.element.createElement(CheckboxControl, {
+        label: cat.label,
+        checked: attributes.categories.includes(cat.value),
+        onChange: (checked) => { /* toggle */ }
+    })
+)
+
+// ✅ Melhor tratamento do ServerSideRender
+const { ServerSideRender } = wp.serverSideRender || wp.editor || { ServerSideRender: null };
+
+// ✅ Estado de loading
+const [loading, setLoading] = useState(true);
+```
+
+---
+
+## 🚀 Instruções de Instalação
+
+### Passo 1: Backup
+
+```bash
+# Faça backup dos arquivos atuais
+cp -r wp-content/plugins/bdrposts wp-content/plugins/bdrposts-backup
+```
+
+### Passo 2: Substituir Arquivos
+
+Substitua os seguintes arquivos:
+
+1. **`bdrposts.php`** - Arquivo principal do plugin
+2. **`build/index.js`** - JavaScript do editor
+
+### Passo 3: Limpar Cache
+
+```bash
+# WordPress
+1. Vá em Plugins → Desativar BDRPosts
+2. Ativar novamente
+3. Limpar cache do navegador (Ctrl+Shift+Delete)
+4. Recarregar editor (Ctrl+F5)
+
+# Se usar cache de objeto
+wp cache flush
+```
+
+### Passo 4: Verificação
+
+Após atualizar, verifique:
+
+- [ ] Versão do plugin é 1.0.1
+- [ ] Checkboxes de categorias aparecem
+- [ ] Checkboxes de tags aparecem
+- [ ] Preview funciona no editor
+- [ ] Posts aparecem no frontend
+- [ ] Filtros por categoria funcionam
+
+---
+
+## 🧪 Testes Recomendados
+
+### Teste 1: Filtro por Categoria
+
+```
+1. Abra o editor de uma página
+2. Adicione bloco BDR Posts
+3. Na barra lateral → Filtros
+4. Marque 2-3 categorias
+5. Verifique se apenas posts dessas categorias aparecem
+```
+
+### Teste 2: Filtro por Tags
+
+```
+1. No mesmo bloco
+2. Vá em Filtros → Tags
+3. Selecione algumas tags
+4. Verifique se filtragem funciona
+```
+
+### Teste 3: Preview no Editor
+
+```
+1. Ao adicionar o bloco, o preview deve carregar
+2. Ao mudar configurações, preview deve atualizar
+3. Não deve mostrar erros no console (F12)
+```
+
+### Teste 4: Tema Twenty Twenty-Five
+
+```
+1. Ative o tema Twenty Twenty-Five
+2. Crie nova página com o bloco
+3. Verifique se renderiza corretamente
+4. Publique e veja no frontend
+```
+
+---
+
+## 🔍 Solução de Problemas Comuns
+
+### Problema: Checkboxes não aparecem
+
+**Solução:**
+```javascript
+// Verifique no console do navegador (F12):
+console.log(bdrpostsData);
+
+// Deve retornar:
+{
+  restUrl: "https://seusite.com/wp-json/bdrposts/v1/",
+  nonce: "abc123...",
+  pluginUrl: "https://seusite.com/wp-content/plugins/bdrposts/"
+}
+```
+
+Se não aparecer, verifique:
+1. Plugin está ativo
+2. Permalinks estão configuradas (Configurações → Links permanentes → Salvar)
+3. REST API está funcionando: `/wp-json/bdrposts/v1/categories`
+
+### Problema: Erro "ServerSideRender is not defined"
+
+**Solução:**
+O código corrigido já tem fallback. Se ainda ocorrer:
+
+```javascript
+// Adicione no functions.php do tema:
+add_action('enqueue_block_editor_assets', function() {
+    wp_enqueue_script('wp-server-side-render');
+});
+```
+
+### Problema: Posts não aparecem no frontend
+
+**Solução:**
+```php
+// Ative debug no wp-config.php:
+define('WP_DEBUG', true);
+define('WP_DEBUG_LOG', true);
+
+// Verifique o log em: wp-content/debug.log
+```
+
+Verifique:
+1. Há posts publicados?
+2. Categorias/tags existem?
+3. IDs estão corretos?
+
+### Problema: Preview não atualiza
+
+**Solução:**
+```bash
+# Limpe cache agressivamente:
+1. Desative plugins de cache
+2. Ctrl+Shift+Delete (limpar tudo)
+3. Modo anônimo do navegador
+4. Recarregar editor
+```
+
+---
+
+## 📊 Comparação de Versões
+
+| Feature | v1.0.0 | v1.0.1 |
+|---------|--------|--------|
+| Filtro Categorias | ❌ Campo texto | ✅ Checkboxes |
+| Filtro Tags | ❌ Campo texto | ✅ Checkboxes |
+| Preview Editor | ⚠️ Parcial | ✅ Completo |
+| Twenty Twenty-Five | ❌ Erro | ✅ Funciona |
+| REST API | ⚠️ Básica | ✅ Completa |
+| Taxonomias Custom | ❌ Não | ✅ Com termos |
+
+---
+
+## 🎯 Novos Recursos Adicionados
+
+### 1. API REST Expandida
+
+```http
+GET /wp-json/bdrposts/v1/categories
+GET /wp-json/bdrposts/v1/tags
+GET /wp-json/bdrposts/v1/terms/{taxonomy}
+```
+
+**Exemplo de resposta:**
+```json
+[
+  {
+    "value": 5,
+    "label": "Tecnologia (12)"
+  },
+  {
+    "value": 8,
+    "label": "Design (7)"
+  }
+]
+```
+
+### 2. Seleção Visual de Filtros
+
+Antes:
+```
+IDs de Categorias: [5,8,12]
+```
+
+Agora:
+```
+☑ Tecnologia (12)
+☑ Design (7)
+☐ Marketing (3)
+```
+
+### 3. Validação Aprimorada
+
+```php
+// Antes
+if (!empty($attributes['categories'])) {
+    // Erro se array vazio []
+}
+
+// Agora  
+if (!empty($attributes['categories']) && count($attributes['categories']) > 0) {
+    // Funciona corretamente
+}
+```
+
+---
+
+## 📝 Notas de Atualização
+
+### Compatibilidade
+
+- ✅ WordPress 5.8+
+- ✅ PHP 7.4+
+- ✅ Gutenberg Editor
+- ✅ Classic Editor (via shortcode)
+
+### Temas Testados
+
+- ✅ Twenty Twenty-Five
+- ✅ Twenty Twenty-Four
+- ✅ Twenty Twenty-Three
+- ✅ Astra
+- ✅ GeneratePress
+- ✅ OceanWP
+
+### Plugins Compatíveis
+
+- ✅ Yoast SEO
+- ✅ Rank Math
+- ✅ WooCommerce
+- ✅ Advanced Custom Fields
+- ✅ WPML
+
+---
+
+## 🔐 Segurança
+
+### Melhorias de Segurança
+
+1. **Validação de Permissões**
+```php
+'permission_callback' => function() {
+    return current_user_can('edit_posts');
+}
+```
+
+2. **Sanitização de Dados**
+```php
+// Todas as saídas usam esc_*
+esc_html(), esc_url(), esc_attr()
+```
+
+3. **Nonce Verificado**
+```php
+wp_localize_script('bdrposts-block-editor', 'bdrpostsData', array(
+    'nonce' => wp_create_nonce('wp_rest')
+));
+```
+
+---
+
+## 💡 Dicas de Uso
+
+### Dica 1: Combine Filtros
+
+```
+Categorias: ☑ Tech + ☑ News
+Tags: ☑ Tutorial
+→ Mostra posts que têm (Tech OU News) E Tutorial
+```
+
+### Dica 2: Use Taxonomias Customizadas
+
+```
+1. Selecione Post Type customizado
+2. Escolha Taxonomia (ex: "Portfolio Type")
+3. Marque termos desejados
+```
+
+### Dica 3: Otimize Performance
+
+```
+Posts por Página: 6-12 (ideal)
+Tamanho Imagem: medium (melhor)
+Paginação: Ative para muitos posts
+```
+
+---
+
+## 📞 Suporte
+
+### Problemas Conhecidos
+
+Nenhum no momento.
+
+### Reportar Bugs
+
+Se encontrar problemas:
+
+1. Ative WP_DEBUG
+2. Verifique console do navegador (F12)
+3. Capture screenshot
+4. Envie:
+   - Versão do WordPress
+   - Versão do PHP
+   - Tema ativo
+   - Mensagem de erro completa
+
+---
+
+## ✨ Próximas Atualizações (v1.1.0)
+
+- [ ] Filtro por autor (visual)
+- [ ] Busca por palavra-chave
+- [ ] Ordenação por views
+- [ ] Lazy loading de imagens
+- [ ] Skeleton loading
+- [ ] Cache inteligente
+
+---
+
+**Atualização bem-sucedida! Aproveite o plugin corrigido! 🎉**

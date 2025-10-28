@@ -1,312 +1,563 @@
 /**
- * Service Worker for NosfirNews PWA
- * 
+ * Service Worker Otimizado - NosfirNews PWA
  * @package NosfirNews
  * @since 2.0.0
  */
 
-const CACHE_NAME = 'nosfirnews-v2.0.0';
-const OFFLINE_URL = '/offline/';
+const CACHE_VERSION = 'nosfirnews-v2.0.0';
+const CACHE_PREFIX = 'nosfirnews';
 
-// Assets to cache on install
-const STATIC_CACHE_URLS = [
+const CACHES = {
+    static: `${CACHE_PREFIX}-static-${CACHE_VERSION}`,
+    dynamic: `${CACHE_PREFIX}-dynamic-${CACHE_VERSION}`,
+    images: `${CACHE_PREFIX}-images-${CACHE_VERSION}`,
+    fonts: `${CACHE_PREFIX}-fonts-${CACHE_VERSION}`
+};
+
+// Assets estáticos essenciais
+const STATIC_ASSETS = [
     '/',
     '/offline/',
-    '/wp-content/themes/nosfirnews/assets/css/main.css',
-    '/wp-content/themes/nosfirnews/assets/css/responsive.css',
-    '/wp-content/themes/nosfirnews/assets/css/navigation-enhanced.css',
-    '/wp-content/themes/nosfirnews/assets/js/main.js',
-    '/wp-content/themes/nosfirnews/assets/js/pwa.js',
-    '/wp-content/themes/nosfirnews/assets/images/icons/icon-192x192.svg',
-    '/wp-content/themes/nosfirnews/assets/images/icons/icon-512x512.svg',
-    '/wp-content/themes/nosfirnews/assets/images/icons/icon-144x144.svg',
-    '/wp-content/themes/nosfirnews/assets/images/icons/badge-72x72.svg',
-    'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap'
+    '/manifest.json'
 ];
 
-// Install event - cache static assets
+// Configurações
+const CONFIG = {
+    maxDynamicCacheSize: 50,
+    maxImageCacheSize: 60,
+    cacheDuration: {
+        static: 30 * 24 * 60 * 60 * 1000, // 30 dias
+        dynamic: 7 * 24 * 60 * 60 * 1000,  // 7 dias
+        images: 30 * 24 * 60 * 60 * 1000   // 30 dias
+    },
+    networkTimeoutMs: 3000
+};
+
+// Install Event - Cachear assets estáticos
 self.addEventListener('install', event => {
-    console.log('Service Worker installing...');
+    console.log('[SW] Installing...');
     
     event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(cache => {
-                console.log('Caching static assets');
-                return cache.addAll(STATIC_CACHE_URLS);
-            })
-            .then(() => {
-                console.log('Static assets cached successfully');
-                return self.skipWaiting();
-            })
-            .catch(error => {
-                console.error('Failed to cache static assets:', error);
-            })
-    );
-});
-
-// Activate event - clean up old caches
-self.addEventListener('activate', event => {
-    console.log('Service Worker activating...');
-    
-    event.waitUntil(
-        caches.keys()
-            .then(cacheNames => {
-                return Promise.all(
-                    cacheNames.map(cacheName => {
-                        if (cacheName !== CACHE_NAME) {
-                            console.log('Deleting old cache:', cacheName);
-                            return caches.delete(cacheName);
-                        }
-                    })
-                );
-            })
-            .then(() => {
-                console.log('Service Worker activated');
-                return self.clients.claim();
-            })
-    );
-});
-
-// Fetch event - serve cached content when offline
-self.addEventListener('fetch', event => {
-    // Skip non-GET requests
-    if (event.request.method !== 'GET') {
-        return;
-    }
-
-    // Skip requests to wp-admin and wp-login
-    if (event.request.url.includes('/wp-admin/') || 
-        event.request.url.includes('/wp-login.php')) {
-        return;
-    }
-
-    event.respondWith(
-        caches.match(event.request)
-            .then(cachedResponse => {
-                // Return cached version if available
-                if (cachedResponse) {
-                    return cachedResponse;
-                }
-
-                // Clone the request for fetch
-                const fetchRequest = event.request.clone();
-
-                return fetch(fetchRequest)
-                    .then(response => {
-                        // Check if valid response
-                        if (!response || response.status !== 200 || response.type !== 'basic') {
-                            return response;
-                        }
-
-                        // Clone the response for caching
-                        const responseToCache = response.clone();
-
-                        // Cache strategy based on request type
-                        if (shouldCache(event.request)) {
-                            caches.open(CACHE_NAME)
-                                .then(cache => {
-                                    cache.put(event.request, responseToCache);
-                                });
-                        }
-
-                        return response;
-                    })
-                    .catch(error => {
-                        console.log('Fetch failed, serving offline page:', error);
-                        
-                        // Serve offline page for navigation requests
-                        if (event.request.mode === 'navigate') {
-                            return caches.match(OFFLINE_URL);
-                        }
-                        
-                        // For other requests, try to serve a cached version
-                        return caches.match(event.request);
-                    });
-            })
-    );
-});
-
-// Determine if request should be cached
-function shouldCache(request) {
-    const url = new URL(request.url);
-    
-    // Cache images
-    if (request.destination === 'image') {
-        return true;
-    }
-    
-    // Cache CSS and JS files
-    if (url.pathname.endsWith('.css') || 
-        url.pathname.endsWith('.js') ||
-        url.pathname.endsWith('.woff') ||
-        url.pathname.endsWith('.woff2')) {
-        return true;
-    }
-    
-    // Cache HTML pages (but limit to avoid filling storage)
-    if (request.mode === 'navigate' && !url.pathname.includes('/wp-admin/')) {
-        return true;
-    }
-    
-    return false;
-}
-
-// Background sync for offline actions
-self.addEventListener('sync', event => {
-    console.log('Background sync triggered:', event.tag);
-    
-    if (event.tag === 'background-sync') {
-        event.waitUntil(doBackgroundSync());
-    }
-});
-
-async function doBackgroundSync() {
-    try {
-        // Get pending actions from IndexedDB
-        const pendingActions = await getPendingActions();
-        
-        for (const action of pendingActions) {
+        (async () => {
             try {
-                await processAction(action);
-                await removePendingAction(action.id);
+                const cache = await caches.open(CACHES.static);
+                await cache.addAll(STATIC_ASSETS);
+                console.log('[SW] Static assets cached');
+                
+                // Ativar imediatamente
+                await self.skipWaiting();
             } catch (error) {
-                console.error('Failed to process action:', error);
+                console.error('[SW] Install failed:', error);
             }
-        }
-    } catch (error) {
-        console.error('Background sync failed:', error);
-    }
-}
-
-// Push notification handling
-self.addEventListener('push', event => {
-    console.log('Push notification received');
-    
-    const options = {
-        body: 'Nova notícia disponível no NosfirNews!',
-        icon: '/wp-content/themes/nosfirnews/assets/images/icons/icon-192x192.png',
-        badge: '/wp-content/themes/nosfirnews/assets/images/icons/badge-72x72.png',
-        vibrate: [100, 50, 100],
-        data: {
-            dateOfArrival: Date.now(),
-            primaryKey: 1
-        },
-        actions: [
-            {
-                action: 'explore',
-                title: 'Ver Notícia',
-                icon: '/wp-content/themes/nosfirnews/assets/images/icons/view-icon.png'
-            },
-            {
-                action: 'close',
-                title: 'Fechar',
-                icon: '/wp-content/themes/nosfirnews/assets/images/icons/close-icon.png'
-            }
-        ]
-    };
-
-    if (event.data) {
-        const data = event.data.json();
-        options.body = data.body || options.body;
-        options.data.url = data.url || '/';
-    }
-
-    event.waitUntil(
-        self.registration.showNotification('NosfirNews', options)
+        })()
     );
 });
 
-// Notification click handling
-self.addEventListener('notificationclick', event => {
-    console.log('Notification clicked:', event.action);
+// Activate Event - Limpar caches antigos
+self.addEventListener('activate', event => {
+    console.log('[SW] Activating...');
     
-    event.notification.close();
-
-    if (event.action === 'explore') {
-        const url = event.notification.data.url || '/';
-        event.waitUntil(
-            clients.openWindow(url)
-        );
-    } else if (event.action === 'close') {
-        // Just close the notification
-        return;
-    } else {
-        // Default action - open the app
-        event.waitUntil(
-            clients.openWindow('/')
-        );
-    }
-});
-
-// Message handling from main thread
-self.addEventListener('message', event => {
-    console.log('Service Worker received message:', event.data);
-    
-    if (event.data && event.data.type === 'SKIP_WAITING') {
-        self.skipWaiting();
-    }
-    
-    if (event.data && event.data.type === 'CACHE_URLS') {
-        event.waitUntil(
-            caches.open(CACHE_NAME)
-                .then(cache => {
-                    return cache.addAll(event.data.urls);
-                })
-        );
-    }
-});
-
-// Utility functions for IndexedDB operations
-async function getPendingActions() {
-    // Implementation would depend on your IndexedDB structure
-    return [];
-}
-
-async function processAction(action) {
-    // Process the pending action (e.g., submit form, send comment)
-    console.log('Processing action:', action);
-}
-
-async function removePendingAction(actionId) {
-    // Remove the action from IndexedDB after successful processing
-    console.log('Removing action:', actionId);
-}
-
-// Cache management
-self.addEventListener('message', event => {
-    if (event.data && event.data.type === 'CLEAR_CACHE') {
-        event.waitUntil(
-            caches.keys().then(cacheNames => {
-                return Promise.all(
-                    cacheNames.map(cacheName => {
+    event.waitUntil(
+        (async () => {
+            try {
+                // Limpar caches antigos
+                const cacheNames = await caches.keys();
+                const cachesToDelete = cacheNames.filter(cacheName => {
+                    return cacheName.startsWith(CACHE_PREFIX) && 
+                           !Object.values(CACHES).includes(cacheName);
+                });
+                
+                await Promise.all(
+                    cachesToDelete.map(cacheName => {
+                        console.log('[SW] Deleting old cache:', cacheName);
                         return caches.delete(cacheName);
                     })
                 );
+                
+                // Tomar controle imediato
+                await self.clients.claim();
+                
+                console.log('[SW] Activated successfully');
+            } catch (error) {
+                console.error('[SW] Activation failed:', error);
+            }
+        })()
+    );
+});
+
+// Fetch Event - Estratégias de cache
+self.addEventListener('fetch', event => {
+    const { request } = event;
+    const url = new URL(request.url);
+    
+    // Ignorar requisições não-GET
+    if (request.method !== 'GET') return;
+    
+    // Ignorar admin e login
+    if (url.pathname.includes('/wp-admin/') || 
+        url.pathname.includes('/wp-login.php')) {
+        return;
+    }
+    
+    // Escolher estratégia baseada no tipo de recurso
+    if (isStaticAsset(url)) {
+        event.respondWith(cacheFirst(request, CACHES.static));
+    } else if (isImage(url)) {
+        event.respondWith(cacheFirst(request, CACHES.images));
+    } else if (isFont(url)) {
+        event.respondWith(cacheFirst(request, CACHES.fonts));
+    } else if (isDocument(request)) {
+        event.respondWith(networkFirst(request, CACHES.dynamic));
+    } else {
+        event.respondWith(staleWhileRevalidate(request, CACHES.dynamic));
+    }
+});
+
+// Estratégia: Cache First
+async function cacheFirst(request, cacheName) {
+    try {
+        // Tentar buscar do cache
+        const cachedResponse = await caches.match(request);
+        if (cachedResponse) {
+            // Verificar se não expirou
+            if (!hasExpired(cachedResponse, cacheName)) {
+                return cachedResponse;
+            }
+        }
+        
+        // Buscar da rede
+        const networkResponse = await fetchWithTimeout(request);
+        
+        // Cachear se sucesso
+        if (networkResponse && networkResponse.status === 200) {
+            await cacheResponse(cacheName, request, networkResponse.clone());
+        }
+        
+        return networkResponse;
+        
+    } catch (error) {
+        // Se falhar, tentar cache mesmo expirado
+        const cachedResponse = await caches.match(request);
+        if (cachedResponse) {
+            return cachedResponse;
+        }
+        
+        // Retornar fallback
+        return getFallbackResponse(request);
+    }
+}
+
+// Estratégia: Network First
+async function networkFirst(request, cacheName) {
+    try {
+        const networkResponse = await fetchWithTimeout(request);
+        
+        if (networkResponse && networkResponse.status === 200) {
+            await cacheResponse(cacheName, request, networkResponse.clone());
+        }
+        
+        return networkResponse;
+        
+    } catch (error) {
+        console.log('[SW] Network failed, trying cache:', request.url);
+        
+        const cachedResponse = await caches.match(request);
+        if (cachedResponse) {
+            return cachedResponse;
+        }
+        
+        return getFallbackResponse(request);
+    }
+}
+
+// Estratégia: Stale While Revalidate
+async function staleWhileRevalidate(request, cacheName) {
+    const cachedResponse = await caches.match(request);
+    
+    const fetchPromise = (async () => {
+        try {
+            const networkResponse = await fetch(request);
+            
+            if (networkResponse && networkResponse.status === 200) {
+                await cacheResponse(cacheName, request, networkResponse.clone());
+            }
+            
+            return networkResponse;
+        } catch (error) {
+            return cachedResponse;
+        }
+    })();
+    
+    return cachedResponse || fetchPromise;
+}
+
+// Fetch com timeout
+function fetchWithTimeout(request, timeout = CONFIG.networkTimeoutMs) {
+    return new Promise((resolve, reject) => {
+        const timeoutId = setTimeout(() => {
+            reject(new Error('Network timeout'));
+        }, timeout);
+        
+        fetch(request)
+            .then(response => {
+                clearTimeout(timeoutId);
+                resolve(response);
+            })
+            .catch(error => {
+                clearTimeout(timeoutId);
+                reject(error);
+            });
+    });
+}
+
+// Cachear resposta com gerenciamento de tamanho
+async function cacheResponse(cacheName, request, response) {
+    try {
+        const cache = await caches.open(cacheName);
+        
+        // Adicionar timestamp para controle de expiração
+        const clonedResponse = response.clone();
+        const responseBody = await clonedResponse.blob();
+        
+        const headers = new Headers(clonedResponse.headers);
+        headers.set('sw-cached-date', Date.now().toString());
+        
+        const cachedResponse = new Response(responseBody, {
+            status: clonedResponse.status,
+            statusText: clonedResponse.statusText,
+            headers: headers
+        });
+        
+        await cache.put(request, cachedResponse);
+        
+        // Limitar tamanho do cache
+        await limitCacheSize(cacheName);
+        
+    } catch (error) {
+        console.error('[SW] Error caching response:', error);
+    }
+}
+
+// Limitar tamanho do cache
+async function limitCacheSize(cacheName) {
+    const maxSize = getMaxCacheSize(cacheName);
+    if (!maxSize) return;
+    
+    const cache = await caches.open(cacheName);
+    const keys = await cache.keys();
+    
+    if (keys.length > maxSize) {
+        // Remover os mais antigos
+        const toDelete = keys.length - maxSize;
+        for (let i = 0; i < toDelete; i++) {
+            await cache.delete(keys[i]);
+        }
+        console.log(`[SW] Removed ${toDelete} old entries from ${cacheName}`);
+    }
+}
+
+// Obter tamanho máximo do cache
+function getMaxCacheSize(cacheName) {
+    if (cacheName === CACHES.dynamic) return CONFIG.maxDynamicCacheSize;
+    if (cacheName === CACHES.images) return CONFIG.maxImageCacheSize;
+    return null;
+}
+
+// Verificar se resposta expirou
+function hasExpired(response, cacheName) {
+    const cachedDate = response.headers.get('sw-cached-date');
+    if (!cachedDate) return false;
+    
+    const age = Date.now() - parseInt(cachedDate);
+    const maxAge = getCacheDuration(cacheName);
+    
+    return age > maxAge;
+}
+
+// Obter duração do cache
+function getCacheDuration(cacheName) {
+    if (cacheName === CACHES.static) return CONFIG.cacheDuration.static;
+    if (cacheName === CACHES.dynamic) return CONFIG.cacheDuration.dynamic;
+    if (cacheName === CACHES.images) return CONFIG.cacheDuration.images;
+    return CONFIG.cacheDuration.dynamic;
+}
+
+// Resposta fallback
+async function getFallbackResponse(request) {
+    if (isDocument(request)) {
+        const offlineResponse = await caches.match('/offline/');
+        if (offlineResponse) return offlineResponse;
+    }
+    
+    // Resposta genérica de erro
+    return new Response('Offline', {
+        status: 503,
+        statusText: 'Service Unavailable',
+        headers: new Headers({
+            'Content-Type': 'text/plain'
+        })
+    });
+}
+
+// Verificar tipos de recursos
+function isStaticAsset(url) {
+    return url.pathname.match(/\.(css|js|json)$/);
+}
+
+function isImage(url) {
+    return url.pathname.match(/\.(jpg|jpeg|png|gif|svg|webp|ico)$/);
+}
+
+function isFont(url) {
+    return url.pathname.match(/\.(woff|woff2|ttf|eot)$/);
+}
+
+function isDocument(request) {
+    return request.headers.get('Accept').includes('text/html') ||
+           request.mode === 'navigate';
+}
+
+// Background Sync
+self.addEventListener('sync', event => {
+    console.log('[SW] Background sync:', event.tag);
+    
+    if (event.tag === 'sync-data') {
+        event.waitUntil(syncData());
+    }
+});
+
+async function syncData() {
+    try {
+        // Sincronizar dados pendentes
+        const pendingData = await getPendingData();
+        
+        for (const data of pendingData) {
+            try {
+                await fetch(data.url, {
+                    method: data.method,
+                    body: JSON.stringify(data.payload),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                await removePendingData(data.id);
+            } catch (error) {
+                console.error('[SW] Failed to sync data:', error);
+            }
+        }
+    } catch (error) {
+        console.error('[SW] Background sync failed:', error);
+    }
+}
+
+// Push Notifications
+self.addEventListener('push', event => {
+    console.log('[SW] Push notification received');
+    
+    let notificationData = {
+        title: 'NosfirNews',
+        body: 'Nova notícia disponível!',
+        icon: '/wp-content/themes/nosfirnews/assets/images/icons/icon-192x192.png',
+        badge: '/wp-content/themes/nosfirnews/assets/images/icons/badge-72x72.png',
+        data: {
+            url: '/'
+        }
+    };
+    
+    if (event.data) {
+        try {
+            const data = event.data.json();
+            notificationData = { ...notificationData, ...data };
+        } catch (error) {
+            console.error('[SW] Error parsing push data:', error);
+        }
+    }
+    
+    event.waitUntil(
+        self.registration.showNotification(notificationData.title, {
+            body: notificationData.body,
+            icon: notificationData.icon,
+            badge: notificationData.badge,
+            vibrate: [200, 100, 200],
+            data: notificationData.data,
+            actions: [
+                {
+                    action: 'open',
+                    title: 'Abrir',
+                    icon: notificationData.icon
+                },
+                {
+                    action: 'close',
+                    title: 'Fechar'
+                }
+            ]
+        })
+    );
+});
+
+// Notification Click
+self.addEventListener('notificationclick', event => {
+    console.log('[SW] Notification clicked:', event.action);
+    
+    event.notification.close();
+    
+    if (event.action === 'close') {
+        return;
+    }
+    
+    const urlToOpen = event.notification.data?.url || '/';
+    
+    event.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true })
+            .then(windowClients => {
+                // Verificar se já existe uma janela aberta
+                for (const client of windowClients) {
+                    if (client.url === urlToOpen && 'focus' in client) {
+                        return client.focus();
+                    }
+                }
+                
+                // Abrir nova janela
+                if (clients.openWindow) {
+                    return clients.openWindow(urlToOpen);
+                }
+            })
+    );
+});
+
+// Message Handler
+self.addEventListener('message', event => {
+    console.log('[SW] Message received:', event.data);
+    
+    if (event.data.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
+    
+    if (event.data.type === 'CACHE_URLS') {
+        event.waitUntil(
+            cacheUrls(event.data.urls)
+        );
+    }
+    
+    if (event.data.type === 'CLEAR_CACHE') {
+        event.waitUntil(
+            clearAllCaches()
+        );
+    }
+    
+    if (event.data.type === 'GET_CACHE_SIZE') {
+        event.waitUntil(
+            getCacheSize().then(size => {
+                event.ports[0].postMessage({ size });
             })
         );
     }
 });
 
-// Periodic background sync (if supported)
+// Cachear URLs específicas
+async function cacheUrls(urls) {
+    try {
+        const cache = await caches.open(CACHES.dynamic);
+        await cache.addAll(urls);
+        console.log('[SW] URLs cached successfully');
+    } catch (error) {
+        console.error('[SW] Error caching URLs:', error);
+    }
+}
+
+// Limpar todos os caches
+async function clearAllCaches() {
+    try {
+        const cacheNames = await caches.keys();
+        await Promise.all(
+            cacheNames.map(cacheName => caches.delete(cacheName))
+        );
+        console.log('[SW] All caches cleared');
+    } catch (error) {
+        console.error('[SW] Error clearing caches:', error);
+    }
+}
+
+// Obter tamanho total do cache
+async function getCacheSize() {
+    let totalSize = 0;
+    
+    try {
+        const cacheNames = await caches.keys();
+        
+        for (const cacheName of cacheNames) {
+            const cache = await caches.open(cacheName);
+            const keys = await cache.keys();
+            
+            for (const request of keys) {
+                const response = await cache.match(request);
+                if (response) {
+                    const blob = await response.blob();
+                    totalSize += blob.size;
+                }
+            }
+        }
+    } catch (error) {
+        console.error('[SW] Error calculating cache size:', error);
+    }
+    
+    return totalSize;
+}
+
+// Periodic Background Sync (experimental)
 self.addEventListener('periodicsync', event => {
+    console.log('[SW] Periodic sync:', event.tag);
+    
     if (event.tag === 'content-sync') {
-        event.waitUntil(syncContent());
+        event.waitUntil(syncLatestContent());
     }
 });
 
-async function syncContent() {
+async function syncLatestContent() {
     try {
-        // Sync latest content in background
         const response = await fetch('/wp-json/wp/v2/posts?per_page=5');
-        if (response.ok) {
-            const posts = await response.json();
-            // Cache the latest posts
-            const cache = await caches.open(CACHE_NAME);
-            posts.forEach(post => {
-                cache.add(post.link);
-            });
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch latest posts');
         }
+        
+        const posts = await response.json();
+        const cache = await caches.open(CACHES.dynamic);
+        
+        // Cachear os últimos posts
+        for (const post of posts) {
+            try {
+                await cache.add(post.link);
+            } catch (error) {
+                console.error('[SW] Error caching post:', error);
+            }
+        }
+        
+        console.log('[SW] Latest content synced');
     } catch (error) {
-        console.error('Content sync failed:', error);
+        console.error('[SW] Content sync failed:', error);
     }
 }
+
+// Helpers para IndexedDB (simplificado)
+async function getPendingData() {
+    // Implementação simplificada - em produção usar IndexedDB
+    return [];
+}
+
+async function removePendingData(id) {
+    // Implementação simplificada - em produção usar IndexedDB
+    console.log('[SW] Removing pending data:', id);
+}
+
+// Analytics offline (opcional)
+function trackOfflineUsage(request) {
+    // Implementar tracking de uso offline se necessário
+    console.log('[SW] Offline request:', request.url);
+}
+
+// Log de performance
+console.log('[SW] Service Worker loaded successfully');
+console.log('[SW] Cache version:', CACHE_VERSION);
+console.log('[SW] Available caches:', Object.keys(CACHES));

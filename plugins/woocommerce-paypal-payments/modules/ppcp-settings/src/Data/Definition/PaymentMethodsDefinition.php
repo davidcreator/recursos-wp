@@ -111,7 +111,11 @@ class PaymentMethodsDefinition
         $enabled = $this->settings->is_method_enabled($gateway_id);
         $config = array('id' => $gateway_id, 'enabled' => $enabled, 'title' => str_replace('&amp;', '&', $gateway_title), 'description' => $gateway_description, 'icon' => $icon, 'itemTitle' => $title, 'itemDescription' => $description, 'warningMessages' => $warning_messages);
         if (is_array($fields)) {
-            $config['fields'] = array_merge(array('checkoutPageTitle' => array('type' => 'text', 'default' => $gateway_title, 'label' => __('Checkout page title', 'woocommerce-paypal-payments')), 'checkoutPageDescription' => array('type' => 'text', 'default' => $gateway_description, 'label' => __('Checkout page description', 'woocommerce-paypal-payments'))), $fields);
+            $base_fields = array('checkoutPageTitle' => array('type' => 'text', 'default' => $gateway_title, 'label' => __('Checkout page title', 'woocommerce-paypal-payments')));
+            if (CreditCardGateway::ID !== $gateway_id) {
+                $base_fields['checkoutPageDescription'] = array('type' => 'text', 'default' => $gateway_description, 'label' => __('Checkout page description', 'woocommerce-paypal-payments'));
+            }
+            $config['fields'] = array_merge($base_fields, $fields);
         }
         return $config;
     }
@@ -137,8 +141,8 @@ class PaymentMethodsDefinition
     {
         $group = array();
         if (!$this->general_settings->own_brand_only()) {
-            $group[] = array('id' => CreditCardGateway::ID, 'title' => __('Advanced Credit and Debit Card Payments', 'woocommerce-paypal-payments'), 'description' => __("Present custom credit and debit card fields to your payers so they can pay with credit and debit cards using your site's branding.", 'woocommerce-paypal-payments'), 'icon' => 'payment-method-advanced-cards', 'fields' => array());
-            $group[] = array('id' => AxoGateway::ID, 'title' => __('Fastlane by PayPal', 'woocommerce-paypal-payments'), 'description' => __("Tap into the scale and trust of PayPal's customer network to recognize shoppers and make guest checkout more seamless than ever.", 'woocommerce-paypal-payments'), 'icon' => 'payment-method-fastlane', 'fields' => array('fastlaneCardholderName' => array('type' => 'toggle', 'default' => $this->settings->get_fastlane_cardholder_name(), 'label' => __('Display cardholder name', 'woocommerce-paypal-payments')), 'fastlaneDisplayWatermark' => array('type' => 'toggle', 'default' => $this->settings->get_fastlane_display_watermark(), 'label' => __('Display Fastlane Watermark', 'woocommerce-paypal-payments'))), 'warningMessages' => $this->axo_conflicts_notices);
+            $group[] = array('id' => CreditCardGateway::ID, 'title' => __('Advanced Credit and Debit Card Payments', 'woocommerce-paypal-payments'), 'description' => __("Present custom credit and debit card fields to your payers so they can pay with credit and debit cards using your site's branding.", 'woocommerce-paypal-payments'), 'icon' => 'payment-method-advanced-cards', 'fields' => array('cardholderName' => array('type' => 'toggle', 'default' => $this->settings->get_cardholder_name(), 'label' => __('Display cardholder name', 'woocommerce-paypal-payments'))));
+            $group[] = array('id' => AxoGateway::ID, 'title' => __('Fastlane by PayPal', 'woocommerce-paypal-payments'), 'description' => __("Tap into the scale and trust of PayPal's customer network to recognize shoppers and make guest checkout more seamless than ever.", 'woocommerce-paypal-payments'), 'icon' => 'payment-method-fastlane', 'fields' => array('fastlaneDisplayWatermark' => array('type' => 'toggle', 'default' => $this->settings->get_fastlane_display_watermark(), 'label' => __('Display Fastlane Watermark', 'woocommerce-paypal-payments'))), 'warningMessages' => $this->axo_conflicts_notices);
             $group[] = array('id' => ApplePayGateway::ID, 'title' => __('Apple Pay', 'woocommerce-paypal-payments'), 'description' => __('Allow customers to pay via their Apple Pay digital wallet.', 'woocommerce-paypal-payments'), 'icon' => 'payment-method-apple-pay');
             $group[] = array('id' => GooglePayGateway::ID, 'title' => __('Google Pay', 'woocommerce-paypal-payments'), 'description' => __('Allow customers to pay via their Google Pay digital wallet.', 'woocommerce-paypal-payments'), 'icon' => 'payment-method-google-pay');
         }

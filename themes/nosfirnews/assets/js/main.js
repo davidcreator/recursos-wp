@@ -1,675 +1,653 @@
 /**
- * NosfirNews Modern JavaScript
+ * NosfirNews Main JavaScript - Otimizado
  * @package NosfirNews
  * @since 2.0.0
- * Modern ES6+ JavaScript with performance optimizations
  */
 
-// Theme configuration
-const THEME_CONFIG = {
-    breakpoints: {
-        mobile: 768,
-        tablet: 1024,
-        desktop: 1200
-    },
-    animations: {
-        duration: 300,
-        easing: 'ease-in-out'
-    },
-    performance: {
-        debounceDelay: 100,
-        throttleDelay: 16
-    }
-};
+(function() {
+    'use strict';
 
-// Utility functions
-const utils = {
-    // Debounce function for performance
-    debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
+    // Configuração do tema
+    const THEME_CONFIG = {
+        breakpoints: {
+            mobile: 768,
+            tablet: 1024,
+            desktop: 1200
+        },
+        animations: {
+            duration: 300,
+            easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
+        },
+        performance: {
+            debounceDelay: 150,
+            throttleDelay: 16,
+            intersectionThreshold: 0.1
+        }
+    };
+
+    // Utilitários otimizados
+    const utils = {
+        // Debounce otimizado
+        debounce(func, wait, immediate = false) {
+            let timeout;
+            return function executedFunction(...args) {
+                const context = this;
+                const later = () => {
+                    timeout = null;
+                    if (!immediate) func.apply(context, args);
+                };
+                const callNow = immediate && !timeout;
                 clearTimeout(timeout);
-                func(...args);
+                timeout = setTimeout(later, wait);
+                if (callNow) func.apply(context, args);
             };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    },
+        },
 
-    // Throttle function for scroll events
-    throttle(func, limit) {
-        let inThrottle;
-        return function(...args) {
-            if (!inThrottle) {
-                func.apply(this, args);
-                inThrottle = true;
-                setTimeout(() => inThrottle = false, limit);
-            }
-        };
-    },
+        // Throttle otimizado usando requestAnimationFrame
+        throttle(func, limit) {
+            let inThrottle;
+            let lastRan;
+            return function(...args) {
+                const context = this;
+                if (!inThrottle) {
+                    func.apply(context, args);
+                    lastRan = Date.now();
+                    inThrottle = true;
+                    setTimeout(() => {
+                        if (Date.now() - lastRan >= limit) {
+                            func.apply(context, args);
+                            lastRan = Date.now();
+                        }
+                        inThrottle = false;
+                    }, limit);
+                }
+            };
+        },
 
-    // Check if element is in viewport
-    isInViewport(element) {
-        const rect = element.getBoundingClientRect();
-        return (
-            rect.top >= 0 &&
-            rect.left >= 0 &&
-            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-        );
-    },
-
-    // Get current breakpoint
-    getCurrentBreakpoint() {
-        const width = window.innerWidth;
-        if (width <= THEME_CONFIG.breakpoints.mobile) return 'mobile';
-        if (width <= THEME_CONFIG.breakpoints.tablet) return 'tablet';
-        return 'desktop';
-    },
-
-    // Create element with attributes
-    createElement(tag, attributes = {}, content = '') {
-        const element = document.createElement(tag);
-        Object.entries(attributes).forEach(([key, value]) => {
-            if (key === 'className') {
-                element.className = value;
-            } else if (key === 'innerHTML') {
-                element.innerHTML = value;
-            } else {
-                element.setAttribute(key, value);
-            }
-        });
-        if (content) element.textContent = content;
-        return element;
-    }
-};
-
-// Main theme class
-class NosfirNewsTheme {
-    constructor() {
-        this.components = new Map();
-        this.init();
-    }
-
-    async init() {
-        // Wait for DOM to be ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => this.initializeComponents());
-        } else {
-            this.initializeComponents();
-        }
-    }
-
-    initializeComponents() {
-        try {
-            // Initialize all components
-            this.components.set('mobileMenu', new MobileMenu());
-            this.components.set('smoothScrolling', new SmoothScrolling());
-            this.components.set('backToTop', new BackToTop());
-            this.components.set('searchToggle', new SearchToggle());
-            this.components.set('lazyLoading', new LazyLoading());
-            this.components.set('readingProgress', new ReadingProgress());
-            this.components.set('socialSharing', new SocialSharing());
-            this.components.set('accessibility', new AccessibilityEnhancements());
+        // Verificar se elemento está no viewport (otimizado)
+        isInViewport(element, threshold = 0) {
+            if (!element) return false;
+            const rect = element.getBoundingClientRect();
+            const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+            const windowWidth = window.innerWidth || document.documentElement.clientWidth;
             
-            console.log('NosfirNews theme initialized successfully');
-        } catch (error) {
-            console.error('Error initializing theme components:', error);
+            return (
+                rect.top >= -threshold &&
+                rect.left >= -threshold &&
+                rect.bottom <= windowHeight + threshold &&
+                rect.right <= windowWidth + threshold
+            );
+        },
+
+        // Obter breakpoint atual
+        getCurrentBreakpoint() {
+            const width = window.innerWidth;
+            if (width < THEME_CONFIG.breakpoints.mobile) return 'mobile';
+            if (width < THEME_CONFIG.breakpoints.tablet) return 'tablet';
+            return 'desktop';
+        },
+
+        // Criar elemento com atributos (otimizado)
+        createElement(tag, attributes = {}, content = '') {
+            const element = document.createElement(tag);
+            Object.entries(attributes).forEach(([key, value]) => {
+                if (key === 'className') {
+                    element.className = value;
+                } else if (key === 'innerHTML') {
+                    element.innerHTML = value;
+                } else if (key === 'dataset') {
+                    Object.entries(value).forEach(([dataKey, dataValue]) => {
+                        element.dataset[dataKey] = dataValue;
+                    });
+                } else {
+                    element.setAttribute(key, value);
+                }
+            });
+            if (content) element.textContent = content;
+            return element;
+        },
+
+        // Animação suave usando requestAnimationFrame
+        smoothScroll(target, duration = 500, offset = 0) {
+            const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+            const startPosition = window.pageYOffset;
+            const distance = targetPosition - startPosition;
+            let startTime = null;
+
+            function animation(currentTime) {
+                if (startTime === null) startTime = currentTime;
+                const timeElapsed = currentTime - startTime;
+                const run = easeInOutCubic(timeElapsed, startPosition, distance, duration);
+                window.scrollTo(0, run);
+                if (timeElapsed < duration) requestAnimationFrame(animation);
+            }
+
+            function easeInOutCubic(t, b, c, d) {
+                t /= d / 2;
+                if (t < 1) return c / 2 * t * t * t + b;
+                t -= 2;
+                return c / 2 * (t * t * t + 2) + b;
+            }
+
+            requestAnimationFrame(animation);
+        }
+    };
+
+    // Sistema de eventos customizados
+    class EventEmitter {
+        constructor() {
+            this.events = {};
+        }
+
+        on(event, listener) {
+            if (!this.events[event]) {
+                this.events[event] = [];
+            }
+            this.events[event].push(listener);
+        }
+
+        off(event, listenerToRemove) {
+            if (!this.events[event]) return;
+            this.events[event] = this.events[event].filter(
+                listener => listener !== listenerToRemove
+            );
+        }
+
+        emit(event, ...args) {
+            if (!this.events[event]) return;
+            this.events[event].forEach(listener => listener(...args));
         }
     }
 
-    getComponent(name) {
-        return this.components.get(name);
-    }
-}
+    // Menu Mobile otimizado
+    class MobileMenu extends EventEmitter {
+        constructor() {
+            super();
+            this.menuToggle = document.querySelector('.mobile-menu-toggle');
+            this.navigation = document.querySelector('.main-navigation');
+            this.overlay = null;
+            this.isOpen = false;
+            this.focusTrap = null;
+            
+            if (this.menuToggle && this.navigation) {
+                this.init();
+            }
+        }
 
-// Mobile menu component
-class MobileMenu {
-    constructor() {
-        this.menuToggle = document.querySelector('.menu-toggle');
-        this.navigation = document.querySelector('.main-navigation ul');
-        this.isOpen = false;
-        
-        if (this.menuToggle && this.navigation) {
+        init() {
+            this.createOverlay();
+            this.setupMenuStructure();
+            this.bindEvents();
+            this.setupAccessibility();
+        }
+
+        createOverlay() {
+            this.overlay = utils.createElement('div', {
+                className: 'mobile-menu-overlay',
+                'aria-hidden': 'true'
+            });
+            document.body.appendChild(this.overlay);
+        }
+
+        setupMenuStructure() {
+            const menu = this.navigation.querySelector('ul');
+            if (!menu) return;
+
+            // Clonar menu para mobile
+            const mobileMenuContainer = utils.createElement('div', {
+                className: 'mobile-menu',
+                id: 'mobile-menu'
+            });
+
+            const mobileHeader = utils.createElement('div', {
+                className: 'mobile-menu-header'
+            });
+
+            const closeButton = utils.createElement('button', {
+                className: 'mobile-menu-close',
+                'aria-label': 'Fechar menu'
+            }, '×');
+
+            mobileHeader.appendChild(closeButton);
+            mobileMenuContainer.appendChild(mobileHeader);
+
+            const menuClone = menu.cloneNode(true);
+            menuClone.className = 'mobile-nav-menu';
+            mobileMenuContainer.appendChild(menuClone);
+
+            document.body.appendChild(mobileMenuContainer);
+            this.mobileMenu = mobileMenuContainer;
+            this.closeButton = closeButton;
+        }
+
+        bindEvents() {
+            // Toggle button
+            this.menuToggle.addEventListener('click', () => this.toggle());
+
+            // Close button
+            if (this.closeButton) {
+                this.closeButton.addEventListener('click', () => this.close());
+            }
+
+            // Overlay click
+            this.overlay.addEventListener('click', () => this.close());
+
+            // Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && this.isOpen) {
+                    this.close();
+                    this.menuToggle.focus();
+                }
+            });
+
+            // Resize handler
+            window.addEventListener('resize', utils.debounce(() => {
+                if (utils.getCurrentBreakpoint() !== 'mobile' && this.isOpen) {
+                    this.close();
+                }
+            }, THEME_CONFIG.performance.debounceDelay));
+
+            // Prevenir scroll quando menu aberto
+            this.on('open', () => {
+                document.body.style.overflow = 'hidden';
+                document.body.classList.add('mobile-menu-open');
+            });
+
+            this.on('close', () => {
+                document.body.style.overflow = '';
+                document.body.classList.remove('mobile-menu-open');
+            });
+        }
+
+        setupAccessibility() {
+            this.menuToggle.setAttribute('aria-expanded', 'false');
+            this.menuToggle.setAttribute('aria-controls', 'mobile-menu');
+            this.menuToggle.setAttribute('aria-haspopup', 'true');
+        }
+
+        toggle() {
+            this.isOpen ? this.close() : this.open();
+        }
+
+        open() {
+            if (this.isOpen) return;
+
+            this.mobileMenu.classList.add('active');
+            this.overlay.classList.add('active');
+            this.menuToggle.classList.add('active');
+            this.menuToggle.setAttribute('aria-expanded', 'true');
+            this.isOpen = true;
+
+            // Focus no primeiro item do menu
+            requestAnimationFrame(() => {
+                const firstLink = this.mobileMenu.querySelector('a');
+                if (firstLink) firstLink.focus();
+            });
+
+            this.emit('open');
+        }
+
+        close() {
+            if (!this.isOpen) return;
+
+            this.mobileMenu.classList.remove('active');
+            this.overlay.classList.remove('active');
+            this.menuToggle.classList.remove('active');
+            this.menuToggle.setAttribute('aria-expanded', 'false');
+            this.isOpen = false;
+
+            this.emit('close');
+        }
+    }
+
+    // Scroll suave para âncoras
+    class SmoothScrolling {
+        constructor() {
             this.init();
         }
-    }
 
-    init() {
-        this.createMenuToggleHTML();
-        this.bindEvents();
-        this.setupAccessibility();
-    }
+        init() {
+            document.addEventListener('click', (e) => {
+                const link = e.target.closest('a[href^="#"]');
+                if (!link) return;
 
-    createMenuToggleHTML() {
-        if (!this.menuToggle.querySelector('span')) {
-            this.menuToggle.innerHTML = `
-                <span></span>
-                <span></span>
-                <span></span>
-                <span class="sr-only">Toggle menu</span>
-            `;
+                const href = link.getAttribute('href');
+                if (href === '#') return;
+
+                const target = document.querySelector(href);
+                if (target) {
+                    e.preventDefault();
+                    const headerHeight = document.querySelector('.site-header')?.offsetHeight || 0;
+                    utils.smoothScroll(target, 500, headerHeight + 20);
+                    
+                    // Atualizar URL sem reload
+                    if (history.pushState) {
+                        history.pushState(null, null, href);
+                    }
+                }
+            });
         }
     }
 
-    bindEvents() {
-        this.menuToggle.addEventListener('click', (e) => this.toggleMenu(e));
-        
-        // Close menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (this.isOpen && !this.menuToggle.contains(e.target) && !this.navigation.contains(e.target)) {
-                this.closeMenu();
-            }
-        });
-
-        // Close menu on escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.isOpen) {
-                this.closeMenu();
-                this.menuToggle.focus();
-            }
-        });
-
-        // Handle resize
-        window.addEventListener('resize', utils.debounce(() => this.handleResize(), THEME_CONFIG.performance.debounceDelay));
-    }
-
-    setupAccessibility() {
-        this.menuToggle.setAttribute('aria-expanded', 'false');
-        this.menuToggle.setAttribute('aria-controls', 'primary-menu');
-        this.navigation.setAttribute('id', 'primary-menu');
-    }
-
-    toggleMenu(e) {
-        e.preventDefault();
-        this.isOpen ? this.closeMenu() : this.openMenu();
-    }
-
-    openMenu() {
-        this.navigation.classList.add('toggled');
-        this.menuToggle.classList.add('active');
-        this.menuToggle.setAttribute('aria-expanded', 'true');
-        this.isOpen = true;
-        
-        // Focus first menu item
-        const firstMenuItem = this.navigation.querySelector('a');
-        if (firstMenuItem) {
-            setTimeout(() => firstMenuItem.focus(), 100);
+    // Back to top otimizado
+    class BackToTop {
+        constructor() {
+            this.button = this.createButton();
+            this.isVisible = false;
+            this.scrollThreshold = 300;
+            this.init();
         }
-    }
 
-    closeMenu() {
-        this.navigation.classList.remove('toggled');
-        this.menuToggle.classList.remove('active');
-        this.menuToggle.setAttribute('aria-expanded', 'false');
-        this.isOpen = false;
-    }
-
-    handleResize() {
-        if (utils.getCurrentBreakpoint() !== 'mobile' && this.isOpen) {
-            this.closeMenu();
-        }
-    }
-}
-
-// Smooth scrolling component
-class SmoothScrolling {
-    constructor() {
-        this.init();
-    }
-
-    init() {
-        const links = document.querySelectorAll('a[href^="#"]');
-        
-        links.forEach(link => {
-            link.addEventListener('click', (e) => this.handleClick(e, link));
-        });
-    }
-
-    handleClick(e, link) {
-        const targetId = link.getAttribute('href');
-        
-        // Skip if it's just a hash
-        if (targetId === '#') return;
-        
-        const targetElement = document.querySelector(targetId);
-        
-        if (targetElement) {
-            e.preventDefault();
-            this.scrollToElement(targetElement);
-        }
-    }
-
-    scrollToElement(element) {
-        const headerHeight = document.querySelector('.site-header')?.offsetHeight || 0;
-        const targetPosition = element.offsetTop - headerHeight - 20;
-        
-        window.scrollTo({
-            top: targetPosition,
-            behavior: 'smooth'
-        });
-    }
-}
-
-// Back to top component
-class BackToTop {
-    constructor() {
-        this.button = this.createButton();
-        this.isVisible = false;
-        this.init();
-    }
-
-    createButton() {
-        let button = document.querySelector('.back-to-top');
-        
-        if (!button) {
-            button = utils.createElement('button', {
+        createButton() {
+            const button = utils.createElement('button', {
                 className: 'back-to-top',
-                'aria-label': 'Back to top',
+                'aria-label': 'Voltar ao topo',
+                title: 'Voltar ao topo',
                 innerHTML: `
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                         <path d="M12 19V5M5 12L12 5L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
-                    <span class="sr-only">Back to top</span>
                 `
             });
             document.body.appendChild(button);
+            return button;
         }
-        
-        return button;
-    }
 
-    init() {
-        this.bindEvents();
-        this.addStyles();
-    }
-
-    bindEvents() {
-        this.button.addEventListener('click', (e) => this.scrollToTop(e));
-        
-        window.addEventListener('scroll', 
-            utils.throttle(() => this.handleScroll(), THEME_CONFIG.performance.throttleDelay)
-        );
-    }
-
-    handleScroll() {
-        const shouldShow = window.pageYOffset > 300;
-        
-        if (shouldShow && !this.isVisible) {
-            this.showButton();
-        } else if (!shouldShow && this.isVisible) {
-            this.hideButton();
+        init() {
+            this.bindEvents();
+            this.checkVisibility(); // Check inicial
         }
-    }
 
-    showButton() {
-        this.button.classList.add('visible');
-        this.isVisible = true;
-    }
+        bindEvents() {
+            this.button.addEventListener('click', () => this.scrollToTop());
 
-    hideButton() {
-        this.button.classList.remove('visible');
-        this.isVisible = false;
-    }
+            // Usar Intersection Observer para melhor performance
+            let ticking = false;
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    window.requestAnimationFrame(() => {
+                        this.checkVisibility();
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            }, { passive: true });
+        }
 
-    scrollToTop(e) {
-        e.preventDefault();
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    }
+        checkVisibility() {
+            const shouldShow = window.pageYOffset > this.scrollThreshold;
+            
+            if (shouldShow && !this.isVisible) {
+                this.show();
+            } else if (!shouldShow && this.isVisible) {
+                this.hide();
+            }
+        }
 
-    addStyles() {
-        if (!document.querySelector('#back-to-top-styles')) {
-            const styles = utils.createElement('style', {
-                id: 'back-to-top-styles',
-                innerHTML: `
-                    .back-to-top {
-                        position: fixed;
-                        bottom: 2rem;
-                        right: 2rem;
-                        width: 3rem;
-                        height: 3rem;
-                        background-color: var(--color-primary);
-                        color: white;
-                        border: none;
-                        border-radius: 50%;
-                        cursor: pointer;
-                        opacity: 0;
-                        visibility: hidden;
-                        transform: translateY(1rem);
-                        transition: all var(--transition-normal);
-                        z-index: var(--z-fixed);
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        box-shadow: var(--box-shadow-lg);
-                    }
-                    
-                    .back-to-top:hover,
-                    .back-to-top:focus {
-                        background-color: var(--color-primary-dark);
-                        transform: translateY(0);
-                    }
-                    
-                    .back-to-top.visible {
-                        opacity: 1;
-                        visibility: visible;
-                        transform: translateY(0);
-                    }
-                `
-            });
-            document.head.appendChild(styles);
+        show() {
+            this.button.classList.add('visible');
+            this.button.setAttribute('aria-hidden', 'false');
+            this.isVisible = true;
+        }
+
+        hide() {
+            this.button.classList.remove('visible');
+            this.button.setAttribute('aria-hidden', 'true');
+            this.isVisible = false;
+        }
+
+        scrollToTop() {
+            utils.smoothScroll(document.body, 500);
         }
     }
-}
 
-// Search toggle component
-class SearchToggle {
-    constructor() {
-        this.searchToggle = document.querySelector('.search-toggle');
-        this.searchForm = document.querySelector('.search-form');
-        this.isOpen = false;
-        
-        if (this.searchToggle && this.searchForm) {
+    // Lazy loading de imagens otimizado
+    class LazyLoading {
+        constructor() {
+            this.images = [];
+            this.observer = null;
             this.init();
         }
-    }
 
-    init() {
-        this.bindEvents();
-        this.setupAccessibility();
-    }
-
-    bindEvents() {
-        this.searchToggle.addEventListener('click', (e) => this.toggleSearch(e));
-        
-        // Close search on outside click
-        document.addEventListener('click', (e) => {
-            if (this.isOpen && !this.searchToggle.contains(e.target) && !this.searchForm.contains(e.target)) {
-                this.closeSearch();
+        init() {
+            if ('IntersectionObserver' in window) {
+                this.setupIntersectionObserver();
+            } else {
+                this.fallbackLazyLoading();
             }
-        });
-
-        // Close search on escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.isOpen) {
-                this.closeSearch();
-                this.searchToggle.focus();
-            }
-        });
-    }
-
-    setupAccessibility() {
-        this.searchToggle.setAttribute('aria-expanded', 'false');
-        this.searchToggle.setAttribute('aria-controls', 'search-form');
-        this.searchForm.setAttribute('id', 'search-form');
-    }
-
-    toggleSearch(e) {
-        e.preventDefault();
-        this.isOpen ? this.closeSearch() : this.openSearch();
-    }
-
-    openSearch() {
-        this.searchForm.classList.add('active');
-        this.searchToggle.classList.add('active');
-        this.searchToggle.setAttribute('aria-expanded', 'true');
-        this.isOpen = true;
-        
-        // Focus search input
-        const searchInput = this.searchForm.querySelector('input[type="search"]');
-        if (searchInput) {
-            setTimeout(() => searchInput.focus(), 100);
         }
-    }
 
-    closeSearch() {
-        this.searchForm.classList.remove('active');
-        this.searchToggle.classList.remove('active');
-        this.searchToggle.setAttribute('aria-expanded', 'false');
-        this.isOpen = false;
-    }
-}
+        setupIntersectionObserver() {
+            const options = {
+                root: null,
+                rootMargin: '50px',
+                threshold: 0.01
+            };
 
-// Lazy loading component
-class LazyLoading {
-    constructor() {
-        this.init();
-    }
+            this.observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        this.loadImage(entry.target);
+                        this.observer.unobserve(entry.target);
+                    }
+                });
+            }, options);
 
-    init() {
-        if ('IntersectionObserver' in window) {
-            this.setupIntersectionObserver();
-        } else {
-            this.fallbackLazyLoading();
+            this.observeImages();
         }
-    }
 
-    setupIntersectionObserver() {
-        const imageObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    this.loadImage(entry.target);
-                    imageObserver.unobserve(entry.target);
-                }
-            });
-        }, {
-            rootMargin: '50px 0px',
-            threshold: 0.01
-        });
-
-        document.querySelectorAll('img[data-src]').forEach(img => {
-            imageObserver.observe(img);
-        });
-    }
-
-    fallbackLazyLoading() {
-        const images = document.querySelectorAll('img[data-src]');
-        
-        const loadImagesInViewport = utils.throttle(() => {
+        observeImages() {
+            const images = document.querySelectorAll('img[data-src], img[loading="lazy"]');
             images.forEach(img => {
-                if (utils.isInViewport(img)) {
-                    this.loadImage(img);
+                if (img.dataset.src) {
+                    this.observer.observe(img);
                 }
             });
-        }, THEME_CONFIG.performance.throttleDelay);
+        }
 
-        window.addEventListener('scroll', loadImagesInViewport);
-        window.addEventListener('resize', loadImagesInViewport);
-        loadImagesInViewport(); // Initial check
+        loadImage(img) {
+            if (!img.dataset.src) return;
+
+            const tempImg = new Image();
+            tempImg.onload = () => {
+                img.src = img.dataset.src;
+                img.removeAttribute('data-src');
+                img.classList.remove('lazy');
+                img.classList.add('loaded');
+            };
+            tempImg.onerror = () => {
+                console.error('Erro ao carregar imagem:', img.dataset.src);
+            };
+            tempImg.src = img.dataset.src;
+        }
+
+        fallbackLazyLoading() {
+            const images = document.querySelectorAll('img[data-src]');
+            
+            const loadImagesInViewport = utils.throttle(() => {
+                images.forEach(img => {
+                    if (utils.isInViewport(img, 50)) {
+                        this.loadImage(img);
+                    }
+                });
+            }, THEME_CONFIG.performance.throttleDelay);
+
+            window.addEventListener('scroll', loadImagesInViewport, { passive: true });
+            window.addEventListener('resize', loadImagesInViewport, { passive: true });
+            loadImagesInViewport();
+        }
     }
 
-    loadImage(img) {
-        img.src = img.dataset.src;
-        img.classList.remove('lazy');
-        img.classList.add('loaded');
-        img.removeAttribute('data-src');
-    }
-}
+    // Barra de progresso de leitura
+    class ReadingProgress {
+        constructor() {
+            if (!document.body.classList.contains('single')) return;
+            this.progressBar = this.createProgressBar();
+            this.init();
+        }
 
-// Reading progress component
-class ReadingProgress {
-    constructor() {
-        this.progressBar = this.createProgressBar();
-        this.init();
-    }
-
-    createProgressBar() {
-        let progressBar = document.querySelector('.reading-progress');
-        
-        if (!progressBar) {
-            progressBar = utils.createElement('div', {
+        createProgressBar() {
+            const container = utils.createElement('div', {
                 className: 'reading-progress',
-                innerHTML: '<div class="reading-progress-bar"></div>'
+                'aria-hidden': 'true'
             });
-            document.body.appendChild(progressBar);
-        }
-        
-        return progressBar;
-    }
-
-    init() {
-        this.bindEvents();
-        this.addStyles();
-    }
-
-    bindEvents() {
-        window.addEventListener('scroll', 
-            utils.throttle(() => this.updateProgress(), THEME_CONFIG.performance.throttleDelay)
-        );
-    }
-
-    updateProgress() {
-        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const scrolled = (winScroll / height) * 100;
-        
-        const progressBar = this.progressBar.querySelector('.reading-progress-bar');
-        if (progressBar) {
-            progressBar.style.width = scrolled + '%';
-        }
-    }
-
-    addStyles() {
-        if (!document.querySelector('#reading-progress-styles')) {
-            const styles = utils.createElement('style', {
-                id: 'reading-progress-styles',
-                innerHTML: `
-                    .reading-progress {
-                        position: fixed;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 3px;
-                        background-color: var(--color-border-light);
-                        z-index: var(--z-fixed);
-                    }
-                    
-                    .reading-progress-bar {
-                        height: 100%;
-                        background-color: var(--color-primary);
-                        width: 0%;
-                        transition: width 0.1s ease;
-                    }
-                `
+            
+            const bar = utils.createElement('div', {
+                className: 'reading-progress-bar'
             });
-            document.head.appendChild(styles);
+            
+            container.appendChild(bar);
+            document.body.appendChild(container);
+            
+            return bar;
+        }
+
+        init() {
+            let ticking = false;
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    window.requestAnimationFrame(() => {
+                        this.updateProgress();
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            }, { passive: true });
+
+            this.updateProgress(); // Inicial
+        }
+
+        updateProgress() {
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const trackLength = documentHeight - windowHeight;
+            const progress = Math.min((scrollTop / trackLength) * 100, 100);
+            
+            this.progressBar.style.width = `${progress}%`;
         }
     }
-}
 
-// Social sharing component
-class SocialSharing {
-    constructor() {
-        this.init();
-    }
-
-    init() {
-        const shareButtons = document.querySelectorAll('.social-share-button');
-        shareButtons.forEach(button => {
-            button.addEventListener('click', (e) => this.handleShare(e, button));
-        });
-    }
-
-    handleShare(e, button) {
-        e.preventDefault();
-        
-        const platform = button.dataset.platform;
-        const url = encodeURIComponent(window.location.href);
-        const title = encodeURIComponent(document.title);
-        
-        let shareUrl = '';
-        
-        switch (platform) {
-            case 'facebook':
-                shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-                break;
-            case 'twitter':
-                shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${title}`;
-                break;
-            case 'linkedin':
-                shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
-                break;
-            case 'whatsapp':
-                shareUrl = `https://wa.me/?text=${title}%20${url}`;
-                break;
+    // Melhorias de acessibilidade
+    class AccessibilityEnhancements {
+        constructor() {
+            this.init();
         }
-        
-        if (shareUrl) {
-            window.open(shareUrl, '_blank', 'width=600,height=400');
+
+        init() {
+            this.addSkipLinks();
+            this.enhanceFocusManagement();
+            this.setupKeyboardNavigation();
         }
-    }
-}
 
-// Accessibility enhancements
-class AccessibilityEnhancements {
-    constructor() {
-        this.init();
-    }
+        addSkipLinks() {
+            if (document.querySelector('.skip-links')) return;
 
-    init() {
-        this.addSkipLinks();
-        this.enhanceFocusManagement();
-        this.addScreenReaderStyles();
-    }
-
-    addSkipLinks() {
-        if (!document.querySelector('.skip-link')) {
-            const skipLink = utils.createElement('a', {
-                className: 'skip-link',
-                href: '#main',
-                innerHTML: 'Skip to main content'
+            const skipLinks = utils.createElement('div', {
+                className: 'skip-links'
             });
-            document.body.insertBefore(skipLink, document.body.firstChild);
+
+            const links = [
+                { href: '#main', text: 'Pular para o conteúdo' },
+                { href: '#site-navigation', text: 'Pular para navegação' }
+            ];
+
+            links.forEach(link => {
+                const a = utils.createElement('a', {
+                    className: 'skip-link',
+                    href: link.href
+                }, link.text);
+                skipLinks.appendChild(a);
+            });
+
+            document.body.insertBefore(skipLinks, document.body.firstChild);
+        }
+
+        enhanceFocusManagement() {
+            // Adicionar indicadores de foco para navegação por teclado
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Tab') {
+                    document.body.classList.add('keyboard-navigation');
+                }
+            });
+
+            document.addEventListener('mousedown', () => {
+                document.body.classList.remove('keyboard-navigation');
+            });
+        }
+
+        setupKeyboardNavigation() {
+            // Melhorar navegação por teclado em elementos interativos
+            const interactiveElements = document.querySelectorAll(
+                'button, a, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            );
+
+            interactiveElements.forEach(element => {
+                if (!element.hasAttribute('aria-label') && !element.textContent.trim()) {
+                    console.warn('Elemento interativo sem label:', element);
+                }
+            });
         }
     }
 
-    enhanceFocusManagement() {
-        // Add focus indicators for keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Tab') {
-                document.body.classList.add('keyboard-navigation');
+    // Theme Manager - Gerenciador principal
+    class NosfirNewsTheme {
+        constructor() {
+            this.components = new Map();
+            this.isInitialized = false;
+            this.init();
+        }
+
+        async init() {
+            // Aguardar DOM estar pronto
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => this.initializeComponents());
+            } else {
+                this.initializeComponents();
             }
-        });
+        }
 
-        document.addEventListener('mousedown', () => {
-            document.body.classList.remove('keyboard-navigation');
-        });
-    }
+        initializeComponents() {
+            try {
+                // Inicializar componentes na ordem correta
+                this.components.set('accessibility', new AccessibilityEnhancements());
+                this.components.set('mobileMenu', new MobileMenu());
+                this.components.set('smoothScrolling', new SmoothScrolling());
+                this.components.set('backToTop', new BackToTop());
+                this.components.set('lazyLoading', new LazyLoading());
+                this.components.set('readingProgress', new ReadingProgress());
 
-    addScreenReaderStyles() {
-        if (!document.querySelector('#accessibility-styles')) {
-            const styles = utils.createElement('style', {
-                id: 'accessibility-styles',
-                innerHTML: `
-                    .sr-only {
-                        position: absolute;
-                        width: 1px;
-                        height: 1px;
-                        padding: 0;
-                        margin: -1px;
-                        overflow: hidden;
-                        clip: rect(0, 0, 0, 0);
-                        white-space: nowrap;
-                        border: 0;
-                    }
-                    
-                    .keyboard-navigation *:focus {
-                        outline: 2px solid var(--color-primary) !important;
-                        outline-offset: 2px !important;
-                    }
-                `
-            });
-            document.head.appendChild(styles);
+                this.isInitialized = true;
+                this.emit('initialized');
+                
+                console.log('NosfirNews: Tema inicializado com sucesso');
+            } catch (error) {
+                console.error('NosfirNews: Erro ao inicializar:', error);
+            }
+        }
+
+        getComponent(name) {
+            return this.components.get(name);
+        }
+
+        emit(event) {
+            document.dispatchEvent(new CustomEvent(`nosfirnews:${event}`));
         }
     }
-}
 
-// Initialize theme
-const nosfirNewsTheme = new NosfirNewsTheme();
+    // Inicializar tema
+    const theme = new NosfirNewsTheme();
 
-// Export for global access
-window.nosfirNewsTheme = nosfirNewsTheme;
+    // Expor globalmente para debug e extensões
+    window.NosfirNews = {
+        theme,
+        utils,
+        config: THEME_CONFIG
+    };
+
+    // Suporte a módulos
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports = window.NosfirNews;
+    }
+
+})();

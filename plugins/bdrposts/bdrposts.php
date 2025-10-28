@@ -3,7 +3,7 @@
  * Plugin Name: BDRPosts
  * Plugin URI: https://github.com/davidcreator/recursos-wp/bdrposts
  * Description: Plugin flexível para exibir posts, páginas e custom post types com múltiplos layouts usando o editor Gutenberg
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: David L. Almeida
  * Author URI: https://davidcreator.com
  * License: GPL v2 or later
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define constantes do plugin
-define('BDRPOSTS_VERSION', '1.0.0');
+define('BDRPOSTS_VERSION', '1.0.1');
 define('BDRPOSTS_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BDRPOSTS_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -77,6 +77,7 @@ class BDRPosts {
      * Registra rotas REST API
      */
     public function register_rest_routes() {
+        // Post types
         register_rest_route('bdrposts/v1', '/post-types', array(
             'methods' => 'GET',
             'callback' => array($this, 'get_post_types'),
@@ -85,9 +86,37 @@ class BDRPosts {
             }
         ));
         
+        // Taxonomias
         register_rest_route('bdrposts/v1', '/taxonomies/(?P<post_type>[a-zA-Z0-9_-]+)', array(
             'methods' => 'GET',
             'callback' => array($this, 'get_taxonomies'),
+            'permission_callback' => function() {
+                return current_user_can('edit_posts');
+            }
+        ));
+        
+        // Categorias
+        register_rest_route('bdrposts/v1', '/categories', array(
+            'methods' => 'GET',
+            'callback' => array($this, 'get_categories'),
+            'permission_callback' => function() {
+                return current_user_can('edit_posts');
+            }
+        ));
+        
+        // Tags
+        register_rest_route('bdrposts/v1', '/tags', array(
+            'methods' => 'GET',
+            'callback' => array($this, 'get_tags'),
+            'permission_callback' => function() {
+                return current_user_can('edit_posts');
+            }
+        ));
+        
+        // Termos de taxonomia customizada
+        register_rest_route('bdrposts/v1', '/terms/(?P<taxonomy>[a-zA-Z0-9_-]+)', array(
+            'methods' => 'GET',
+            'callback' => array($this, 'get_taxonomy_terms'),
             'permission_callback' => function() {
                 return current_user_can('edit_posts');
             }
@@ -130,10 +159,81 @@ class BDRPosts {
     }
     
     /**
+     * Retorna categorias
+     */
+    public function get_categories() {
+        $categories = get_categories(array(
+            'hide_empty' => false,
+            'orderby' => 'name',
+            'order' => 'ASC'
+        ));
+        
+        $result = array();
+        foreach ($categories as $category) {
+            $result[] = array(
+                'value' => $category->term_id,
+                'label' => $category->name . ' (' . $category->count . ')'
+            );
+        }
+        
+        return rest_ensure_response($result);
+    }
+    
+    /**
+     * Retorna tags
+     */
+    public function get_tags() {
+        $tags = get_tags(array(
+            'hide_empty' => false,
+            'orderby' => 'name',
+            'order' => 'ASC'
+        ));
+        
+        $result = array();
+        foreach ($tags as $tag) {
+            $result[] = array(
+                'value' => $tag->term_id,
+                'label' => $tag->name . ' (' . $tag->count . ')'
+            );
+        }
+        
+        return rest_ensure_response($result);
+    }
+    
+    /**
+     * Retorna termos de uma taxonomia
+     */
+    public function get_taxonomy_terms($request) {
+        $taxonomy = $request->get_param('taxonomy');
+        
+        $terms = get_terms(array(
+            'taxonomy' => $taxonomy,
+            'hide_empty' => false,
+            'orderby' => 'name',
+            'order' => 'ASC'
+        ));
+        
+        if (is_wp_error($terms)) {
+            return rest_ensure_response(array());
+        }
+        
+        $result = array();
+        foreach ($terms as $term) {
+            $result[] = array(
+                'value' => $term->term_id,
+                'label' => $term->name . ' (' . $term->count . ')'
+            );
+        }
+        
+        return rest_ensure_response($result);
+    }
+    
+    /**
      * Registra o bloco Gutenberg
      */
     public function register_block() {
         register_block_type('bdrposts/post-block', array(
+            'api_version' => 2,
             'editor_script' => 'bdrposts-block-editor',
             'editor_style' => 'bdrposts-block-editor-style',
             'style' => 'bdrposts-block-style',
@@ -154,12 +254,12 @@ class BDRPosts {
             'columns' => array('type' => 'number', 'default' => 3),
             'order' => array('type' => 'string', 'default' => 'DESC'),
             'orderBy' => array('type' => 'string', 'default' => 'date'),
-            'categories' => array('type' => 'array', 'default' => array()),
-            'tags' => array('type' => 'array', 'default' => array()),
-            'authors' => array('type' => 'array', 'default' => array()),
+            'categories' => array('type' => 'array', 'default' => array(), 'items' => array('type' => 'number')),
+            'tags' => array('type' => 'array', 'default' => array(), 'items' => array('type' => 'number')),
+            'authors' => array('type' => 'array', 'default' => array(), 'items' => array('type' => 'number')),
             'offset' => array('type' => 'number', 'default' => 0),
-            'includePosts' => array('type' => 'array', 'default' => array()),
-            'excludePosts' => array('type' => 'array', 'default' => array()),
+            'includePosts' => array('type' => 'array', 'default' => array(), 'items' => array('type' => 'number')),
+            'excludePosts' => array('type' => 'array', 'default' => array(), 'items' => array('type' => 'number')),
             'excludeCurrent' => array('type' => 'boolean', 'default' => false),
             'showImage' => array('type' => 'boolean', 'default' => true),
             'imageSize' => array('type' => 'string', 'default' => 'medium'),
@@ -175,7 +275,7 @@ class BDRPosts {
             'showTags' => array('type' => 'boolean', 'default' => false),
             'linkAuthor' => array('type' => 'boolean', 'default' => true),
             'taxonomy' => array('type' => 'string', 'default' => ''),
-            'taxonomyTerms' => array('type' => 'array', 'default' => array()),
+            'taxonomyTerms' => array('type' => 'array', 'default' => array(), 'items' => array('type' => 'number')),
             'showReadMore' => array('type' => 'boolean', 'default' => true),
             'readMoreText' => array('type' => 'string', 'default' => 'Ler Mais'),
             'enablePagination' => array('type' => 'boolean', 'default' => false),
@@ -190,13 +290,13 @@ class BDRPosts {
         $js_file = BDRPOSTS_PLUGIN_DIR . 'build/index.js';
         $css_file = BDRPOSTS_PLUGIN_DIR . 'build/editor.css';
         
-        // Verifica se os arquivos existem, senão usa inline
         if (file_exists($js_file)) {
             wp_enqueue_script(
                 'bdrposts-block-editor',
                 BDRPOSTS_PLUGIN_URL . 'build/index.js',
-                array('wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-data', 'wp-api-fetch'),
-                BDRPOSTS_VERSION
+                array('wp-blocks', 'wp-element', 'wp-editor', 'wp-block-editor', 'wp-components', 'wp-data', 'wp-api-fetch', 'wp-i18n', 'wp-server-side-render'),
+                BDRPOSTS_VERSION,
+                true
             );
         }
         
@@ -212,7 +312,8 @@ class BDRPosts {
         // Passa dados para o JavaScript
         wp_localize_script('bdrposts-block-editor', 'bdrpostsData', array(
             'restUrl' => rest_url('bdrposts/v1/'),
-            'nonce' => wp_create_nonce('wp_rest')
+            'nonce' => wp_create_nonce('wp_rest'),
+            'pluginUrl' => BDRPOSTS_PLUGIN_URL
         ));
     }
     
@@ -246,7 +347,6 @@ class BDRPosts {
                 BDRPOSTS_VERSION
             );
         } else {
-            // CSS inline como fallback
             wp_add_inline_style('wp-block-library', $this->get_inline_styles());
         }
         
@@ -270,12 +370,12 @@ class BDRPosts {
      */
     private function get_inline_styles() {
         return '
-        .brdposts-wrapper{width:100%}
-        .brdposts-grid{display:grid;gap:20px}
-        .brdposts-columns-1 .brdposts-grid{grid-template-columns:1fr}
-        .brdposts-columns-2 .bdrposts-grid{grid-template-columns:repeat(2,1fr)}
-        .brdposts-columns-3 .brdposts-grid{grid-template-columns:repeat(3,1fr)}
-        .bdrposts-columns-4 .brdposts-grid{grid-template-columns:repeat(4,1fr)}
+        .bdrposts-wrapper{width:100%;margin:20px 0}
+        .bdrposts-grid{display:grid;gap:20px}
+        .bdrposts-columns-1 .bdrposts-grid{grid-template-columns:1fr}
+        .bdrposts-columns-2 .bdrposts-grid{grid-template-columns:repeat(2,1fr)}
+        .bdrposts-columns-3 .bdrposts-grid{grid-template-columns:repeat(3,1fr)}
+        .bdrposts-columns-4 .bdrposts-grid{grid-template-columns:repeat(4,1fr)}
         .bdrposts-masonry{column-gap:20px}
         .bdrposts-columns-2 .bdrposts-masonry{column-count:2}
         .bdrposts-columns-3 .bdrposts-masonry{column-count:3}
@@ -317,14 +417,6 @@ class BDRPosts {
                         new Swiper(el,{loop:true,slidesPerView:1,pagination:{el:el.querySelector(".swiper-pagination"),clickable:true},navigation:{nextEl:el.querySelector(".swiper-button-next"),prevEl:el.querySelector(".swiper-button-prev")}});
                     });
                 }
-                document.querySelectorAll(".bdrposts-ticker .bdrposts-ticker-content").forEach(function(el){
-                    var w=0;
-                    el.querySelectorAll(".bdrposts-ticker-item").forEach(function(i){w+=i.offsetWidth+30});
-                    el.style.width=(w+50)+"px";
-                    var o=0;
-                    function step(){o-=1;if(-o>w)o=0;el.style.transform="translateX("+o+"px)";requestAnimationFrame(step)}
-                    requestAnimationFrame(step);
-                });
             }
             if(document.readyState==="complete"||document.readyState==="interactive"){init()}else{document.addEventListener("DOMContentLoaded",init)}
         })();
@@ -393,7 +485,8 @@ class BDRPosts {
             'order' => isset($attributes['order']) ? $attributes['order'] : 'DESC',
             'orderby' => isset($attributes['orderBy']) ? $attributes['orderBy'] : 'date',
             'offset' => isset($attributes['offset']) ? intval($attributes['offset']) : 0,
-            'post_status' => 'publish'
+            'post_status' => 'publish',
+            'ignore_sticky_posts' => true
         );
         
         // Paginação
@@ -404,26 +497,26 @@ class BDRPosts {
         }
         
         // Categorias
-        if (!empty($attributes['categories']) && is_array($attributes['categories'])) {
+        if (!empty($attributes['categories']) && is_array($attributes['categories']) && count($attributes['categories']) > 0) {
             $args['cat'] = implode(',', array_map('intval', $attributes['categories']));
         }
         
         // Tags
-        if (!empty($attributes['tags']) && is_array($attributes['tags'])) {
+        if (!empty($attributes['tags']) && is_array($attributes['tags']) && count($attributes['tags']) > 0) {
             $args['tag__in'] = array_map('intval', $attributes['tags']);
         }
         
         // Autores
-        if (!empty($attributes['authors']) && is_array($attributes['authors'])) {
+        if (!empty($attributes['authors']) && is_array($attributes['authors']) && count($attributes['authors']) > 0) {
             $args['author__in'] = array_map('intval', $attributes['authors']);
         }
         
         // Include/Exclude posts
-        if (!empty($attributes['includePosts']) && is_array($attributes['includePosts'])) {
+        if (!empty($attributes['includePosts']) && is_array($attributes['includePosts']) && count($attributes['includePosts']) > 0) {
             $args['post__in'] = array_map('intval', $attributes['includePosts']);
         }
         
-        if (!empty($attributes['excludePosts']) && is_array($attributes['excludePosts'])) {
+        if (!empty($attributes['excludePosts']) && is_array($attributes['excludePosts']) && count($attributes['excludePosts']) > 0) {
             $args['post__not_in'] = array_map('intval', $attributes['excludePosts']);
         }
         
@@ -436,7 +529,7 @@ class BDRPosts {
         }
 
         // Taxonomy filtering
-        if (!empty($attributes['taxonomy']) && !empty($attributes['taxonomyTerms']) && is_array($attributes['taxonomyTerms'])) {
+        if (!empty($attributes['taxonomy']) && !empty($attributes['taxonomyTerms']) && is_array($attributes['taxonomyTerms']) && count($attributes['taxonomyTerms']) > 0) {
             $args['tax_query'] = array(
                 array(
                     'taxonomy' => sanitize_text_field($attributes['taxonomy']),
@@ -483,7 +576,7 @@ class BDRPosts {
      */
     private function render_slider_layout($query, $attributes) {
         $slider_id = 'bdrposts-slider-' . wp_rand(1000, 9999);
-        echo '<div class="bdrposts-slider swiper" id="' . $slider_id . '">';
+        echo '<div class="bdrposts-slider swiper" id="' . esc_attr($slider_id) . '">';
         echo '<div class="swiper-wrapper">';
         
         while ($query->have_posts()) {
@@ -510,7 +603,7 @@ class BDRPosts {
         $items = array();
         while ($query->have_posts()) {
             $query->the_post();
-            $items[] = '<span class="bdrposts-ticker-item"><a href="' . esc_url(get_permalink()) . '">' . get_the_title() . '</a></span>';
+            $items[] = '<span class="bdrposts-ticker-item"><a href="' . esc_url(get_permalink()) . '">' . esc_html(get_the_title()) . '</a></span>';
         }
         
         // Duplica itens para loop infinito
@@ -561,9 +654,9 @@ class BDRPosts {
             $link_title = isset($attributes['linkTitle']) ? $attributes['linkTitle'] : true;
             echo '<h3 class="bdrposts-title">';
             if ($link_title) {
-                echo '<a href="' . esc_url(get_permalink()) . '">' . get_the_title() . '</a>';
+                echo '<a href="' . esc_url(get_permalink()) . '">' . esc_html(get_the_title()) . '</a>';
             } else {
-                echo get_the_title();
+                echo esc_html(get_the_title());
             }
             echo '</h3>';
         }
@@ -605,7 +698,7 @@ class BDRPosts {
         $meta_items = array();
         
         if ($show_date) {
-            $meta_items[] = '<span class="bdrposts-meta-date"><time datetime="' . esc_attr(get_the_date('c')) . '">' . get_the_date() . '</time></span>';
+            $meta_items[] = '<span class="bdrposts-meta-date"><time datetime="' . esc_attr(get_the_date('c')) . '">' . esc_html(get_the_date()) . '</time></span>';
         }
         
         if ($show_author) {
@@ -713,25 +806,21 @@ class BDRPosts {
 /**
  * Inicializa o plugin
  */
-function brdposts_init() {
+function bdrposts_init() {
     return BDRPosts::get_instance();
 }
-add_action('plugins_loaded', 'brdposts_init');
+add_action('plugins_loaded', 'bdrposts_init');
 
 /**
  * Hook de ativação
  */
 register_activation_hook(__FILE__, function() {
-    // Cria diretório build se não existir
     $build_dir = BDRPOSTS_PLUGIN_DIR . 'build';
     if (!file_exists($build_dir)) {
         wp_mkdir_p($build_dir);
     }
     
-    // Salva versão
     update_option('bdrposts_version', BDRPOSTS_VERSION);
-    
-    // Flush rewrite rules
     flush_rewrite_rules();
 });
 
