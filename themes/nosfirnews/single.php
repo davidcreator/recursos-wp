@@ -1,76 +1,48 @@
 <?php
 /**
- * The template for displaying all single posts
+ * Author:          Andrei Baicus <andrei@themeisle.com>
+ * Created on:      28/08/2018
  *
- * @link https://developer.wordpress.org/themes/basics/template-hierarchy/#single-post
- *
- * @package NosfirNews
- * @since 2.0.0
+ * @package Neve
  */
 
-get_header(); ?>
+$container_class = apply_filters( 'neve_container_class_filter', 'container', 'single-post' );
 
-<div class="site-content-wrapper">
-    <div class="container">
-        <div class="row content-layout">
-            
-            <!-- Conteúdo principal -->
-            <main id="main" class="site-main col-md-8" role="main" aria-label="<?php esc_attr_e( 'Article content', 'nosfirnews' ); ?>">
-                
-                <?php
-                while ( have_posts() ) :
-                    the_post();
-                    
-                    // Breadcrumbs
-                    if ( function_exists( 'nosfirnews_breadcrumbs' ) ) :
-                        nosfirnews_breadcrumbs();
-                    endif;
-                    
-                    get_template_part( 'template-parts/content/content', 'single' );
-                    
-                    // Author bio
-                    if ( is_singular( 'post' ) && get_the_author_meta( 'description' ) ) :
-                        get_template_part( 'template-parts/components/author-bio' );
-                    endif;
-                    
-                    // Related posts
-                    if ( is_singular( 'post' ) ) :
-                        get_template_part( 'template-parts/components/related-posts' );
-                    endif;
-                    
-                    // Post navigation
-                    $nav_args = array(
-                        'prev_text' => '<span class="nav-subtitle" aria-hidden="true">' . esc_html__( 'Previous Article', 'nosfirnews' ) . '</span> <span class="nav-title">%title</span>',
-                        'next_text' => '<span class="nav-subtitle" aria-hidden="true">' . esc_html__( 'Next Article', 'nosfirnews' ) . '</span> <span class="nav-title">%title</span>',
-                        'screen_reader_text' => esc_html__( 'Post navigation', 'nosfirnews' ),
-                    );
-                    the_post_navigation( $nav_args );
-                    
-                    // Comments
-                    if ( comments_open() || get_comments_number() ) :
-                        ?>
-                        <section id="comments" class="comments-area" aria-label="<?php esc_attr_e( 'Comments section', 'nosfirnews' ); ?>">
-                            <?php comments_template(); ?>
-                        </section>
-                        <?php
-                    endif;
-                    
-                endwhile;
-                ?>
-                
-            </main><!-- #main -->
-            
-            <!-- Sidebar -->
-            <?php 
-            if ( ! is_page_template( 'page-templates/full-width.php' ) ) : ?>
-                <aside id="secondary" class="widget-area sidebar col-md-4" role="complementary">
-                    <?php dynamic_sidebar( 'sidebar-1' ); ?>
-                </aside><!-- #secondary -->
-            <?php endif; ?>
-            
-        </div><!-- .row -->
-    </div><!-- .container -->
-</div><!-- .site-content-wrapper -->
+get_header();
 
+?>
+	<div class="<?php echo esc_attr( $container_class ); ?> single-post-container">
+		<div class="row">
+			<?php do_action( 'neve_do_sidebar', 'single-post', 'left' ); ?>
+			<article id="post-<?php echo esc_attr( get_the_ID() ); ?>"
+					class="<?php echo esc_attr( join( ' ', get_post_class( 'nv-single-post-wrap col' ) ) ); ?>">
+				<?php
+				/**
+				 *  Executes actions before the post content.
+				 *
+				 * @since 2.3.8
+				 */
+				do_action( 'neve_before_post_content' );
+
+				if ( have_posts() ) {
+					while ( have_posts() ) {
+						the_post();
+						get_template_part( 'template-parts/content', 'single' );
+					}
+				} else {
+					get_template_part( 'template-parts/content', 'none' );
+				}
+
+				/**
+				 *  Executes actions after the post content.
+				 *
+				 * @since 2.3.8
+				 */
+				do_action( 'neve_after_post_content' );
+				?>
+			</article>
+			<?php do_action( 'neve_do_sidebar', 'single-post', 'right' ); ?>
+		</div>
+	</div>
 <?php
 get_footer();

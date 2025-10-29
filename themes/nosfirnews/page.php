@@ -1,65 +1,66 @@
 <?php
 /**
- * The template for displaying all pages
+ * The template for displaying all pages.
  *
- * This is the template that displays all pages by default.
- * Please note that this is the WordPress construct of pages
- * and that other 'pages' on your WordPress site may use a
- * different template.
- *
- * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
- *
- * @package NosfirNews
- * @since 2.0.0
+ * @package Neve
+ * @since   1.0.0
  */
+$container_class = apply_filters( 'neve_container_class_filter', 'container', 'single-page' );
 
-get_header(); ?>
+get_header();
 
-<div class="site-content-wrapper">
-    <div class="container">
-        <div class="row content-layout">
-            
-            <!-- Conteúdo principal -->
-            <main id="main" class="site-main col-md-8" role="main" aria-label="<?php esc_attr_e( 'Page content', 'nosfirnews' ); ?>">
-                
-                <?php
-                while ( have_posts() ) :
-                    the_post();
-                    
-                    // Breadcrumbs para navegação
-                    if ( function_exists( 'nosfirnews_breadcrumbs' ) ) :
-                        nosfirnews_breadcrumbs();
-                    endif;
-                    
-                    get_template_part( 'template-parts/content/content', 'page' );
-                    
-                    // Seção de comentários
-                    if ( comments_open() || get_comments_number() ) :
-                        ?>
-                        <section id="comments" class="comments-area" aria-label="<?php esc_attr_e( 'Comments section', 'nosfirnews' ); ?>">
-                            <?php comments_template(); ?>
-                        </section>
-                        <?php
-                    endif;
-                    
-                endwhile; // End loop
-                ?>
-                
-            </main><!-- #main -->
+$context = class_exists( 'WooCommerce', false ) && ( is_cart() || is_checkout() || is_account_page() ) ? 'woo-page' : 'single-page';
+?>
+<div class="<?php echo esc_attr( $container_class ); ?> single-page-container">
+	<div class="row">
+		<?php do_action( 'neve_do_sidebar', $context, 'left' ); ?>
+		<div class="nv-single-page-wrap col">
+			<?php
+			/**
+			 * Executes actions before the page header.
+			 *
+			 * @since 2.4.0
+			 */
+			do_action( 'neve_before_page_header' );
 
-            <!-- Sidebar -->
-            <?php 
-            if ( ! is_page_template( 'page-templates/full-width.php' ) ) : ?>
-                <aside id="secondary" class="widget-area sidebar col-md-4 mt-0" role="complementary">
-                    <div class="sticky-sidebar">
-                        <?php dynamic_sidebar( 'sidebar-1' ); ?>
-                    </div>
-                </aside><!-- #secondary -->
-            <?php endif; ?>
+			/**
+			 * Executes the rendering function for the page header.
+			 *
+			 * @param string $context The displaying location context.
+			 *
+			 * @since 1.0.7
+			 */
+			do_action( 'neve_page_header', $context );
 
-        </div><!-- .row -->
-    </div><!-- .container -->
-</div><!-- .site-content-wrapper -->
+			/**
+			 * Executes actions before the page content.
+			 *
+			 * @param string $context The displaying location context.
+			 *
+			 * @since 1.0.7
+			 */
+			do_action( 'neve_before_content', $context );
 
-<?php
-get_footer();
+			if ( have_posts() ) {
+				while ( have_posts() ) {
+					the_post();
+					get_template_part( 'template-parts/content', 'page' );
+				}
+			} else {
+				get_template_part( 'template-parts/content', 'none' );
+			}
+
+			/**
+			 * Executes actions after the page content.
+			 *
+			 * @param string $context The displaying location context.
+			 *
+			 * @since 1.0.7
+			 */
+			do_action( 'neve_after_content', $context );
+			?>
+		</div>
+		<?php do_action( 'neve_do_sidebar', $context, 'right' ); ?>
+	</div>
+</div>
+<?php get_footer(); ?>
