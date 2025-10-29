@@ -2,12 +2,12 @@
 # This file is distributed under the same license as the Plugins - Jetpack &#8211; WP Security, Backup, Speed, &amp; Growth - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-10-16 13:54:09+0000\n"
+"PO-Revision-Date: 2025-10-28 20:54:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: GlotPress/4.0.2\n"
+"X-Generator: GlotPress/4.0.3\n"
 "Language: pt_BR\n"
 "Project-Id-Version: Plugins - Jetpack &#8211; WP Security, Backup, Speed, &amp; Growth - Stable (latest release)\n"
 
@@ -479,6 +479,11 @@ msgstr "Maldivas"
 msgid "Malaysia"
 msgstr "Malásia"
 
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3067
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:22
+msgid "Malawi"
+msgstr "Malaui"
+
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3065
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:22
 msgid "Macao"
@@ -523,6 +528,11 @@ msgstr "Letônia"
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:22
 msgid "Kyrgyzstan"
 msgstr "Quirguistão"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3052
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:22
+msgid "Kiribati"
+msgstr "Quiribáti"
 
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3051
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:22
@@ -679,6 +689,11 @@ msgstr "Ilhas Malvinas"
 msgid "Ethiopia"
 msgstr "Etiópia"
 
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3008
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:22
+msgid "Eswatini"
+msgstr "Essuatíni"
+
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:3007
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:22
 msgid "Estonia"
@@ -809,6 +824,16 @@ msgstr "Camarões"
 msgid "Cambodia"
 msgstr "Camboja"
 
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2975
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:22
+msgid "Burundi"
+msgstr "Burúndi"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2974
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:22
+msgid "Burkina Faso"
+msgstr "Burquina Fasso"
+
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2973
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:22
 msgid "Bulgaria"
@@ -854,10 +879,20 @@ msgstr "Butão"
 msgid "Bermuda"
 msgstr "Bermudas"
 
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2963
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:22
+msgid "Benin"
+msgstr "Benim"
+
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2961
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:22
 msgid "Belgium"
 msgstr "Bélgica"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2960
+#: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:22
+msgid "Belarus"
+msgstr "Bielorrússia"
 
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-field.php:2957
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:22
@@ -6438,6 +6473,10 @@ msgstr "Documentos do Google"
 msgid "Google Document Embed"
 msgstr "Incorporação de documentos do Google"
 
+#: extensions/blocks/google-docs-embed/google-docs-embed.php:48
+msgid "This document is private. To view the document, log in to a Google account that the document has been shared with and then refresh this page."
+msgstr "Este documento é privado. Para visualizar o documento, faça login em uma conta do Google com a qual o documento tenha sido compartilhado e atualize esta página."
+
 #: class.jetpack.php:5899
 msgid "* Subject to your usage and storage limit."
 msgstr "* Sujeito ao limite de uso e de armazenamento."
@@ -6668,6 +6707,10 @@ msgstr "O Jetpack WAF foi desativado."
 #: jetpack_vendor/automattic/jetpack-waf/src/class-waf-cli.php:135
 msgid "Jetpack WAF failed to fully deactivate."
 msgstr "Não foi possível desativar o Jetpack WAF."
+
+#: jetpack_vendor/automattic/jetpack-waf/src/class-waf-cli.php:122
+msgid "Jetpack WAF has successfully been set up."
+msgstr "O WAF do Jetpack foi configurado."
 
 #. translators: %1$s is the unexpected error message.
 #: jetpack_vendor/automattic/jetpack-waf/src/class-waf-cli.php:116
@@ -9959,6 +10002,11 @@ msgstr "Falha no teste de conexão (nº %1$s: %2$s)"
 msgid "PHP XML manipulation libraries are not available."
 msgstr "As bibliotecas de manipulação PHP XML não estão disponíveis."
 
+#. translators: a WordPress username
+#: _inc/lib/debugger/class-jetpack-cxn-tests.php:355
+msgid "The user (%s) who set up the Jetpack connection is not an administrator."
+msgstr "O usuário que configurou a conexão com o Jetpack (%s) não é um administrador."
+
 #: _inc/lib/debugger/class-jetpack-cxn-tests.php:299
 msgid "Jetpack is not connected. No master user to check."
 msgstr "O Jetpack não está conectado. Não há usuários principais a serem verificados."
@@ -11156,6 +11204,14 @@ msgstr "O módulo do Jetpack solicitado não é compatível com o seu plano."
 #: modules/module-info.php:738
 msgid "Enhanced analytics for WooCommerce and Jetpack users."
 msgstr "Análise avançada para usuários do WooCommerce e do Jetpack."
+
+#: class.jetpack-cli.php:1195
+msgid "Cannot cancel a plan while in safe mode. See: https://jetpack.com/support/safe-mode/"
+msgstr "Não é possível cancelar um plano quando no modo de segurança. Veja: https://jetpack.com/support/safe-mode/"
+
+#: _inc/class.jetpack-provision.php:56
+msgid "Cannot provision a plan while in safe mode. See: https://jetpack.com/support/safe-mode/"
+msgstr "Não é possível provisionar um plano no modo de segurança. Veja: https://jetpack.com/support/safe-mode/"
 
 #: jetpack_vendor/automattic/jetpack-sync/src/modules/class-plugins.php:250
 msgid "Unknown Plugin Update Failure"
@@ -14349,6 +14405,10 @@ msgstr "Configurações de Rede"
 msgid "Jetpack Network Settings Updated!"
 msgstr "As configurações da rede Jetpack foram atualizadas!"
 
+#: views/admin/network-activated-notice.php:12
+msgid "Jetpack is network-activated and notices cannot be dismissed."
+msgstr "O Jetpack está ativo em toda a rede e avisos não podem ser ignorados."
+
 #: views/admin/must-connect-main-blog.php:21
 msgid "Get started managing your Multisite install of Jetpack by connecting."
 msgstr "Conecte-se para começar a gerenciar a instalação Multisite do Jetpack."
@@ -17018,6 +17078,10 @@ msgstr "Rótulos: <small>picante, favorito, etc. <em>Separe rótulos com vírgul
 #: jetpack_vendor/automattic/jetpack-classic-theme-helper/src/custom-post-types/class-nova-restaurant.php:1267
 msgid "Add to section:"
 msgstr "Adicionar à seção:"
+
+#: jetpack_vendor/automattic/jetpack-classic-theme-helper/src/custom-post-types/class-nova-restaurant.php:1257
+msgid "Use the <kbd>TAB</kbd> key on your keyboard to move between columns and the <kbd>ENTER</kbd> or <kbd>RETURN</kbd> key to save each row and move on to the next."
+msgstr "Use a tecla <kbd>TAB</kbd> do seu teclado para navegar pelas colunas e a tecla <kbd>ENTER</kbd> ou <kbd>RETURN</kbd> para salvar cada linha e seguir para a próxima."
 
 #: jetpack_vendor/automattic/jetpack-classic-theme-helper/src/custom-post-types/class-nova-restaurant.php:1120
 msgid "Move menu section down"

@@ -149,7 +149,29 @@ class Minifier {
             if (!empty($matches[1])) {
                 $js = $matches[1];
                 $minified_js = $this->minify_js_content($js);
-                $tag = str_replace($js, $min            ]);
+                $tag = str_replace($js, $minified_js, $tag);
+            }
         }
+        
+        return $tag;
+    }
+    
+    /**
+     * Minificar conteúdo JS (básico)
+     */
+    private function minify_js_content($js) {
+        // Remover comentários de linha única
+        $js = preg_replace('/(?:(?:^|\n)\s*\/\/.*$)/m', '', $js);
+        
+        // Remover comentários multi-linha
+        $js = preg_replace('/\/\*[\s\S]*?\*\//', '', $js);
+        
+        // Remover espaços extras
+        $js = preg_replace('/\s+/', ' ', $js);
+        
+        // Remover espaços ao redor de operadores
+        $js = preg_replace('/\s*([\{\}\[\]\(\);,=><\+\-\*\/\&\|\!])\s*/', '$1', $js);
+        
+        return trim($js);
     }
 }

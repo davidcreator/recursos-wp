@@ -36,6 +36,9 @@ class TwoFactorAuth {
         add_action('wp_ajax_wpsp_disable_2fa', [$this, 'ajax_disable_2fa']);
         add_action('wp_ajax_wpsp_verify_2fa', [$this, 'ajax_verify_2fa']);
         add_action('wp_ajax_wpsp_generate_backup_codes', [$this, 'ajax_generate_backup_codes']);
+        add_action('wp_ajax_wpsp_setup_authenticator', [$this, 'ajax_setup_authenticator']);
+        add_action('wp_ajax_wpsp_verify_authenticator', [$this, 'ajax_verify_authenticator']);
+        add_action('wp_ajax_wpsp_resend_email_code', [$this, 'ajax_resend_email_code']);
         
         // Adicionar configurações 2FA ao perfil do usuário
         add_action('show_user_profile', [$this, 'user_2fa_settings']);
@@ -265,6 +268,76 @@ class TwoFactorAuth {
     }
     
     /**
+     * AJAX: Setup Authenticator
+     */
+    public function ajax_setup_authenticator() {
+        check_ajax_referer('wpsp_admin_nonce', 'nonce');
+        
+        $user_id = intval($_POST['user_id']);
+        
+        if ($user_id !== get_current_user_id() && !current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Permission denied.', 'wp-security-pro')]);
+        }
+        
+        // Gerar secret
+        $secret = $this->authenticator->generate_secret($user_id);
+        $qr_code_url = $this->authenticator->get_qr_code_url($user_id);
+        
+        wp_send_json_success([
+            'secret' => $secret,
+            'qr_code_url' => $qr_code_url,
+            'message' => __('QR Code generated successfully.', 'wp-security-pro')
+        ]);
+    }
+    
+    /**
+     * AJAX: Verify Authenticator
+     */
+    public function ajax_verify_authenticator() {
+        check_ajax_referer('wpsp_admin_nonce', 'nonce');
+        
+        $user_id = intval($_POST['user_id']);
+        $code = sanitize_text_field($_POST['code']);
+        
+        if ($user_id !== get_current_user_id() && !current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Permission denied.', 'wp-security-pro')]);
+        }
+        
+        if ($this->authenticator->validate_setup($user_id, $code)) {
+            wp_send_json_success([
+                'message' => __('Authenticator enabled successfully.', 'wp-security-pro')
+            ]);
+        } else {
+            wp_send_json_error([
+                'message' => __('Invalid code. Please try again.', 'wp-security-pro')
+            ]);
+        }
+    }
+    
+    /**
+     * AJAX: Resend Email Code
+     */
+    public function ajax_resend_email_code() {
+        check_ajax_referer('wpsp_admin_nonce', 'nonce');
+        
+        $user_id = intval($_POST['user_id']);
+        
+        if ($user_id !== get_current_user_id() && !current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Permission denied.', 'wp-security-pro')]);
+        }
+        
+        if ($this->email->resend_code($user_id)) {
+            wp_send_json_success([
+                'message' => __('Verification code resent successfully.', 'wp-security-pro')
+            ]);
+        } else {
+            wp_send_json_error([
+                'message' => __('Failed to send verification code.', 'wp-security-pro')
+            ]);
+        }
+    }
+    
+    /**
      * Enqueue scripts
      */
     public function enqueue_scripts() {
@@ -275,5 +348,7 @@ class TwoFactorAuth {
                 'nonce' => wp_create_nonce('wpsp_admin_nonce')
             ]);
         }
-    }
+    }   
 }
+
+
