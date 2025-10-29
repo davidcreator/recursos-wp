@@ -1,132 +1,119 @@
 <?php
 /**
- * The template for displaying the header
+ * The header for our theme
  *
- * Displays all of the head element and everything up until the page header div.
+ * This is the template that displays all of the <head> section and everything up until <div id="content">
  *
- * @package Neve
- * @since   1.0.0
+ * @link https://developer.wordpress.org/themes/basics/template-files/#template-partials
+ *
+ * @package NosfirNews
+ * @since 2.0.0
  */
-?><!DOCTYPE html>
-<?php
 
-/**
- * Filters the header classes.
- *
- * @param string $header_classes Header classes.
- *
- * @since 2.3.7
- */
-$header_classes = apply_filters( 'nv_header_classes', 'header' );
-
-/**
- * Fires before the page is rendered.
- */
-do_action( 'neve_html_start_before' );
-
-?>
-<html <?php language_attributes(); ?>>
-
+?><!doctype html>
+<html <?php language_attributes(); ?> class="no-js">
 <head>
-	<?php
-	/**
-	 * Executes actions after the head tag is opened.
-	 *
-	 * @since 2.11
-	 */
-	do_action( 'neve_head_start_after' );
-	?>
-
-	<meta charset="<?php bloginfo( 'charset' ); ?>">
-	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-	<link rel="profile" href="http://gmpg.org/xfn/11">
-	<?php if ( is_singular() && pings_open( get_queried_object() ) ) : ?>
-		<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
-	<?php endif; ?>
-	<?php wp_head(); ?>
-
-	<?php
-	/**
-	 * Executes actions before the head tag is closed.
-	 *
-	 * @since 2.11
-	 */
-	do_action( 'neve_head_end_before' );
-	?>
+    <meta charset="<?php bloginfo( 'charset' ); ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="profile" href="https://gmpg.org/xfn/11">
+    
+    <!-- DNS Prefetch for performance -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    
+    <!-- Preconnect for critical resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Theme color for mobile browsers -->
+    <meta name="theme-color" content="#2c3e50">
+    <meta name="msapplication-TileColor" content="#2c3e50">
+    
+    <!-- Remove no-js class with JavaScript -->
+    <script>document.documentElement.classList.remove('no-js');</script>
+    
+    <?php wp_head(); ?>
 </head>
 
-<body  <?php body_class(); ?> <?php neve_body_attrs(); ?> >
-<?php
-/**
- * Executes actions after the body tag is opened.
- *
- * @since 2.11
- */
-do_action( 'neve_body_start_after' );
-?>
+<body <?php body_class(); ?> itemscope itemtype="https://schema.org/WebPage">
+
 <?php wp_body_open(); ?>
-<div class="wrapper">
-	<?php
-	/**
-	 * Executes actions before the header tag is opened.
-	 *
-	 * @since 2.7.2
-	 */
-	do_action( 'neve_before_header_wrapper_hook' );
-	?>
 
-	<header class="<?php echo esc_attr( $header_classes ); ?>" <?php echo ( neve_is_amp() ) ? 'next-page-hide' : ''; ?> >
-		<a class="neve-skip-link show-on-focus" href="#content" >
-			<?php echo __( 'Skip to content', 'neve' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-		</a>
-		<?php
-
-		/**
-		 * Executes actions before the header ( navigation ) area.
-		 *
-		 * @since 1.0.0
-		 */
-		do_action( 'neve_before_header_hook' );
-
-		if ( apply_filters( 'neve_filter_toggle_content_parts', true, 'header' ) === true ) {
-			do_action( 'neve_do_header' );
-		}
-
-		/**
-		 * Executes actions after the header ( navigation ) area.
-		 *
-		 * @since 1.0.0
-		 */
-		do_action( 'neve_after_header_hook' );
-		?>
-	</header>
-
-	<?php
-	/**
-	 * Executes actions after the header tag is closed.
-	 *
-	 * @since 2.7.2
-	 */
-	do_action( 'neve_after_header_wrapper_hook' );
-	?>
-
-
-	<?php
-	/**
-	 * Executes actions before main tag is opened.
-	 *
-	 * @since 1.0.4
-	 */
-	do_action( 'neve_before_primary' );
-	?>
-
-	<main id="content" class="neve-main">
-
-<?php
-/**
- * Executes actions after main tag is opened.
- *
- * @since 1.0.4
- */
-do_action( 'neve_after_primary_start' );
-
+<div id="page" class="site" itemscope itemtype="https://schema.org/WebSite">
+    <!-- Skip links for accessibility -->
+    <div class="skip-links">
+        <a class="skip-link screen-reader-text" href="#main"><?php esc_html_e( 'Skip to main content', 'nosfirnews' ); ?></a>
+        <a class="skip-link screen-reader-text" href="#site-navigation"><?php esc_html_e( 'Skip to navigation', 'nosfirnews' ); ?></a>
+        <?php if ( is_active_sidebar( 'sidebar-1' ) ) : ?>
+            <a class="skip-link screen-reader-text" href="#secondary"><?php esc_html_e( 'Skip to sidebar', 'nosfirnews' ); ?></a>
+        <?php endif; ?>
+        <a class="skip-link screen-reader-text" href="#colophon"><?php esc_html_e( 'Skip to footer', 'nosfirnews' ); ?></a>
+    </div>
+    
+    <?php
+    // Get navigation position setting
+    $nav_position = get_theme_mod( 'nosfirnews_navigation_position', 'below-header' );
+    $header_classes = nosfirnews_get_header_classes();
+    $nav_classes = nosfirnews_get_navigation_classes();
+    ?>
+    
+    <header id="masthead" class="<?php echo esc_attr( $header_classes ); ?>" role="banner" itemscope itemtype="https://schema.org/WPHeader">
+        
+        <?php if ( in_array( $nav_position, array( 'right-of-logo', 'next-to-logo', 'center-header', 'right-header' ) ) ) : ?>
+            <!-- Inline Navigation Layout -->
+            <div class="container">
+                
+                <?php get_template_part( 'template-parts/header/site-branding' ); ?>
+                
+                <nav id="site-navigation" class="<?php echo esc_attr( $nav_classes ); ?>" role="navigation" aria-label="<?php esc_attr_e( 'Primary Navigation', 'nosfirnews' ); ?>" itemscope itemtype="https://schema.org/SiteNavigationElement">
+                    <div class="container">
+                        
+                        <?php get_template_part( 'template-parts/header/navigation' ); ?>
+                        
+                    </div><!-- .container -->
+                </nav><!-- #site-navigation -->
+                
+                <!-- Mobile Menu Toggle -->
+                <button class="mobile-menu-toggle" aria-controls="site-navigation" aria-expanded="false" aria-label="<?php esc_attr_e( 'Toggle navigation', 'nosfirnews' ); ?>">
+                    <span class="screen-reader-text"><?php esc_html_e( 'Menu', 'nosfirnews' ); ?></span>
+                    <div class="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </button>
+                
+            </div><!-- .container -->
+            
+        <?php else : ?>
+            <!-- Default Below Header Layout -->
+            <div class="container">
+                
+                <?php get_template_part( 'template-parts/header/site-branding' ); ?>
+                
+            </div><!-- .container -->
+            
+            <nav id="site-navigation" class="<?php echo esc_attr( $nav_classes ); ?>" role="navigation" aria-label="<?php esc_attr_e( 'Primary Navigation', 'nosfirnews' ); ?>" itemscope itemtype="https://schema.org/SiteNavigationElement">
+                <div class="container">
+                    
+                    <?php get_template_part( 'template-parts/header/navigation' ); ?>
+                    
+                    <!-- Mobile Menu Toggle -->
+                    <button class="mobile-menu-toggle" aria-controls="site-navigation" aria-expanded="false" aria-label="<?php esc_attr_e( 'Toggle navigation', 'nosfirnews' ); ?>">
+                        <span class="screen-reader-text"><?php esc_html_e( 'Menu', 'nosfirnews' ); ?></span>
+                        <div class="hamburger">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </button>
+                    
+                </div><!-- .container -->
+            </nav><!-- #site-navigation -->
+            
+        <?php endif; ?>
+        
+    </header><!-- #masthead -->
+    
+    <div id="content" class="site-content" role="main">
