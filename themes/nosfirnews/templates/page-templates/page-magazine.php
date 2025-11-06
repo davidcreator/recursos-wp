@@ -74,17 +74,7 @@ get_header(); ?>
                 <section class="featured-stories">
                     <div class="container">
                         <?php
-                        $featured_posts = new WP_Query( array(
-                            'post_type' => 'post',
-                            'posts_per_page' => 5,
-                            'meta_query' => array(
-                                array(
-                                    'key' => '_featured_post',
-                                    'value' => '1',
-                                    'compare' => '='
-                                )
-                            )
-                        ) );
+                        $featured_posts = nosfirnews_get_featured_posts(5);
                         
                         if ( $featured_posts->have_posts() ) : ?>
                             <div class="featured-grid">
@@ -92,60 +82,17 @@ get_header(); ?>
                                 $post_count = 0;
                                 while ( $featured_posts->have_posts() ) : $featured_posts->the_post(); 
                                     $post_count++;
-                                    $item_class = $post_count === 1 ? 'featured-main' : 'featured-secondary';
+                                    $layout = $post_count === 1 ? 'featured' : 'compact';
                                 ?>
-                                    <article class="featured-item <?php echo esc_attr( $item_class ); ?>">
-                                        <?php if ( has_post_thumbnail() ) : ?>
-                                            <div class="featured-image">
-                                                <a href="<?php the_permalink(); ?>">
-                                                    <?php 
-                                                    $image_size = $post_count === 1 ? 'large' : 'nosfirnews-featured';
-                                                    the_post_thumbnail( $image_size, array( 'class' => 'featured-img' ) ); 
-                                                    ?>
-                                                </a>
-                                                
-                                                <div class="featured-overlay">
-                                                    <?php
-                                                    $categories = get_the_category();
-                                                    if ( ! empty( $categories ) ) :
-                                                    ?>
-                                                        <div class="featured-category">
-                                                            <a href="<?php echo esc_url( get_category_link( $categories[0]->term_id ) ); ?>">
-                                                                <?php echo esc_html( $categories[0]->name ); ?>
-                                                            </a>
-                                                        </div>
-                                                    <?php endif; ?>
-                                                </div>
-                                            </div>
-                                        <?php endif; ?>
-                                        
-                                        <div class="featured-content">
-                                            <h2 class="featured-title">
-                                                <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                                            </h2>
-                                            
-                                            <?php if ( $post_count === 1 ) : ?>
-                                                <div class="featured-excerpt">
-                                                    <?php 
-                                                    if ( has_excerpt() ) {
-                                                        the_excerpt();
-                                                    } else {
-                                                        echo wp_trim_words( get_the_content(), 30, '...' );
-                                                    }
-                                                    ?>
-                                                </div>
-                                            <?php endif; ?>
-                                            
-                                            <div class="featured-meta">
-                                                <span class="featured-author"><?php the_author(); ?></span>
-                                                <span class="featured-date"><?php echo get_the_date(); ?></span>
-                                                <?php if ( comments_open() || get_comments_number() ) : ?>
-                                                    <span class="featured-comments">
-                                                        <?php comments_number( '0', '1', '%' ); ?>
-                                                    </span>
-                                                <?php endif; ?>
-                                            </div>
-                                        </div>
+                                    <article class="featured-item <?php echo $post_count === 1 ? 'featured-main' : 'featured-secondary'; ?>">
+                                        <?php echo nosfirnews_get_post_card(get_the_ID(), $layout, array(
+                                            'show_category' => true,
+                                            'show_date' => true,
+                                            'show_author' => true,
+                                            'show_comments' => true,
+                                            'excerpt_length' => $post_count === 1 ? 30 : 15,
+                                            'thumbnail_size' => $post_count === 1 ? 'large' : 'nosfirnews-featured'
+                                        )); ?>
                                     </article>
                                 <?php endwhile; ?>
                             </div>
@@ -202,43 +149,13 @@ get_header(); ?>
                                         $post_class = $post_index === 1 ? 'category-main' : 'category-secondary';
                                     ?>
                                         <article class="category-post <?php echo esc_attr( $post_class ); ?>">
-                                            <?php if ( has_post_thumbnail() ) : ?>
-                                                <div class="category-image">
-                                                    <a href="<?php the_permalink(); ?>">
-                                                        <?php 
-                                                        $image_size = $post_index === 1 ? 'nosfirnews-featured' : 'nosfirnews-medium';
-                                                        the_post_thumbnail( $image_size, array( 'class' => 'category-img' ) ); 
-                                                        ?>
-                                                    </a>
-                                                </div>
-                                            <?php endif; ?>
-                                            
-                                            <div class="category-content">
-                                                <h3 class="category-post-title">
-                                                    <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                                                </h3>
-                                                
-                                                <?php if ( $post_index === 1 ) : ?>
-                                                    <div class="category-excerpt">
-                                                        <?php 
-                                                        if ( has_excerpt() ) {
-                                                            the_excerpt();
-                                                        } else {
-                                                            echo wp_trim_words( get_the_content(), 15, '...' );
-                                                        }
-                                                        ?>
-                                                    </div>
-                                                <?php endif; ?>
-                                                
-                                                <div class="category-meta">
-                                                    <span class="category-date"><?php echo get_the_date(); ?></span>
-                                                    <?php if ( comments_open() || get_comments_number() ) : ?>
-                                                        <span class="category-comments">
-                                                            <?php comments_number( '0', '1', '%' ); ?>
-                                                        </span>
-                                                    <?php endif; ?>
-                                                </div>
-                                            </div>
+                                            <?php echo nosfirnews_get_post_card(get_the_ID(), $post_index === 1 ? 'grid' : 'compact', array(
+                                                'show_date' => true,
+                                                'show_comments' => true,
+                                                'show_excerpt' => $post_index === 1,
+                                                'excerpt_length' => 15,
+                                                'thumbnail_size' => $post_index === 1 ? 'nosfirnews-featured' : 'nosfirnews-medium'
+                                            )); ?>
                                         </article>
                                     <?php endwhile; ?>
                                 </div>

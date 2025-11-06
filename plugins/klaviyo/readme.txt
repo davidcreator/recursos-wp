@@ -3,7 +3,7 @@ Contributors: klaviyo, bialecki, bawhalley
 Tags: analytics, email, marketing, klaviyo, woocommerce
 Requires at least: 5.2
 Tested up to: 6.8
-Stable tag: 3.7.1
+Stable tag: 3.7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -85,6 +85,9 @@ For detailed instructions on integrating Klaviyo and WooCommerce please visit ou
 
 
 == Changelog ==
+= 3.7.2 2025-11-04 =
+* Changed - Update Klaviyo backend API revision to 2025-10-15.
+
 = 3.7.1 2025-09-11 =
 * Added - Include country code in email consent webhook.
 * Changed - Updates kl_checkout_item hook to include $values representing full cart item data.

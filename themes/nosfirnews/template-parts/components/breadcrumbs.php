@@ -6,6 +6,11 @@
  * @since 1.0.0
  */
 
+// Security: Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 // Don't show breadcrumbs on the front page
 if ( is_front_page() ) {
     return;
@@ -45,6 +50,11 @@ if ( empty( $breadcrumbs ) ) {
  * @return array Array of breadcrumb items
  */
 function nosfirnews_get_breadcrumbs() {
+    // Evitar múltiplas declarações
+    if ( function_exists( 'nosfirnews_get_breadcrumbs' ) ) {
+        return array();
+    }
+    
     $breadcrumbs = array();
     
     // Home link
@@ -55,63 +65,64 @@ function nosfirnews_get_breadcrumbs() {
     );
     
     if ( is_category() || is_tag() || is_tax() ) {
-        // Archive pages
         $term = get_queried_object();
         
-        if ( is_category() ) {
+        if ( is_category() && ! empty( $term->parent ) ) {
             // Add parent categories
-            $parents = get_category_parents( $term->term_id, true, '|||' );
-            if ( $parents && ! is_wp_error( $parents ) ) {
-                $parent_cats = explode( '|||', rtrim( $parents, '|||' ) );
-                foreach ( $parent_cats as $parent_cat ) {
-                    if ( ! empty( $parent_cat ) ) {
-                        // Extract title and URL from the link
-                        preg_match( '/<a[^>]*href="([^"]*)"[^>]*>([^<]*)<\/a>/', $parent_cat, $matches );
-                        if ( isset( $matches[1] ) && isset( $matches[2] ) ) {
-                            $breadcrumbs[] = array(
-                                'title' => $matches[2],
-                                'url' => $matches[1],
-                                'is_current' => false
-                            );
-                        }
-                    }
+            $ancestors = get_ancestors( $term->term_id, 'category' );
+            $ancestors = array_reverse( $ancestors );
+            
+            foreach ( $ancestors as $ancestor_id ) {
+                $ancestor = get_term( $ancestor_id, 'category' );
+                if ( ! is_wp_error( $ancestor ) ) {
+                    $breadcrumbs[] = array(
+                        'title' => $ancestor->name,
+                        'url' => get_term_link( $ancestor ),
+                        'is_current' => false
+                    );
                 }
             }
-        } else {
-            $breadcrumbs[] = array(
-                'title' => $term->name,
-                'url' => get_term_link( $term ),
-                'is_current' => true
-            );
         }
         
+        // Current term
+        $breadcrumbs[] = array(
+            'title' => $term->name,
+            'url' => '',
+            'is_current' => true
+        );
+        
     } elseif ( is_single() ) {
-        // Single post
         $post = get_queried_object();
         
-        if ( $post->post_type === 'post' ) {
+        if ( 'post' === $post->post_type ) {
             // Add primary category
             $categories = get_the_category( $post->ID );
             if ( ! empty( $categories ) ) {
                 $primary_cat = $categories[0];
                 
                 // Add parent categories
-                $parents = get_category_parents( $primary_cat->term_id, true, '|||' );
-                if ( $parents && ! is_wp_error( $parents ) ) {
-                    $parent_cats = explode( '|||', rtrim( $parents, '|||' ) );
-                    foreach ( $parent_cats as $parent_cat ) {
-                        if ( ! empty( $parent_cat ) ) {
-                            preg_match( '/<a[^>]*href="([^"]*)"[^>]*>([^<]*)<\/a>/', $parent_cat, $matches );
-                            if ( isset( $matches[1] ) && isset( $matches[2] ) ) {
-                                $breadcrumbs[] = array(
-                                    'title' => $matches[2],
-                                    'url' => $matches[1],
-                                    'is_current' => false
-                                );
-                            }
+                if ( ! empty( $primary_cat->parent ) ) {
+                    $ancestors = get_ancestors( $primary_cat->term_id, 'category' );
+                    $ancestors = array_reverse( $ancestors );
+                    
+                    foreach ( $ancestors as $ancestor_id ) {
+                        $ancestor = get_term( $ancestor_id, 'category' );
+                        if ( ! is_wp_error( $ancestor ) ) {
+                            $breadcrumbs[] = array(
+                                'title' => $ancestor->name,
+                                'url' => get_term_link( $ancestor ),
+                                'is_current' => false
+                            );
                         }
                     }
                 }
+                
+                // Add primary category
+                $breadcrumbs[] = array(
+                    'title' => $primary_cat->name,
+                    'url' => get_term_link( $primary_cat ),
+                    'is_current' => false
+                );
             }
         } else {
             // Custom post type
@@ -133,7 +144,6 @@ function nosfirnews_get_breadcrumbs() {
         );
         
     } elseif ( is_page() ) {
-        // Page
         $page = get_queried_object();
         
         // Add parent pages
@@ -156,7 +166,6 @@ function nosfirnews_get_breadcrumbs() {
         );
         
     } elseif ( is_search() ) {
-        // Search results
         $breadcrumbs[] = array(
             'title' => sprintf( __( 'Search Results for: %s', 'nosfirnews' ), get_search_query() ),
             'url' => '',
@@ -164,7 +173,6 @@ function nosfirnews_get_breadcrumbs() {
         );
         
     } elseif ( is_404() ) {
-        // 404 page
         $breadcrumbs[] = array(
             'title' => __( '404 - Page Not Found', 'nosfirnews' ),
             'url' => '',
@@ -172,7 +180,6 @@ function nosfirnews_get_breadcrumbs() {
         );
         
     } elseif ( is_author() ) {
-        // Author archive
         $author = get_queried_object();
         $breadcrumbs[] = array(
             'title' => sprintf( __( 'Author: %s', 'nosfirnews' ), $author->display_name ),
@@ -181,25 +188,7 @@ function nosfirnews_get_breadcrumbs() {
         );
         
     } elseif ( is_date() ) {
-        // Date archive
-        if ( is_year() ) {
-            $breadcrumbs[] = array(
-                'title' => get_the_date( 'Y' ),
-                'url' => '',
-                'is_current' => true
-            );
-        } elseif ( is_month() ) {
-            $breadcrumbs[] = array(
-                'title' => get_the_date( 'Y' ),
-                'url' => get_year_link( get_the_date( 'Y' ) ),
-                'is_current' => false
-            );
-            $breadcrumbs[] = array(
-                'title' => get_the_date( 'F' ),
-                'url' => '',
-                'is_current' => true
-            );
-        } elseif ( is_day() ) {
+        if ( is_day() ) {
             $breadcrumbs[] = array(
                 'title' => get_the_date( 'Y' ),
                 'url' => get_year_link( get_the_date( 'Y' ) ),
@@ -215,11 +204,31 @@ function nosfirnews_get_breadcrumbs() {
                 'url' => '',
                 'is_current' => true
             );
+        } elseif ( is_month() ) {
+            $breadcrumbs[] = array(
+                'title' => get_the_date( 'Y' ),
+                'url' => get_year_link( get_the_date( 'Y' ) ),
+                'is_current' => false
+            );
+            $breadcrumbs[] = array(
+                'title' => get_the_date( 'F' ),
+                'url' => '',
+                'is_current' => true
+            );
+        } elseif ( is_year() ) {
+            $breadcrumbs[] = array(
+                'title' => get_the_date( 'Y' ),
+                'url' => '',
+                'is_current' => true
+            );
         }
         
     } elseif ( is_post_type_archive() ) {
-        // Custom post type archive
         $post_type = get_query_var( 'post_type' );
+        if ( is_array( $post_type ) ) {
+            $post_type = reset( $post_type );
+        }
+        
         $post_type_object = get_post_type_object( $post_type );
         
         if ( $post_type_object ) {
@@ -231,5 +240,10 @@ function nosfirnews_get_breadcrumbs() {
         }
     }
     
+    /**
+     * Filter breadcrumbs before output
+     *
+     * @param array $breadcrumbs Array of breadcrumb items
+     */
     return apply_filters( 'nosfirnews_breadcrumbs', $breadcrumbs );
 }

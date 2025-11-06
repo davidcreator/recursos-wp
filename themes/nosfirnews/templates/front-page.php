@@ -19,19 +19,13 @@ get_header(); ?>
                         
                         <!-- Main Featured Post -->
                         <?php
-                        $featured_post = new WP_Query( array(
-                            'posts_per_page' => 1,
-                            'meta_query' => array(
-                                array(
-                                    'key' => '_hero_post',
-                                    'value' => '1',
-                                    'compare' => '='
-                                )
-                            )
-                        ) );
+                        $hero_posts = nosfirnews_get_hero_posts(1);
                         
-                        if ( $featured_post->have_posts() ) :
-                            while ( $featured_post->have_posts() ) : $featured_post->the_post();
+                        if ( $hero_posts->have_posts() ) :
+                            while ( $hero_posts->have_posts() ) : $hero_posts->the_post();
+                                $categories = get_the_category();
+                                $category = $categories ? $categories[0] : null;
+                                $views = get_post_meta( get_the_ID(), 'post_views', true );
                         ?>
                             <div class="hero-main">
                                 <div class="hero-image">
@@ -50,14 +44,11 @@ get_header(); ?>
                                             <?php esc_html_e( 'Destaque Principal', 'nosfirnews' ); ?>
                                         </div>
                                         <div class="hero-meta">
-                                            <span class="hero-category">
-                                                <?php
-                                                $categories = get_the_category();
-                                                if ( $categories ) {
-                                                    echo '<a href="' . esc_url( get_category_link( $categories[0]->term_id ) ) . '">' . esc_html( $categories[0]->name ) . '</a>';
-                                                }
-                                                ?>
-                                            </span>
+                                            <?php if ( $category ) : ?>
+                                                <span class="hero-category">
+                                                    <a href="<?php echo esc_url( get_category_link( $category->term_id ) ); ?>"><?php echo esc_html( $category->name ); ?></a>
+                                                </span>
+                                            <?php endif; ?>
                                             <span class="hero-date">
                                                 <i class="fas fa-calendar-alt" aria-hidden="true"></i>
                                                 <time datetime="<?php echo get_the_date( 'c' ); ?>">
@@ -85,10 +76,7 @@ get_header(); ?>
                                                 <?php endif; ?>
                                                 <span class="stat-item">
                                                     <i class="fas fa-eye" aria-hidden="true"></i>
-                                                    <?php
-                                                    $views = get_post_meta( get_the_ID(), 'post_views', true );
-                                                    echo $views ? number_format_i18n( $views ) : '0';
-                                                    ?>
+                                                    <?php echo $views ? number_format_i18n( $views ) : '0'; ?>
                                                 </span>
                                             </div>
                                         </div>
@@ -104,68 +92,23 @@ get_header(); ?>
                         <!-- Secondary Featured Posts -->
                         <div class="hero-secondary">
                             <?php
-                            $secondary_posts = new WP_Query( array(
-                                'posts_per_page' => 4,
-                                'meta_query' => array(
-                                    array(
-                                        'key' => '_featured_post',
-                                        'value' => '1',
-                                        'compare' => '='
-                                    )
-                                ),
-                                'meta_query' => array(
-                                    'relation' => 'AND',
-                                    array(
-                                        'key' => '_featured_post',
-                                        'value' => '1',
-                                        'compare' => '='
-                                    ),
-                                    array(
-                                        'key' => '_hero_post',
-                                        'compare' => 'NOT EXISTS'
-                                    )
-                                )
-                            ) );
+                            $featured_posts = nosfirnews_get_featured_posts(4, true); // true para excluir heróis
                             
-                            if ( $secondary_posts->have_posts() ) :
+                            if ( $featured_posts->have_posts() ) :
                             ?>
                                 <div class="secondary-posts">
-                                    <?php while ( $secondary_posts->have_posts() ) : $secondary_posts->the_post(); ?>
+                                    <?php while ( $featured_posts->have_posts() ) : $featured_posts->the_post(); 
+                                        $categories = get_the_category();
+                                        $category = $categories ? $categories[0] : null;
+                                    ?>
                                         <article class="secondary-post">
-                                            <div class="secondary-thumbnail">
-                                                <a href="<?php the_permalink(); ?>" aria-label="<?php the_title_attribute(); ?>">
-                                                    <?php if ( has_post_thumbnail() ) : ?>
-                                                        <?php the_post_thumbnail( 'medium', array( 'class' => 'img-fluid' ) ); ?>
-                                                    <?php else : ?>
-                                                        <div class="no-thumbnail">
-                                                            <i class="fas fa-image" aria-hidden="true"></i>
-                                                        </div>
-                                                    <?php endif; ?>
-                                                </a>
-                                            </div>
-                                            <div class="secondary-content">
-                                                <div class="secondary-meta">
-                                                    <span class="secondary-category">
-                                                        <?php
-                                                        $categories = get_the_category();
-                                                        if ( $categories ) {
-                                                            echo '<a href="' . esc_url( get_category_link( $categories[0]->term_id ) ) . '">' . esc_html( $categories[0]->name ) . '</a>';
-                                                        }
-                                                        ?>
-                                                    </span>
-                                                    <span class="secondary-date">
-                                                        <time datetime="<?php echo get_the_date( 'c' ); ?>">
-                                                            <?php echo get_the_date(); ?>
-                                                        </time>
-                                                    </span>
-                                                </div>
-                                                <h3 class="secondary-title">
-                                                    <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                                                </h3>
-                                                <div class="secondary-excerpt">
-                                                    <?php echo wp_trim_words( get_the_excerpt(), 15, '...' ); ?>
-                                                </div>
-                                            </div>
+                                            <?php echo nosfirnews_get_post_card(get_the_ID(), 'compact', array(
+                                                'show_category' => true,
+                                                'show_date' => true,
+                                                'show_excerpt' => true,
+                                                'excerpt_length' => 15,
+                                                'thumbnail_size' => 'medium'
+                                            )); ?>
                                         </article>
                                     <?php endwhile; ?>
                                 </div>
@@ -194,19 +137,10 @@ get_header(); ?>
                         <div class="breaking-content">
                             <div class="breaking-ticker">
                                 <?php
-                                $breaking_news = new WP_Query( array(
-                                    'posts_per_page' => 5,
-                                    'meta_query' => array(
-                                        array(
-                                            'key' => '_breaking_news',
-                                            'value' => '1',
-                                            'compare' => '='
-                                        )
-                                    )
-                                ) );
+                                $breaking_posts = nosfirnews_get_breaking_news(5);
                                 
-                                if ( $breaking_news->have_posts() ) :
-                                    while ( $breaking_news->have_posts() ) : $breaking_news->the_post();
+                                if ( $breaking_posts->have_posts() ) :
+                                    while ( $breaking_posts->have_posts() ) : $breaking_posts->the_post();
                                 ?>
                                     <div class="breaking-item">
                                         <span class="breaking-time">
@@ -343,70 +277,15 @@ get_header(); ?>
                                 while ( $latest_posts->have_posts() ) : $latest_posts->the_post();
                             ?>
                                 <article class="latest-post-item">
-                                    <div class="latest-thumbnail">
-                                        <a href="<?php the_permalink(); ?>" aria-label="<?php the_title_attribute(); ?>">
-                                            <?php if ( has_post_thumbnail() ) : ?>
-                                                <?php the_post_thumbnail( 'medium', array( 'class' => 'img-fluid' ) ); ?>
-                                            <?php else : ?>
-                                                <div class="no-thumbnail">
-                                                    <i class="fas fa-image" aria-hidden="true"></i>
-                                                </div>
-                                            <?php endif; ?>
-                                        </a>
-                                        <div class="reading-time">
-                                            <i class="fas fa-clock" aria-hidden="true"></i>
-                                            <?php
-                                            $content = get_post_field( 'post_content', get_the_ID() );
-                                            $word_count = str_word_count( strip_tags( $content ) );
-                                            $reading_time = ceil( $word_count / 200 );
-                                            printf( esc_html( _n( '%s min', '%s min', $reading_time, 'nosfirnews' ) ), $reading_time );
-                                            ?>
-                                        </div>
-                                    </div>
-                                    <div class="latest-content">
-                                        <div class="latest-meta">
-                                            <span class="latest-category">
-                                                <?php
-                                                $categories = get_the_category();
-                                                if ( $categories ) {
-                                                    echo '<a href="' . esc_url( get_category_link( $categories[0]->term_id ) ) . '">' . esc_html( $categories[0]->name ) . '</a>';
-                                                }
-                                                ?>
-                                            </span>
-                                            <span class="latest-date">
-                                                <time datetime="<?php echo get_the_date( 'c' ); ?>">
-                                                    <?php echo get_the_date(); ?>
-                                                </time>
-                                            </span>
-                                        </div>
-                                        <h3 class="latest-title">
-                                            <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                                        </h3>
-                                        <div class="latest-excerpt">
-                                            <?php echo wp_trim_words( get_the_excerpt(), 20, '...' ); ?>
-                                        </div>
-                                        <div class="latest-footer">
-                                            <div class="latest-stats">
-                                                <?php if ( comments_open() || get_comments_number() ) : ?>
-                                                    <span class="stat-item">
-                                                        <i class="fas fa-comments" aria-hidden="true"></i>
-                                                        <?php echo get_comments_number(); ?>
-                                                    </span>
-                                                <?php endif; ?>
-                                                <span class="stat-item">
-                                                    <i class="fas fa-eye" aria-hidden="true"></i>
-                                                    <?php
-                                                    $views = get_post_meta( get_the_ID(), 'post_views', true );
-                                                    echo $views ? number_format_i18n( $views ) : '0';
-                                                    ?>
-                                                </span>
-                                            </div>
-                                            <a href="<?php the_permalink(); ?>" class="read-more-link">
-                                                <?php esc_html_e( 'Ler mais', 'nosfirnews' ); ?>
-                                                <i class="fas fa-arrow-right" aria-hidden="true"></i>
-                                            </a>
-                                        </div>
-                                    </div>
+                                    <?php echo nosfirnews_get_post_card(get_the_ID(), 'grid', array(
+                                        'show_category' => true,
+                                        'show_date' => true,
+                                        'show_excerpt' => true,
+                                        'show_reading_time' => true,
+                                        'show_stats' => true,
+                                        'excerpt_length' => 20,
+                                        'thumbnail_size' => 'medium'
+                                    )); ?>
                                 </article>
                             <?php
                                 endwhile;

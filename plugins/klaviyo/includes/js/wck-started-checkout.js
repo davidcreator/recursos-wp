@@ -23,7 +23,7 @@
 
 // Constants for the klaviyo api url prefix and revision
 const KLAVIYO_API_URL_PREFIX = 'https://a.klaviyo.com/';
-const KLAVIYO_API_REVISION = '2025-04-15';
+const KLAVIYO_API_REVISION = '2025-10-15';
 
 var identify_object = {
   'company_id': public_key.token,

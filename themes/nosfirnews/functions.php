@@ -49,15 +49,15 @@ if ( ! function_exists( 'nosfirnews_setup' ) ) :
         // Enable support for Post Thumbnails on posts and pages
         add_theme_support( 'post-thumbnails' );
         
-        // Set default thumbnail size (mais apropriado para thumbnails)
+        // Set default thumbnail size
         set_post_thumbnail_size( 300, 200, true );
         
         // Add additional image sizes (proporções 16:9 para consistência)
-        add_image_size( 'nosfirnews-featured', 1200, 675, true );    // Para posts destacados
-        add_image_size( 'nosfirnews-medium', 600, 338, true );      // Para posts médios
-        add_image_size( 'nosfirnews-small', 400, 225, true );       // Para cards e widgets
+        add_image_size( 'nosfirnews-featured', 1200, 675, true );
+        add_image_size( 'nosfirnews-medium', 600, 338, true );
+        add_image_size( 'nosfirnews-small', 400, 225, true );
         
-        // This theme uses wp_nav_menu() in multiple locations
+        // Register navigation menus
         register_nav_menus( array(
             'primary'   => esc_html__( 'Primary Menu', 'nosfirnews' ),
             'footer'    => esc_html__( 'Footer Menu', 'nosfirnews' ),
@@ -235,14 +235,6 @@ add_action( 'widgets_init', 'nosfirnews_widgets_init' );
  * Enqueue scripts and styles
  */
 function nosfirnews_scripts() {
-    // Helper para versionamento por filemtime (cache busting)
-    if ( ! function_exists( 'nosfirnews_asset_version' ) ) {
-        function nosfirnews_asset_version( $relative_path ) {
-            $file = trailingslashit( NOSFIRNEWS_THEME_DIR ) . ltrim( $relative_path, '/\\' );
-            return file_exists( $file ) ? filemtime( $file ) : NOSFIRNEWS_VERSION;
-        }
-    }
-
     // Enqueue main stylesheet
     wp_enqueue_style( 'nosfirnews-style', get_stylesheet_uri(), array(), nosfirnews_asset_version( 'style.css' ) );
     
@@ -250,15 +242,13 @@ function nosfirnews_scripts() {
     wp_enqueue_style( 'nosfirnews-main', get_template_directory_uri() . '/assets/css/main.css', array(), nosfirnews_asset_version( 'assets/css/main.css' ) );
     wp_enqueue_style( 'nosfirnews-responsive', get_template_directory_uri() . '/assets/css/responsive.css', array(), nosfirnews_asset_version( 'assets/css/responsive.css' ) );
     wp_enqueue_style( 'nosfirnews-responsive-images', get_template_directory_uri() . '/assets/css/responsive-images.css', array(), nosfirnews_asset_version( 'assets/css/responsive-images.css' ) );
-    wp_enqueue_style( 'nosfirnews-navigation-enhanced', get_template_directory_uri() . '/assets/css/navigation-enhanced.css', array(), nosfirnews_asset_version( 'assets/css/navigation-enhanced.css' ) );
+    wp_enqueue_style( 'nosfirnews-navigation-unified', get_template_directory_uri() . '/assets/css/navigation-unified.css', array(), nosfirnews_asset_version( 'assets/css/navigation-unified.css' ) );
     
     // Enqueue Google Fonts
     wp_enqueue_style( 'nosfirnews-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap', array(), null );
 
-    // Enqueue icon libraries used across the theme
-    // Font Awesome (for classes like fas, far, fab)
+    // Enqueue icon libraries
     wp_enqueue_style( 'nosfirnews-fontawesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css', array(), '5.15.4' );
-    // Bootstrap Icons (for classes like bi bi-*)
     wp_enqueue_style( 'nosfirnews-bootstrap-icons', 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css', array(), '1.11.1' );
     
     // WooCommerce styles
@@ -278,28 +268,8 @@ function nosfirnews_scripts() {
     // Enqueue main JavaScript file
     wp_enqueue_script( 'nosfirnews-main', get_template_directory_uri() . '/assets/js/main.js', array( 'jquery' ), nosfirnews_asset_version( 'assets/js/main.js' ), true );
     
-    // Enqueue navigation script
-    wp_enqueue_script( 'nosfirnews-navigation', get_template_directory_uri() . '/assets/js/navigation.js', array( 'jquery' ), nosfirnews_asset_version( 'assets/js/navigation.js' ), true );
-    
-    // Enqueue mobile menu script
-    wp_enqueue_script( 'nosfirnews-mobile-menu', get_template_directory_uri() . '/assets/js/mobile-menu.js', array(), nosfirnews_asset_version( 'assets/js/mobile-menu.js' ), true );
-    
-    // Enqueue PWA script if enabled in advanced options
-    $advanced_opts = get_option( 'nosfirnews_advanced_options', array() );
-    $enable_pwa = isset( $advanced_opts['enable_pwa'] ) ? (bool) $advanced_opts['enable_pwa'] : true;
-    if ( $enable_pwa ) {
-        wp_enqueue_script( 'nosfirnews-pwa', get_template_directory_uri() . '/assets/js/pwa.js', array( 'jquery' ), nosfirnews_asset_version( 'assets/js/pwa.js' ), true );
-        // Provide config to PWA script
-        $vapid_key = isset( $advanced_opts['vapid_public_key'] ) && $advanced_opts['vapid_public_key'] !== ''
-            ? $advanced_opts['vapid_public_key']
-            : get_option( 'nosfirnews_pwa_vapid_public_key', '' ); // fallback legacy option
-        $show_install = isset( $advanced_opts['show_pwa_install_button'] ) ? (bool) $advanced_opts['show_pwa_install_button'] : true;
-        wp_localize_script( 'nosfirnews-pwa', 'nosfirNewsConfig', array(
-            'swUrl' => trailingslashit( get_template_directory_uri() ) . 'sw.js',
-            'vapidPublicKey' => $vapid_key,
-            'showInstallButton' => $show_install,
-        ) );
-    }
+    // Enqueue unified navigation script
+    wp_enqueue_script( 'nosfirnews-navigation-unified', get_template_directory_uri() . '/assets/js/navigation-unified.js', array(), nosfirnews_asset_version( 'assets/js/navigation-unified.js' ), true );
     
     // Enqueue comment reply script
     if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
@@ -336,11 +306,11 @@ function nosfirnews_performance_optimizations() {
         wp_deregister_script( 'wp-embed' );
     }
 
-    // Remove query strings from static resources
-    if ( ! is_admin() && ( isset( $perf_opts['remove_query_strings'] ) ? (bool) $perf_opts['remove_query_strings'] : true ) ) {
-        add_filter( 'script_loader_src', 'nosfirnews_remove_query_strings' );
-        add_filter( 'style_loader_src', 'nosfirnews_remove_query_strings' );
-    }
+    // Remove query strings from static resources - DESATIVADO temporariamente para evitar loop infinito
+    // if ( ! is_admin() && ( isset( $perf_opts['remove_query_strings'] ) ? (bool) $perf_opts['remove_query_strings'] : true ) ) {
+    //     add_filter( 'script_loader_src', 'nosfirnews_remove_query_strings' );
+    //     add_filter( 'style_loader_src', 'nosfirnews_remove_query_strings' );
+    // }
 }
 add_action( 'init', 'nosfirnews_performance_optimizations' );
 
@@ -356,7 +326,7 @@ function nosfirnews_resource_hints( $hints, $relation_type ) {
     }
     return $hints;
 }
-// Add resource hints conditionally based on performance option
+
 function nosfirnews_maybe_add_resource_hints( $hints, $relation_type ) {
     $perf_opts = get_option( 'nosfirnews_performance_options', array() );
     $enable_hints = isset( $perf_opts['resource_hints_fonts'] ) ? (bool) $perf_opts['resource_hints_fonts'] : true;
@@ -423,8 +393,6 @@ function nosfirnews_excerpt_more( $more ) {
 }
 add_filter( 'excerpt_more', 'nosfirnews_excerpt_more' );
 
-// Body classes are handled in inc/template-functions.php
-
 /**
  * Security enhancements
  */
@@ -449,18 +417,15 @@ remove_action( 'wp_head', 'wp_shortlink_wp_head' );
 /**
  * Enhanced security measures
  */
-// Disable file editing from admin
 if ( ! defined( 'DISALLOW_FILE_EDIT' ) ) {
     define( 'DISALLOW_FILE_EDIT', true );
 }
 
-// Remove WordPress version from RSS feeds
 function nosfirnews_remove_wp_version_rss() {
     return '';
 }
 add_filter( 'the_generator', 'nosfirnews_remove_wp_version_rss' );
 
-// Disable pingbacks
 function nosfirnews_disable_pingback( &$links ) {
     foreach ( $links as $l => $link ) {
         if ( 0 === strpos( $link, get_option( 'home' ) ) ) {
@@ -470,30 +435,17 @@ function nosfirnews_disable_pingback( &$links ) {
 }
 add_action( 'pre_ping', 'nosfirnews_disable_pingback' );
 
-// Remove pingback header
 function nosfirnews_remove_x_pingback( $headers ) {
     unset( $headers['X-Pingback'] );
     return $headers;
 }
 add_filter( 'wp_headers', 'nosfirnews_remove_x_pingback' );
 
-// Disable REST API for non-authenticated users (optional)
-function nosfirnews_disable_rest_api( $access ) {
-    if ( ! is_user_logged_in() ) {
-        return new WP_Error( 'rest_disabled', __( 'REST API disabled.', 'nosfirnews' ), array( 'status' => 401 ) );
-    }
-    return $access;
-}
-// Uncomment the line below if you want to disable REST API for non-authenticated users
-// add_filter( 'rest_authentication_errors', 'nosfirnews_disable_rest_api' );
-
-// Hide login errors
 function nosfirnews_hide_login_errors() {
     return __( 'Something is wrong!', 'nosfirnews' );
 }
 add_filter( 'login_errors', 'nosfirnews_hide_login_errors' );
 
-// Add security headers
 function nosfirnews_add_security_headers() {
     if ( ! is_admin() ) {
         header( 'X-Content-Type-Options: nosniff' );
@@ -505,32 +457,40 @@ function nosfirnews_add_security_headers() {
 }
 add_action( 'send_headers', 'nosfirnews_add_security_headers' );
 
- 
-
 function nosfirnews_remove_query_strings( $src ) {
+    if ( empty( $src ) || ! is_string( $src ) ) {
+        return $src;
+    }
+    
+    // Previne recursão infinita
+    static $processing = array();
+    $src_hash = md5( $src );
+    
+    if ( isset( $processing[ $src_hash ] ) ) {
+        return $src;
+    }
+    
+    $processing[ $src_hash ] = true;
+    
     $output = preg_split( "/(&ver|\?ver)/", $src );
-    return $output[0];
+    $result = $output[0];
+    
+    unset( $processing[ $src_hash ] );
+    
+    return $result;
 }
 
 /**
  * Enhanced performance optimizations
  */
-// Preload critical resources
 function nosfirnews_preload_resources() {
-    // Preload main CSS
     echo '<link rel="preload" href="' . esc_url( get_template_directory_uri() . '/assets/css/main.css' ) . '" as="style" onload="this.onload=null;this.rel=\'stylesheet\'">';
-    
-    // Preload main JS
     echo '<link rel="preload" href="' . esc_url( get_template_directory_uri() . '/assets/js/main.js' ) . '" as="script">';
-    
-    // Preload Google Fonts
     echo '<link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" as="style" onload="this.onload=null;this.rel=\'stylesheet\'">';
 }
 add_action( 'wp_head', 'nosfirnews_preload_resources', 1 );
 
-// Defer non-critical CSS
 function nosfirnews_defer_css( $html, $handle, $href, $media ) {
-    // List of non-critical CSS handles
     $defer_handles = array( 'nosfirnews-responsive', 'nosfirnews-page-full-width', 'nosfirnews-page-no-sidebar' );
     
     if ( in_array( $handle, $defer_handles, true ) ) {
@@ -542,26 +502,19 @@ function nosfirnews_defer_css( $html, $handle, $href, $media ) {
 }
 add_filter( 'style_loader_tag', 'nosfirnews_defer_css', 10, 4 );
 
-
-
-// Optimize database queries
 function nosfirnews_optimize_queries() {
-    // Remove unnecessary queries
     remove_action( 'wp_head', 'adjacent_posts_rel_link_wp_head', 10 );
     
-    // Limit post revisions
     if ( ! defined( 'WP_POST_REVISIONS' ) ) {
         define( 'WP_POST_REVISIONS', 3 );
     }
     
-    // Increase memory limit if needed
     if ( ! defined( 'WP_MEMORY_LIMIT' ) ) {
         define( 'WP_MEMORY_LIMIT', '256M' );
     }
 }
 add_action( 'init', 'nosfirnews_optimize_queries' );
 
-// Enable Gzip compression
 function nosfirnews_enable_gzip() {
     if ( ! is_admin() && ! headers_sent() ) {
         if ( function_exists( 'ob_gzhandler' ) && ! ini_get( 'zlib.output_compression' ) ) {
@@ -571,21 +524,12 @@ function nosfirnews_enable_gzip() {
 }
 add_action( 'init', 'nosfirnews_enable_gzip' );
 
-
-
 /**
  * WooCommerce Support Functions
- */
-
-/**
- * Remove default WooCommerce wrapper
  */
 remove_action( 'woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10 );
 remove_action( 'woocommerce_after_main_content', 'woocommerce_output_content_wrapper_end', 10 );
 
-/**
- * Add custom WooCommerce wrapper
- */
 add_action( 'woocommerce_before_main_content', 'nosfirnews_wrapper_start', 10 );
 add_action( 'woocommerce_after_main_content', 'nosfirnews_wrapper_end', 10 );
 
@@ -595,29 +539,20 @@ function nosfirnews_wrapper_start() {
 }
 
 function nosfirnews_wrapper_end() {
-    echo '</main><!-- #main -->';
-    echo '</div><!-- #primary -->';
+    echo '</main>';
+    echo '</div>';
 }
 
-/**
- * Change number of products per row
- */
 function nosfirnews_loop_columns() {
-    return 3; // 3 products per row
+    return 3;
 }
 add_filter( 'loop_shop_columns', 'nosfirnews_loop_columns' );
 
-/**
- * Change number of products per page
- */
 function nosfirnews_products_per_page() {
-    return 12; // 12 products per page
+    return 12;
 }
 add_filter( 'loop_shop_per_page', 'nosfirnews_products_per_page', 20 );
 
-/**
- * Customize WooCommerce breadcrumbs
- */
 function nosfirnews_woocommerce_breadcrumbs() {
     return array(
         'delimiter'   => ' / ',
@@ -630,9 +565,6 @@ function nosfirnews_woocommerce_breadcrumbs() {
 }
 add_filter( 'woocommerce_breadcrumb_defaults', 'nosfirnews_woocommerce_breadcrumbs' );
 
-
-
-// Adicionar ícone de carrinho ao cabeçalho
 function nosfirnews_cart_icon() {
     if (class_exists('WooCommerce')) {
         $cart_count = WC()->cart->get_cart_contents_count();
@@ -649,10 +581,8 @@ function nosfirnews_cart_icon() {
     }
 }
 
-// Carregar estilos e scripts do WooCommerce
 function nosfirnews_woocommerce_assets() {
     if (class_exists('WooCommerce')) {
-        // Carregar CSS
         wp_enqueue_style(
             'nosfirnews-woocommerce',
             get_template_directory_uri() . '/assets/css/woocommerce.css',
@@ -660,7 +590,6 @@ function nosfirnews_woocommerce_assets() {
             wp_get_theme()->get('Version')
         );
         
-        // Carregar JavaScript
         wp_enqueue_script(
             'nosfirnews-woocommerce',
             get_template_directory_uri() . '/assets/js/woocommerce.js',
@@ -669,7 +598,6 @@ function nosfirnews_woocommerce_assets() {
             true
         );
         
-        // Localizar script para AJAX
         wp_localize_script('nosfirnews-woocommerce', 'nosfirnews_woo_ajax', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('nosfirnews_woo_nonce'),
@@ -678,7 +606,6 @@ function nosfirnews_woocommerce_assets() {
             'thousand_separator' => wc_get_price_thousand_separator(),
             'decimal_separator' => wc_get_price_decimal_separator(),
             'decimals' => wc_get_price_decimals(),
-            // Config do banner/carrossel da homepage
             'banner_autoplay' => (bool) get_theme_mod('nosfirnews_woo_banner_autoplay', true),
             'banner_speed' => (int) get_theme_mod('nosfirnews_woo_banner_speed', 4000),
         ));
@@ -686,12 +613,8 @@ function nosfirnews_woocommerce_assets() {
 }
 add_action('wp_enqueue_scripts', 'nosfirnews_woocommerce_assets');
 
-/**
- * Enfileirar assets para o banner do WooCommerce na homepage.
- */
 function nosfirnews_enqueue_woo_banner_assets() {
     if ( is_front_page() && class_exists('WooCommerce') && get_theme_mod('nosfirnews_woo_banner_enable', false) ) {
-        // Slick slider
         wp_enqueue_style(
             'slick-css',
             'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css',
@@ -715,11 +638,6 @@ function nosfirnews_enqueue_woo_banner_assets() {
 }
 add_action('wp_enqueue_scripts', 'nosfirnews_enqueue_woo_banner_assets');
 
-/**
- * Funções de personalização do WooCommerce
- */
-
-// Adicionar badge de desconto personalizado
 function nosfirnews_sale_badge() {
     global $product;
     
@@ -740,7 +658,6 @@ remove_action('woocommerce_before_shop_loop_item_title', 'woocommerce_show_produ
 add_action('woocommerce_before_single_product_summary', 'nosfirnews_sale_badge', 10);
 add_action('woocommerce_before_shop_loop_item_title', 'nosfirnews_sale_badge', 10);
 
-// Personalizar o resultado da busca de produtos
 function nosfirnews_shop_page_title($title) {
     if (is_search() && is_post_type_archive('product')) {
         $title = sprintf(__('Resultados da busca por: "%s"', 'nosfirnews'), get_search_query());
@@ -749,7 +666,6 @@ function nosfirnews_shop_page_title($title) {
 }
 add_filter('woocommerce_page_title', 'nosfirnews_shop_page_title');
 
-// Adicionar suporte a zoom na galeria de produtos
 function nosfirnews_product_gallery_support() {
     add_theme_support('wc-product-gallery-zoom');
     add_theme_support('wc-product-gallery-lightbox');
@@ -757,7 +673,6 @@ function nosfirnews_product_gallery_support() {
 }
 add_action('after_setup_theme', 'nosfirnews_product_gallery_support');
 
-// Personalizar o fragmento do carrinho para AJAX
 function nosfirnews_add_to_cart_fragment($fragments) {
     ob_start();
     nosfirnews_cart_icon();
@@ -781,10 +696,6 @@ add_filter( 'the_content', 'nosfirnews_add_image_responsive_class' );
 /**
  * Thumbnail and Image Management Functions
  */
-
-/**
- * Get the appropriate image size based on context
- */
 function nosfirnews_get_image_size( $context = 'featured' ) {
     $size = '';
     
@@ -805,9 +716,6 @@ function nosfirnews_get_image_size( $context = 'featured' ) {
     return $size;
 }
 
-/**
- * Custom image quality filter
- */
 function nosfirnews_image_quality( $quality, $mime_type ) {
     $custom_quality = get_theme_mod( 'nosfirnews_image_quality', 85 );
     return $custom_quality;
@@ -815,9 +723,6 @@ function nosfirnews_image_quality( $quality, $mime_type ) {
 add_filter( 'wp_editor_set_quality', 'nosfirnews_image_quality', 10, 2 );
 add_filter( 'jpeg_quality', 'nosfirnews_image_quality' );
 
-/**
- * Add lazy loading attributes to images
- */
 function nosfirnews_add_lazy_loading( $attr, $attachment, $size ) {
     if ( get_theme_mod( 'nosfirnews_enable_lazy_loading', true ) ) {
         $attr['loading'] = 'lazy';
@@ -827,9 +732,6 @@ function nosfirnews_add_lazy_loading( $attr, $attachment, $size ) {
 }
 add_filter( 'wp_get_attachment_image_attributes', 'nosfirnews_add_lazy_loading', 10, 3 );
 
-/**
- * Enhanced post thumbnail function
- */
 function nosfirnews_post_thumbnail( $size = 'featured', $attr = array() ) {
     if ( ! has_post_thumbnail() ) {
         return;
@@ -843,7 +745,6 @@ function nosfirnews_post_thumbnail( $size = 'featured', $attr = array() ) {
     
     $attr = wp_parse_args( $attr, $default_attr );
     
-    // Add lazy loading if enabled
     if ( get_theme_mod( 'nosfirnews_enable_lazy_loading', true ) ) {
         $attr['loading'] = 'lazy';
         $attr['decoding'] = 'async';
@@ -852,9 +753,6 @@ function nosfirnews_post_thumbnail( $size = 'featured', $attr = array() ) {
     the_post_thumbnail( $image_size, $attr );
 }
 
-/**
- * Get responsive image with multiple sizes
- */
 function nosfirnews_get_responsive_image( $attachment_id, $size = 'medium', $attr = array() ) {
     if ( ! $attachment_id ) {
         return '';
@@ -866,7 +764,6 @@ function nosfirnews_get_responsive_image( $attachment_id, $size = 'medium', $att
     
     $attr = wp_parse_args( $attr, $default_attr );
     
-    // Add lazy loading if enabled
     if ( get_theme_mod( 'nosfirnews_enable_lazy_loading', true ) ) {
         $attr['loading'] = 'lazy';
         $attr['decoding'] = 'async';
@@ -875,22 +772,15 @@ function nosfirnews_get_responsive_image( $attachment_id, $size = 'medium', $att
     return wp_get_attachment_image( $attachment_id, $size, false, $attr );
 }
 
-/**
- * Add additional image sizes with customizer integration
- */
 function nosfirnews_add_custom_image_sizes() {
-    // Add more flexible image sizes (proporções padronizadas)
-    add_image_size( 'nosfirnews-hero', 1920, 1080, true );      // 16:9 para hero sections
-    add_image_size( 'nosfirnews-card', 400, 225, true );        // 16:9 para cards
-    add_image_size( 'nosfirnews-thumbnail', 200, 200, true );   // Quadrado para avatars/thumbs
-    add_image_size( 'nosfirnews-gallery', 800, 450, true );     // 16:9 para galerias
-    add_image_size( 'nosfirnews-widget', 300, 169, true );      // 16:9 para widgets
+    add_image_size( 'nosfirnews-hero', 1920, 1080, true );
+    add_image_size( 'nosfirnews-card', 400, 225, true );
+    add_image_size( 'nosfirnews-thumbnail', 200, 200, true );
+    add_image_size( 'nosfirnews-gallery', 800, 450, true );
+    add_image_size( 'nosfirnews-widget', 300, 169, true );
 }
 add_action( 'after_setup_theme', 'nosfirnews_add_custom_image_sizes' );
 
-/**
- * Make custom image sizes available in media library
- */
 function nosfirnews_custom_image_sizes( $sizes ) {
     return array_merge( $sizes, array(
         'nosfirnews-hero'      => esc_html__( 'Hero (1920x1080)', 'nosfirnews' ),
@@ -905,9 +795,6 @@ function nosfirnews_custom_image_sizes( $sizes ) {
 }
 add_filter( 'image_size_names_choose', 'nosfirnews_custom_image_sizes' );
 
-/**
- * Optimize image loading with WebP support
- */
 function nosfirnews_webp_support() {
     if ( function_exists( 'imagewebp' ) ) {
         add_filter( 'wp_generate_attachment_metadata', 'nosfirnews_generate_webp_images' );
@@ -915,9 +802,6 @@ function nosfirnews_webp_support() {
 }
 add_action( 'init', 'nosfirnews_webp_support' );
 
-/**
- * Generate WebP versions of uploaded images
- */
 function nosfirnews_generate_webp_images( $metadata ) {
     if ( ! isset( $metadata['file'] ) ) {
         return $metadata;
@@ -954,197 +838,188 @@ function nosfirnews_generate_webp_images( $metadata ) {
 add_filter( 'wp_generate_attachment_metadata', 'nosfirnews_generate_webp_images' );
 
 /**
- * PWA Functions
+ * Include AMP Support
  */
+require_once get_template_directory() . '/inc/amp-support.php';
 
 /**
- * Add PWA manifest link to head
+ * Desativar PWA para investigar loop infinito
  */
-function nosfirnews_add_manifest_link() {
-    echo '<link rel="manifest" href="' . get_template_directory_uri() . '/manifest.json">' . "\n";
-    echo '<meta name="theme-color" content="#2196F3">' . "\n";
-    echo '<meta name="apple-mobile-web-app-capable" content="yes">' . "\n";
-    echo '<meta name="apple-mobile-web-app-status-bar-style" content="default">' . "\n";
-    echo '<meta name="apple-mobile-web-app-title" content="NosfirNews">' . "\n";
-    echo '<link rel="apple-touch-icon" href="' . get_template_directory_uri() . '/assets/images/icons/icon-192x192.png">' . "\n";
-}
-add_action( 'wp_head', 'nosfirnews_add_manifest_link' );
-
-/**
- * Create offline page if it doesn't exist
- */
-function nosfirnews_create_offline_page() {
-    $offline_page = get_page_by_path( 'offline' );
+function nosfirnews_desativar_pwa() {
+    // Remover manifest.json do header
+    remove_action('wp_head', 'nosfirnews_add_pwa_manifest');
     
-    if ( ! $offline_page ) {
-        $page_data = array(
-            'post_title'   => 'Offline',
-            'post_content' => '',
-            'post_status'  => 'publish',
-            'post_type'    => 'page',
-            'post_name'    => 'offline'
-        );
-        
-        wp_insert_post( $page_data );
+    // Adicionar meta tag para impedir registro de service worker
+    echo '<meta name="nosfirnews-pwa-disabled" content="true">' . "\n";
+    echo '<script>window.nosfirnewsPWAEnabled = false;</script>' . "\n";
+    
+    // Adicionar script para bloquear carregamento do PWA antes que ele aconteça
+    echo '<script>
+    // Prevenir carregamento do PWA
+    window.nosfirNewsPWAEnabled = false;
+    window.nosfirNewsConfig = null;
+    
+    // Bloquear definição do PWAManager
+    Object.defineProperty(window, "PWAManager", {
+        get: function() {
+            return function() {
+                console.log("PWA Manager bloqueado - PWA desativado temporariamente");
+                return {
+                    isSupported: function() { return false; },
+                    getState: function() { return { isInstalled: false, isOnline: navigator.onLine }; },
+                    isInstalled: function() { return false; },
+                    isOnline: function() { return navigator.onLine; }
+                };
+            };
+        },
+        set: function(value) {
+            console.log("Tentativa de definir PWAManager bloqueada");
+        },
+        configurable: false
+    });
+    </script>' . "\n";
+}
+add_action('wp_head', 'nosfirnews_desativar_pwa', 1);
+
+/**
+ * Remover qualquer manifest.json do header
+ */
+function nosfirnews_remove_manifest_links() {
+    // Remover links de manifest que possam ter sido adicionados
+    remove_action('wp_head', 'wlwmanifest_link');
+    remove_action('wp_head', 'rsd_link');
+    
+    // Filtrar para remover qualquer link de manifest
+    add_filter('site_icon_meta_tags', function($meta_tags) {
+        // Remover tags de manifest
+        return array_filter($meta_tags, function($tag) {
+            return strpos($tag, 'manifest') === false;
+        });
+    }, 999);
+}
+add_action('init', 'nosfirnews_remove_manifest_links', 1);
+
+/**
+ * Remover script PWA do carregamento
+ */
+function nosfirnews_remove_pwa_script($tag, $handle, $src) {
+    // Remover qualquer script que contenha pwa.js
+    if (strpos($src, 'pwa.js') !== false) {
+        return ''; // Retornar string vazia remove o script
     }
+    return $tag;
 }
-add_action( 'after_switch_theme', 'nosfirnews_create_offline_page' );
+add_filter('script_loader_tag', 'nosfirnews_remove_pwa_script', 999, 3);
 
 /**
- * Add PWA meta tags for better mobile experience
+ * Desativar carregamento de scripts PWA via wp_enqueue_scripts
  */
-function nosfirnews_pwa_meta_tags() {
-    echo '<meta name="mobile-web-app-capable" content="yes">' . "\n";
-    echo '<meta name="application-name" content="NosfirNews">' . "\n";
-    echo '<meta name="msapplication-TileColor" content="#2196F3">' . "\n";
-    echo '<meta name="msapplication-TileImage" content="' . get_template_directory_uri() . '/assets/images/icons/icon-144x144.png">' . "\n";
-    echo '<meta name="msapplication-config" content="' . get_template_directory_uri() . '/browserconfig.xml">' . "\n";
+function nosfirnews_disable_pwa_scripts() {
+    // Remover qualquer script PWA que possa estar na fila
+    wp_dequeue_script('nosfirnews-pwa');
+    wp_deregister_script('nosfirnews-pwa');
+    
+    // Remover outros possíveis scripts PWA
+    wp_dequeue_script('pwa-manager');
+    wp_deregister_script('pwa-manager');
+    
+    wp_dequeue_script('pwa');
+    wp_deregister_script('pwa');
 }
-add_action( 'wp_head', 'nosfirnews_pwa_meta_tags' );
+add_action('wp_enqueue_scripts', 'nosfirnews_disable_pwa_scripts', 999);
 
 /**
- * Register REST API endpoint for push notifications
+ * Função original que adiciona o manifest.json (DESATIVADA temporariamente)
  */
-function nosfirnews_register_push_api() {
-    register_rest_route( 'nosfirnews/v1', '/push-subscription', array(
-        'methods'  => 'POST',
-        'callback' => 'nosfirnews_handle_push_subscription',
-        'permission_callback' => '__return_true',
-    ) );
-}
-add_action( 'rest_api_init', 'nosfirnews_register_push_api' );
-
-/**
- * Handle push notification subscription
- */
-function nosfirnews_handle_push_subscription( $request ) {
-    $subscription = $request->get_json_params();
-    
-    if ( ! $subscription ) {
-        return new WP_Error( 'invalid_subscription', 'Invalid subscription data', array( 'status' => 400 ) );
-    }
-    
-    // Store subscription in database
-    $user_id = get_current_user_id();
-    $subscriptions = get_option( 'nosfirnews_push_subscriptions', array() );
-    
-    $subscription_key = md5( json_encode( $subscription ) );
-    $subscriptions[ $subscription_key ] = array(
-        'subscription' => $subscription,
-        'user_id'      => $user_id,
-        'created_at'   => current_time( 'mysql' )
-    );
-    
-    update_option( 'nosfirnews_push_subscriptions', $subscriptions );
-    
-    return rest_ensure_response( array( 'success' => true ) );
-}
-
-/**
- * Send push notification to all subscribers
- */
-function nosfirnews_send_push_notification( $title, $body, $url = '' ) {
-    $subscriptions = get_option( 'nosfirnews_push_subscriptions', array() );
-    
-    if ( empty( $subscriptions ) ) {
-        return false;
-    }
-    
-    $payload = json_encode( array(
-        'title' => $title,
-        'body'  => $body,
-        'url'   => $url,
-        'icon'  => get_template_directory_uri() . '/assets/images/icons/icon-192x192.png',
-        'badge' => get_template_directory_uri() . '/assets/images/icons/badge-72x72.png'
-    ) );
-    
-    // Here you would implement the actual push notification sending
-    // using a service like Firebase Cloud Messaging or Web Push Protocol
-    
-    return true;
-}
-
-/**
- * Send push notification when new post is published
- */
-function nosfirnews_notify_new_post( $post_id, $post ) {
-    if ( $post->post_status !== 'publish' || $post->post_type !== 'post' ) {
+function nosfirnews_add_pwa_manifest() {
+    // Verificar se está no admin para evitar loops
+    if (is_admin()) {
         return;
     }
     
-    $title = 'Nova notícia publicada!';
-    $body = wp_trim_words( $post->post_title, 10 );
-    $url = get_permalink( $post_id );
+    // Adicionar manifest.json
+    echo '<link rel="manifest" href="' . get_template_directory_uri() . '/manifest.json">' . "\n";
     
-    nosfirnews_send_push_notification( $title, $body, $url );
+    // Adicionar meta tags PWA
+    echo '<meta name="theme-color" content="#1a1a1a">' . "\n";
+    echo '<meta name="apple-mobile-web-app-capable" content="yes">' . "\n";
+    echo '<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">' . "\n";
+    echo '<meta name="apple-mobile-web-app-title" content="' . esc_attr(get_bloginfo('name')) . '">' . "\n";
 }
-add_action( 'publish_post', 'nosfirnews_notify_new_post', 10, 2 );
+// add_action('wp_head', 'nosfirnews_add_pwa_manifest', 10); // DESATIVADO temporariamente
 
 /**
- * Add PWA cache headers
+ * Função original que adiciona o script PWA (DESATIVADA temporariamente)
  */
-function nosfirnews_add_cache_headers() {
-    if ( ! is_admin() ) {
-        // Cache static assets for 1 year
-        if ( preg_match( '/\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$/', $_SERVER['REQUEST_URI'] ) ) {
-            header( 'Cache-Control: public, max-age=31536000, immutable' );
-        }
-        // Cache HTML pages for 1 hour
-        else {
-            header( 'Cache-Control: public, max-age=3600' );
-        }
+function nosfirnews_enqueue_pwa_script() {
+    // Verificar se está no admin para evitar loops
+    if (is_admin()) {
+        return;
     }
+    
+    // Enfileirar o script PWA
+    wp_enqueue_script(
+        'nosfirnews-pwa',
+        get_template_directory_uri() . '/assets/js/pwa.js',
+        array(),
+        '1.0.0',
+        true
+    );
+    
+    // Adicionar dados de localização
+    wp_localize_script('nosfirnews-pwa', 'nosfirnewsPWA', array(
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('nosfirnews_pwa_nonce'),
+        'site_name' => get_bloginfo('name'),
+        'site_description' => get_bloginfo('description'),
+        'theme_color' => '#1a1a1a',
+        'background_color' => '#ffffff'
+    ));
 }
-add_action( 'send_headers', 'nosfirnews_add_cache_headers' );
+// add_action('wp_enqueue_scripts', 'nosfirnews_enqueue_pwa_script'); // DESATIVADO temporariamente
 
 /**
- * Add preload hints for critical resources
+ * Impedir registro de service worker via JavaScript
  */
-function nosfirnews_add_preload_hints() {
-    echo '<link rel="preload" href="' . get_template_directory_uri() . '/assets/css/main.css" as="style">' . "\n";
-    echo '<link rel="preload" href="' . get_template_directory_uri() . '/assets/js/main.js" as="script">' . "\n";
-    echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
-    echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
-}
-add_action( 'wp_head', 'nosfirnews_add_preload_hints', 1 );
-
-/**
- * Add service worker registration script
- */
-function nosfirnews_add_sw_registration() {
-    if ( ! is_admin() ) {
+function nosfirnews_prevent_service_worker() {
+    if (is_user_logged_in() && current_user_can('manage_options')) {
         echo '<script>
+        // Desativar Service Worker
         if ("serviceWorker" in navigator) {
-            window.addEventListener("load", function() {
-                navigator.serviceWorker.register("' . get_template_directory_uri() . '/sw.js")
-                    .then(function(registration) {
-                        console.log("SW registered: ", registration);
-                    })
-                    .catch(function(registrationError) {
-                        console.log("SW registration failed: ", registrationError);
-                    });
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    registration.unregister();
+                    console.log("Service Worker desativado:", registration.scope);
+                }
             });
+        }
+        
+        // Prevenir registro de novos service workers
+        if ("serviceWorker" in navigator) {
+            const originalRegister = navigator.serviceWorker.register;
+            navigator.serviceWorker.register = function() {
+                console.log("Tentativa de registrar Service Worker bloqueada pelo tema");
+                return Promise.reject(new Error("Service Worker desativado temporariamente"));
+            };
+        }
+        
+        // Prevenir inicialização do PWA
+        window.nosfirNewsPWAEnabled = false;
+        window.nosfirNewsConfig = null;
+        
+        // Sobrescrever a função de inicialização do PWA
+        if (typeof PWAManager !== "undefined") {
+            window.PWAManager = function() {
+                console.log("PWA Manager bloqueado - PWA desativado temporariamente");
+                return {
+                    isSupported: function() { return false; },
+                    getState: function() { return { isInstalled: false, isOnline: navigator.onLine }; },
+                    isInstalled: function() { return false; },
+                    isOnline: function() { return navigator.onLine; }
+                };
+            };
         }
         </script>' . "\n";
     }
 }
-add_action( 'wp_footer', 'nosfirnews_add_sw_registration' );
-
-/**
- * Handle offline page template
- */
-function nosfirnews_offline_page_template( $template ) {
-    if ( is_page( 'offline' ) ) {
-        $offline_template = get_template_directory() . '/offline.php';
-        if ( file_exists( $offline_template ) ) {
-            return $offline_template;
-        }
-    }
-    return $template;
-}
-add_filter( 'page_template', 'nosfirnews_offline_page_template' );
-
-/**
- * Include AMP Support
- */
-require_once get_template_directory() . '/inc/amp-support.php';
+add_action('wp_footer', 'nosfirnews_prevent_service_worker', 999);

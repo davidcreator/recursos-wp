@@ -1043,3 +1043,366 @@ GPL v3 or later - Veja LICENSE para detalhes.
 ---
 
 **Última atualização:** Outubro 2025
+
+# Guia de Melhorias e Boas Práticas - NosfirNews
+
+## 🔒 Melhorias de Segurança
+
+### 1. Verificação de Acesso Direto
+```php
+// Adicionar em TODOS os arquivos PHP
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+```
+
+### 2. Sanitização e Validação
+```php
+// ANTES (Inseguro)
+$hide_author = get_post_meta( $post_id, '_meta_key', true );
+
+// DEPOIS (Seguro)
+$hide_author = filter_var( 
+    get_post_meta( $post_id, '_meta_key', true ), 
+    FILTER_VALIDATE_BOOLEAN 
+);
+
+// Para texto
+$text = sanitize_text_field( get_post_meta( $post_id, '_meta_key', true ) );
+
+// Para números
+$number = absint( get_post_meta( $post_id, '_meta_key', true ) );
+```
+
+### 3. Escapamento de Saída
+```php
+// HTML
+echo esc_html( $text );
+
+// URLs
+echo esc_url( $url );
+
+// Atributos
+echo esc_attr( $value );
+
+// JavaScript
+echo esc_js( $js_var );
+
+// SQL (use sempre prepared statements)
+$wpdb->prepare( "SELECT * FROM table WHERE id = %d", $id );
+```
+
+## 🎯 Melhorias de Performance
+
+### 1. Mover CSS/JS Inline para Arquivos Externos
+```php
+// ANTES (Ruim - em template)
+<style>
+    .classe { color: red; }
+</style>
+
+// DEPOIS (Bom - em functions.php)
+function nosfirnews_enqueue_styles() {
+    wp_enqueue_style(
+        'nosfirnews-component',
+        get_template_directory_uri() . '/assets/css/component.css',
+        array(),
+        NOSFIRNEWS_VERSION
+    );
+}
+add_action( 'wp_enqueue_scripts', 'nosfirnews_enqueue_styles' );
+```
+
+### 2. Evitar Múltiplas Queries
+```php
+// ANTES (Ruim)
+$posts = get_posts( array( 'numberposts' => 5 ) );
+foreach ( $posts as $post ) {
+    $categories = get_the_category( $post->ID ); // Query em loop!
+}
+
+// DEPOIS (Bom)
+$posts = get_posts( array(
+    'numberposts' => 5,
+    'tax_query' => array( /* cache otimizado */ )
+) );
+```
+
+### 3. Cache de Funções Pesadas
+```php
+function nosfirnews_get_expensive_data() {
+    $cache_key = 'nosfirnews_expensive_data';
+    $data = get_transient( $cache_key );
+    
+    if ( false === $data ) {
+        // Operação pesada
+        $data = expensive_operation();
+        
+        // Cache por 1 hora
+        set_transient( $cache_key, $data, HOUR_IN_SECONDS );
+    }
+    
+    return $data;
+}
+```
+
+## ♿ Melhorias de Acessibilidade
+
+### 1. ARIA Labels e Roles
+```php
+// Navegação
+<nav aria-label="<?php esc_attr_e( 'Primary Navigation', 'nosfirnews' ); ?>">
+
+// Status dinâmico
+<div role="status" aria-live="polite">
+
+// Botões
+<button aria-label="<?php esc_attr_e( 'Close menu', 'nosfirnews' ); ?>">
+
+// Links descritivos
+<a href="<?php the_permalink(); ?>" 
+   aria-label="<?php echo esc_attr( sprintf( __( 'Read more about %s', 'nosfirnews' ), get_the_title() ) ); ?>">
+```
+
+### 2. Estrutura Semântica
+```php
+// Usar elementos HTML5 apropriados
+<article>
+<nav>
+<aside>
+<section>
+<header>
+<footer>
+<main>
+```
+
+### 3. Screen Reader Text
+```php
+<span class="screen-reader-text">
+    <?php esc_html_e( 'Text only for screen readers', 'nosfirnews' ); ?>
+</span>
+```
+
+## 📝 Padrões de Código WordPress
+
+### 1. Nomeação de Funções
+```php
+// ANTES (Ruim)
+function get_breadcrumbs() { }
+
+// DEPOIS (Bom)
+function nosfirnews_get_breadcrumbs() { }
+```
+
+### 2. Hooks e Filters
+```php
+// Sempre adicionar filtros
+$value = apply_filters( 'nosfirnews_filter_name', $value, $param );
+
+// Sempre adicionar actions
+do_action( 'nosfirnews_action_name', $param );
+```
+
+### 3. Verificações Condicionais
+```php
+// ANTES (Ruim)
+if ( $var ) { }
+
+// DEPOIS (Bom)
+if ( ! empty( $var ) ) { }
+if ( isset( $var ) && ! empty( $var ) ) { }
+if ( is_array( $var ) && ! empty( $var ) ) { }
+```
+
+### 4. WP_Query ao invés de query_posts
+```php
+// NUNCA usar query_posts()
+// query_posts( $args ); // ❌
+
+// SEMPRE usar WP_Query
+$query = new WP_Query( $args ); // ✅
+if ( $query->have_posts() ) {
+    while ( $query->have_posts() ) {
+        $query->the_post();
+        // ...
+    }
+    wp_reset_postdata();
+}
+```
+
+## 🔧 Melhorias Específicas por Arquivo
+
+### breadcrumbs.php
+- ✅ Adicionada verificação de acesso direto
+- ✅ Melhorado tratamento de ancestrais
+- ✅ Adicionadas ARIA labels
+- ✅ Adicionado filtro para customização
+- ✅ Prevenção de redeclaração de função
+
+### pagination.php
+- ✅ Adicionadas ARIA labels e roles
+- ✅ Estado desabilitado para botões inativos
+- ✅ Melhor acessibilidade para números de página
+- ✅ Validação de range
+- ✅ Verificação robusta de max_num_pages
+
+### post-meta.php
+- ✅ Validação de post ID
+- ✅ Sanitização de meta values
+- ✅ ARIA labels descritivas
+- ✅ Função auxiliar para reading time
+- ✅ Melhor estrutura semântica
+
+## 📋 Checklist de Qualidade
+
+Antes de publicar qualquer código, verifique:
+
+- [ ] Todas as variáveis estão sanitizadas na entrada
+- [ ] Todas as saídas estão escapadas
+- [ ] Funções têm prefixo do tema
+- [ ] CSS/JS está em arquivos externos
+- [ ] ARIA labels onde necessário
+- [ ] Texto traduzível com i18n
+- [ ] Verificação de acesso direto
+- [ ] Nonces em formulários
+- [ ] Prepared statements em queries SQL
+- [ ] Documentação PHPDoc
+- [ ] Hooks e filtros apropriados
+- [ ] wp_reset_postdata() após queries customizadas
+- [ ] Cache de operações pesadas
+- [ ] Mobile-first / Responsivo
+- [ ] Testado com screen readers
+
+## 🚀 Próximos Passos
+
+### Arquivos que DEVEM ser corrigidos:
+
+1. **templates/404.php**
+   - Remover CSS inline
+   - Mover JS para arquivo externo
+   - Adicionar sanitização
+
+2. **templates/archive.php**
+   - Remover CSS inline
+   - Mover JS para arquivo externo
+   - Melhorar acessibilidade
+
+3. **templates/author.php**
+   - Remover CSS inline
+   - Mover JS para arquivo externo
+   - Adicionar verificações de segurança
+
+4. **templates/category.php**
+   - Remover CSS inline
+   - Mover JS para arquivo externo
+   - Melhorar performance
+
+5. **templates/search.php**
+   - Remover CSS inline
+   - Mover JS para arquivo externo
+   - Adicionar sanitização de busca
+
+6. **templates/tag.php**
+   - Remover CSS inline
+   - Mover JS para arquivo externo
+   - Melhorar acessibilidade
+
+### Estrutura de Arquivos Recomendada
+
+```
+themes/nosfirnews/
+├── assets/
+│   ├── css/
+│   │   ├── templates/
+│   │   │   ├── 404.css
+│   │   │   ├── archive.css
+│   │   │   ├── author.css
+│   │   │   └── search.css
+│   │   └── components/
+│   │       ├── breadcrumbs.css
+│   │       └── pagination.css
+│   └── js/
+│       ├── templates/
+│       │   ├── 404.js
+│       │   ├── archive.js
+│       │   └── search.js
+│       └── components/
+│           └── pagination.js
+├── inc/
+│   ├── template-functions.php
+│   └── enqueue.php
+└── template-parts/
+    ├── components/
+    └── content/
+```
+
+## 📚 Recursos Úteis
+
+- [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/wordpress-coding-standards/)
+- [Theme Handbook](https://developer.wordpress.org/themes/)
+- [Plugin Handbook](https://developer.wordpress.org/plugins/)
+- [Data Validation](https://developer.wordpress.org/apis/security/data-validation/)
+- [Escaping](https://developer.wordpress.org/apis/security/escaping/)
+- [Nonces](https://developer.wordpress.org/apis/security/nonces/)
+
+## 🎓 Exemplo de Arquivo Completo Correto
+
+```php
+<?php
+/**
+ * Component Name
+ *
+ * Description of what this file does
+ *
+ * @package NosfirNews
+ * @since 1.0.0
+ */
+
+// Security: Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+// Get and validate data
+$post_id = get_the_ID();
+if ( ! $post_id ) {
+    return;
+}
+
+$data = sanitize_text_field( get_post_meta( $post_id, '_key', true ) );
+
+// Early return if no data
+if ( empty( $data ) ) {
+    return;
+}
+
+// Apply filters
+$data = apply_filters( 'nosfirnews_component_data', $data );
+?>
+
+<div class="component" role="region" aria-label="<?php esc_attr_e( 'Component', 'nosfirnews' ); ?>">
+    <h2 class="component-title">
+        <?php echo esc_html( $data ); ?>
+    </h2>
+</div>
+
+<?php
+/**
+ * Helper function
+ *
+ * @param mixed $param Parameter description
+ * @return mixed Return value description
+ */
+function nosfirnews_helper_function( $param ) {
+    // Validate input
+    if ( empty( $param ) ) {
+        return false;
+    }
+    
+    // Process data
+    $result = do_something( $param );
+    
+    // Apply filter
+    return apply_filters( 'nosfirnews_helper_result', $result, $param );
+}
+```

@@ -563,47 +563,11 @@ function nosfirnews_get_blog_posts($args = array()) {
     return new WP_Query($args);
 }
 
-/**
- * Get breaking news posts
- */
-function nosfirnews_get_breaking_news($limit = 5) {
-    return get_posts(array(
-        'numberposts' => $limit,
-        'meta_key' => '_breaking_news',
-        'meta_value' => '1',
-        'post_status' => 'publish'
-    ));
-}
 
-/**
- * Get featured posts
- */
-function nosfirnews_get_featured_posts($limit = 6) {
-    return get_posts(array(
-        'numberposts' => $limit,
-        'meta_key' => '_featured_post',
-        'meta_value' => '1',
-        'post_status' => 'publish'
-    ));
-}
 
-/**
- * Get trending posts
- */
-function nosfirnews_get_trending_posts($limit = 4) {
-    return get_posts(array(
-        'numberposts' => $limit,
-        'meta_key' => 'post_views_count',
-        'orderby' => 'meta_value_num',
-        'order' => 'DESC',
-        'post_status' => 'publish',
-        'date_query' => array(
-            array(
-                'after' => '1 week ago'
-            )
-        )
-    ));
-}
+
+
+
 
 /**
  * Add media uploader script

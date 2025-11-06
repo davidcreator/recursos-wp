@@ -19,10 +19,10 @@ get_header(); ?>
                 </svg>
             </div>
             
-            <h1 class="offline-title">Você está offline</h1>
+            <h1 class="offline-title"><?php esc_html_e( 'Você está offline', 'nosfirnews' ); ?></h1>
             
             <p class="offline-description">
-                Parece que você perdeu a conexão com a internet. Não se preocupe, você ainda pode navegar pelas páginas que visitou recentemente.
+                <?php esc_html_e( 'Parece que você perdeu a conexão com a internet. Não se preocupe, você ainda pode navegar pelas páginas que visitou recentemente.', 'nosfirnews' ); ?>
             </p>
             
             <div class="offline-actions">
@@ -32,20 +32,20 @@ get_header(); ?>
                         <polyline points="1 20 1 14 7 14"></polyline>
                         <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path>
                     </svg>
-                    Tentar Novamente
+                    <?php esc_html_e( 'Tentar Novamente', 'nosfirnews' ); ?>
                 </button>
                 
-                <a href="/" class="btn btn-secondary">
+                <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="btn btn-secondary">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                         <polyline points="9,22 9,12 15,12 15,22"></polyline>
                     </svg>
-                    Ir para Início
+                    <?php esc_html_e( 'Ir para Início', 'nosfirnews' ); ?>
                 </a>
             </div>
             
             <div class="cached-content">
-                <h3>Conteúdo Disponível Offline</h3>
+                <h3><?php esc_html_e( 'Conteúdo Disponível Offline', 'nosfirnews' ); ?></h3>
                 <div class="cached-posts" id="cached-posts">
                     <!-- Cached posts will be loaded here via JavaScript -->
                 </div>
@@ -187,27 +187,6 @@ get_header(); ?>
     text-decoration: none;
 }
 
-.connection-status {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 10px 15px;
-    border-radius: 25px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    z-index: 1000;
-}
-
-.connection-status.offline {
-    background: #ff5722;
-    color: white;
-}
-
-.connection-status.online {
-    background: #4caf50;
-    color: white;
-}
-
 @media (max-width: 768px) {
     .offline-content {
         padding: 40px 20px;
@@ -243,37 +222,13 @@ get_header(); ?>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Check connection status
-    function updateConnectionStatus() {
-        const statusEl = document.querySelector('.connection-status') || createStatusElement();
-        
-        if (navigator.onLine) {
-            statusEl.textContent = 'Online';
-            statusEl.className = 'connection-status online';
-            setTimeout(() => {
-                statusEl.style.display = 'none';
-            }, 3000);
-        } else {
-            statusEl.textContent = 'Offline';
-            statusEl.className = 'connection-status offline';
-            statusEl.style.display = 'block';
-        }
-    }
-    
-    function createStatusElement() {
-        const statusEl = document.createElement('div');
-        statusEl.className = 'connection-status';
-        document.body.appendChild(statusEl);
-        return statusEl;
-    }
-    
     // Load cached posts
     function loadCachedPosts() {
         if ('caches' in window) {
             caches.open('nosfirnews-v2.0.0').then(cache => {
                 cache.keys().then(requests => {
                     const postRequests = requests.filter(request => 
-                        request.url.includes('/20') && // Likely a post URL with year
+                        request.url.includes('/20') &&
                         !request.url.includes('/wp-') &&
                         !request.url.includes('.css') &&
                         !request.url.includes('.js')
@@ -282,21 +237,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     const cachedPostsContainer = document.getElementById('cached-posts');
                     
                     if (postRequests.length === 0) {
-                        cachedPostsContainer.innerHTML = '<p style="color: #666; font-style: italic;">Nenhum conteúdo offline disponível ainda. Navegue pelo site quando estiver online para ter acesso offline.</p>';
+                        cachedPostsContainer.innerHTML = '<p style="color: #666; font-style: italic;"><?php esc_html_e( 'Nenhum conteúdo offline disponível ainda. Navegue pelo site quando estiver online para ter acesso offline.', 'nosfirnews' ); ?></p>';
                         return;
                     }
                     
                     postRequests.slice(0, 5).forEach(request => {
                         const url = new URL(request.url);
                         const pathParts = url.pathname.split('/').filter(part => part);
-                        const title = pathParts[pathParts.length - 1] || 'Artigo';
+                        const title = pathParts[pathParts.length - 1] || '<?php esc_html_e( 'Artigo', 'nosfirnews' ); ?>';
                         
                         const postElement = document.createElement('div');
                         postElement.className = 'cached-post';
                         postElement.innerHTML = `
                             <a href="${request.url}">
                                 <h4>${title.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</h4>
-                                <p>Disponível offline</p>
+                                <p><?php esc_html_e( 'Disponível offline', 'nosfirnews' ); ?></p>
                             </a>
                         `;
                         
@@ -305,17 +260,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }).catch(error => {
                 console.log('Error loading cached posts:', error);
-                document.getElementById('cached-posts').innerHTML = '<p style="color: #666;">Erro ao carregar conteúdo offline.</p>';
+                document.getElementById('cached-posts').innerHTML = '<p style="color: #666;"><?php esc_html_e( 'Erro ao carregar conteúdo offline.', 'nosfirnews' ); ?></p>';
             });
         }
     }
     
-    // Event listeners
-    window.addEventListener('online', updateConnectionStatus);
-    window.addEventListener('offline', updateConnectionStatus);
-    
-    // Initial status check
-    updateConnectionStatus();
     loadCachedPosts();
     
     // Auto-retry connection every 30 seconds
