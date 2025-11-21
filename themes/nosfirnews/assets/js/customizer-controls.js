@@ -168,18 +168,22 @@
             });
         });
 
-        // Container width calculator
-        wp.customize('nosfirnews_container_width', function(value) {
-            value.bind(function(newval) {
-                updateContainerPreview(newval);
-            });
-        });
+        // Container width label
+        addUnitLabel('nosfirnews_container_width', 'px');
 
-        // Sidebar width dependency
+        // Larguras: manter soma ≤ 100 e rótulos de unidade
+        addUnitLabel('nosfirnews_content_width', '%');
+        addUnitLabel('nosfirnews_sidebar_width', '%');
+
+        enforceWidthTotals();
         wp.customize('nosfirnews_content_width', function(value) {
             value.bind(function(newval) {
-                var sidebarWidth = 100 - parseInt(newval) - 5; // 5% for gap
-                wp.customize('nosfirnews_sidebar_width').set(sidebarWidth);
+                enforceWidthTotals('content', parseInt(newval));
+            });
+        });
+        wp.customize('nosfirnews_sidebar_width', function(value) {
+            value.bind(function(newval) {
+                enforceWidthTotals('sidebar', parseInt(newval));
             });
         });
     }
@@ -250,20 +254,19 @@
      * Switch device preview
      */
     function switchDevicePreview(device) {
-        var width;
-        switch(device) {
-            case 'mobile':
-                width = wp.customize('nosfirnews_mobile_breakpoint')() || 768;
-                break;
-            case 'tablet':
-                width = wp.customize('nosfirnews_tablet_breakpoint')() || 1024;
-                break;
-            default:
-                width = 1200;
+        // Usar API oficial do Customizer para alternar dispositivo de preview
+        try {
+            if (wp.customize.state && wp.customize.state('previewedDevice') && wp.customize.state('previewedDevice').set) {
+                wp.customize.state('previewedDevice').set(device);
+            } else if (wp.customize.previewedDevice && wp.customize.previewedDevice.set) {
+                wp.customize.previewedDevice.set(device);
+            } else {
+                // Fallback: notificar o previewer
+                wp.customize.previewer.send('previewed-device', device);
+            }
+        } catch (e) {
+            // Silenciar erros para não quebrar os controles
         }
-        
-        // Update preview frame width
-        wp.customize.previewer.previewUrl.set(wp.customize.previewer.previewUrl() + '?customize_preview_device=' + device);
     }
 
     /**
@@ -651,3 +654,43 @@
     }
 
 })(jQuery);
+    // Adiciona rótulo de unidade ao lado do input numérico
+    function addUnitLabel(settingId, unit) {
+        var controlId = '#customize-control-' + settingId.replace('_', '-');
+        var $control = jQuery(controlId);
+        if ($control.length) {
+            var $input = $control.find('input[type="number"], input[type="range"]');
+            var $label = $control.find('.unit-label');
+            if (!$label.length) {
+                $label = jQuery('<span class="unit-label" style="margin-left:8px;color:#666;font-size:12px;"></span>');
+                $control.find('.customize-control-title').append($label);
+            }
+            var update = function() {
+                var val = ($input.val() || '').toString();
+                $label.text(val + unit);
+            };
+            $input.on('input change', update);
+            update();
+        }
+    }
+
+    // Garante que conteúdo + sidebar não ultrapassem 100%
+    function enforceWidthTotals(changed, newVal) {
+        var content = parseInt( wp.customize('nosfirnews_content_width')() || 70 );
+        var sidebar = parseInt( wp.customize('nosfirnews_sidebar_width')() || 25 );
+        if (changed === 'content' && typeof newVal === 'number') content = newVal;
+        if (changed === 'sidebar' && typeof newVal === 'number') sidebar = newVal;
+        var total = content + sidebar;
+        if (total > 100) {
+            if (changed === 'content') {
+                sidebar = Math.max(0, 100 - content);
+                wp.customize('nosfirnews_sidebar_width').set(sidebar);
+            } else if (changed === 'sidebar') {
+                content = Math.max(0, 100 - sidebar);
+                wp.customize('nosfirnews_content_width').set(content);
+            } else {
+                sidebar = Math.max(0, 100 - content);
+                wp.customize('nosfirnews_sidebar_width').set(sidebar);
+            }
+        }
+    }

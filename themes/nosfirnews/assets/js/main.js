@@ -611,7 +611,6 @@
             try {
                 // Inicializar componentes na ordem correta
                 this.components.set('accessibility', new AccessibilityEnhancements());
-                this.components.set('mobileMenu', new MobileMenu());
                 this.components.set('smoothScrolling', new SmoothScrolling());
                 this.components.set('backToTop', new BackToTop());
                 this.components.set('lazyLoading', new LazyLoading());

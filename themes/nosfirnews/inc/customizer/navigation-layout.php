@@ -22,7 +22,7 @@ function nosfirnews_navigation_layout_customizer( $wp_customize ) {
 
     // Navigation Position Setting
     $wp_customize->add_setting( 'nosfirnews_navigation_position', array(
-        'default'           => 'below-header',
+        'default'           => 'right-of-logo',
         'sanitize_callback' => 'nosfirnews_sanitize_navigation_position',
         'transport'         => 'refresh',
     ) );

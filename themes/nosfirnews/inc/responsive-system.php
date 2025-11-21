@@ -416,15 +416,16 @@ class NosfirNews_Responsive_System {
         // Sidebar behavior
         switch ($this->options['mobile_sidebar_behavior']) {
             case 'hidden':
-                $css .= ".sidebar { display: none; }\n";
+                $css .= ".content-layout .sidebar { display: none; }\n";
                 break;
             case 'above_content':
-                $css .= ".content-area { order: 2; }\n";
-                $css .= ".sidebar { order: 1; }\n";
+                $css .= ".content-layout { display: flex; flex-direction: column; }\n";
+                $css .= ".content-layout .site-main { order: 2; }\n";
+                $css .= ".content-layout .sidebar { order: 1; }\n";
                 break;
             case 'offcanvas':
-                $css .= ".sidebar { position: fixed; top: 0; right: -300px; width: 300px; height: 100vh; background: #fff; transition: right 0.3s ease; z-index: 9999; }\n";
-                $css .= ".sidebar.open { right: 0; }\n";
+                $css .= ".content-layout .sidebar { position: fixed; top: 0; right: -300px; width: 300px; height: 100vh; background: #fff; transition: right 0.3s ease; z-index: 9999; }\n";
+                $css .= ".content-layout .sidebar.open { right: 0; }\n";
                 break;
         }
         

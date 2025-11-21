@@ -50,6 +50,17 @@ body {
     --background-light: #f8f9fa;
     --white: #ffffff;
     --black: #000000;
+
+    /* Aliases for unified navigation styles */
+    --color-primary: #1a73e8;
+    --color-secondary: #34a853;
+    --color-accent: #ea4335;
+    --color-text: #333333;
+    --color-border: #e0e0e0;
+    --color-border-light: #f0f0f0;
+    --color-primary-light: rgba(26, 115, 232, 0.08);
+    --primary-color-rgb: 26, 115, 232;
+    --border-radius: 8px;
     
     /* Typography */
     --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -80,8 +91,7 @@ body {
 .site-header {
     background: var(--white);
     border-bottom: 1px solid var(--border-color);
-    position: sticky;
-    top: 0;
+    position: relative;
     z-index: 1000;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
@@ -89,6 +99,12 @@ body {
 .site-main {
     flex: 1;
     padding: var(--spacing-lg) 0;
+}
+
+/* Ajuste de espaçamento quando o header fica sticky (controlado via JS) */
+.site-header.is-sticky + #content,
+.site-header.is-sticky ~ #content {
+    padding-top: var(--header-sticky-offset, 0px);
 }
 
 .site-footer {
@@ -316,6 +332,19 @@ a:focus {
     font-size: 0.875rem;
     font-weight: 500;
 }
+
+/* Inline navigation layout inside header */
+.header-inline-nav .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+}
+.header-inline-nav .site-branding { flex: 0 1 auto; }
+.header-inline-nav .main-navigation { flex: 1 1 auto; }
+.header-inline-nav .main-navigation .nav-menu { display: flex; justify-content: flex-end; }
+.header-inline-nav.nav-position-center-header .main-navigation .nav-menu { justify-content: center; }
+.site-branding .menu-toggle { display: none; }
 
 /* Mobile Menu Overlay */
 .mobile-menu-overlay {

@@ -78,9 +78,9 @@
                 <button class="mobile-menu-toggle" aria-controls="site-navigation" aria-expanded="false" aria-label="<?php esc_attr_e( 'Toggle navigation', 'nosfirnews' ); ?>">
                     <span class="screen-reader-text"><?php esc_html_e( 'Menu', 'nosfirnews' ); ?></span>
                     <div class="hamburger">
-                        <span></span>
-                        <span></span>
-                        <span></span>
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
                     </div>
                 </button>
                 
@@ -103,9 +103,9 @@
                     <button class="mobile-menu-toggle" aria-controls="site-navigation" aria-expanded="false" aria-label="<?php esc_attr_e( 'Toggle navigation', 'nosfirnews' ); ?>">
                         <span class="screen-reader-text"><?php esc_html_e( 'Menu', 'nosfirnews' ); ?></span>
                         <div class="hamburger">
-                            <span></span>
-                            <span></span>
-                            <span></span>
+                            <span class="hamburger-line"></span>
+                            <span class="hamburger-line"></span>
+                            <span class="hamburger-line"></span>
                         </div>
                     </button>
                     

@@ -424,7 +424,6 @@ if ( ! defined( 'DISALLOW_FILE_EDIT' ) ) {
 function nosfirnews_remove_wp_version_rss() {
     return '';
 }
-add_filter( 'the_generator', 'nosfirnews_remove_wp_version_rss' );
 
 function nosfirnews_disable_pingback( &$links ) {
     foreach ( $links as $l => $link ) {
@@ -488,7 +487,6 @@ function nosfirnews_preload_resources() {
     echo '<link rel="preload" href="' . esc_url( get_template_directory_uri() . '/assets/js/main.js' ) . '" as="script">';
     echo '<link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" as="style" onload="this.onload=null;this.rel=\'stylesheet\'">';
 }
-add_action( 'wp_head', 'nosfirnews_preload_resources', 1 );
 
 function nosfirnews_defer_css( $html, $handle, $href, $media ) {
     $defer_handles = array( 'nosfirnews-responsive', 'nosfirnews-page-full-width', 'nosfirnews-page-no-sidebar' );
@@ -500,7 +498,7 @@ function nosfirnews_defer_css( $html, $handle, $href, $media ) {
     
     return $html;
 }
-add_filter( 'style_loader_tag', 'nosfirnews_defer_css', 10, 4 );
+// add_filter( 'style_loader_tag', 'nosfirnews_defer_css', 10, 4 );
 
 function nosfirnews_optimize_queries() {
     remove_action( 'wp_head', 'adjacent_posts_rel_link_wp_head', 10 );
@@ -583,21 +581,13 @@ function nosfirnews_cart_icon() {
 
 function nosfirnews_woocommerce_assets() {
     if (class_exists('WooCommerce')) {
-        wp_enqueue_style(
-            'nosfirnews-woocommerce',
-            get_template_directory_uri() . '/assets/css/woocommerce.css',
-            array('woocommerce-general'),
-            wp_get_theme()->get('Version')
-        );
-        
         wp_enqueue_script(
             'nosfirnews-woocommerce',
             get_template_directory_uri() . '/assets/js/woocommerce.js',
-            array('jquery', 'woocommerce'),
+            array('jquery'),
             wp_get_theme()->get('Version'),
             true
         );
-        
         wp_localize_script('nosfirnews-woocommerce', 'nosfirnews_woo_ajax', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('nosfirnews_woo_nonce'),

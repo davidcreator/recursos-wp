@@ -113,6 +113,9 @@
             this.headerPlaceholder.style.display = 'block';
             this.elements.header.classList.add('is-sticky');
             this.state.isSticky = true;
+
+            // Expor altura do header para CSS ajustar espaçamento do conteúdo
+            document.documentElement.style.setProperty('--header-sticky-offset', `${headerHeight}px`);
         }
 
         removeSticky() {
@@ -121,6 +124,9 @@
             this.headerPlaceholder.style.display = 'none';
             this.elements.header.classList.remove('is-sticky');
             this.state.isSticky = false;
+
+            // Resetar offset do conteúdo quando o header não estiver sticky
+            document.documentElement.style.setProperty('--header-sticky-offset', `0px`);
         }
 
         setupDropdowns() {

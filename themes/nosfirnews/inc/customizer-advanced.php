@@ -90,11 +90,11 @@ class NosfirNews_Advanced_Customizer {
         $wp_customize->add_control('nosfirnews_container_width', array(
             'label' => __('Largura do Container (px)', 'nosfirnews'),
             'section' => 'nosfirnews_container_options',
-            'type' => 'range',
+            'type' => 'number',
             'input_attrs' => array(
                 'min' => 960,
                 'max' => 1920,
-                'step' => 20,
+                'step' => 10,
             ),
         ));
 
@@ -108,7 +108,7 @@ class NosfirNews_Advanced_Customizer {
         $wp_customize->add_control('nosfirnews_content_width', array(
             'label' => __('Largura do Conteúdo (%)', 'nosfirnews'),
             'section' => 'nosfirnews_container_options',
-            'type' => 'range',
+            'type' => 'number',
             'input_attrs' => array(
                 'min' => 60,
                 'max' => 100,
@@ -126,7 +126,7 @@ class NosfirNews_Advanced_Customizer {
         $wp_customize->add_control('nosfirnews_sidebar_width', array(
             'label' => __('Largura da Sidebar (%)', 'nosfirnews'),
             'section' => 'nosfirnews_container_options',
-            'type' => 'range',
+            'type' => 'number',
             'input_attrs' => array(
                 'min' => 20,
                 'max' => 40,
@@ -151,11 +151,11 @@ class NosfirNews_Advanced_Customizer {
         $wp_customize->add_control('nosfirnews_section_padding', array(
             'label' => __('Padding das Seções (px)', 'nosfirnews'),
             'section' => 'nosfirnews_spacing_options',
-            'type' => 'range',
+            'type' => 'number',
             'input_attrs' => array(
                 'min' => 20,
                 'max' => 120,
-                'step' => 10,
+                'step' => 1,
             ),
         ));
 
@@ -169,11 +169,11 @@ class NosfirNews_Advanced_Customizer {
         $wp_customize->add_control('nosfirnews_element_margin', array(
             'label' => __('Margem entre Elementos (px)', 'nosfirnews'),
             'section' => 'nosfirnews_spacing_options',
-            'type' => 'range',
+            'type' => 'number',
             'input_attrs' => array(
                 'min' => 10,
                 'max' => 80,
-                'step' => 5,
+                'step' => 1,
             ),
         ));
 
@@ -841,13 +841,16 @@ class NosfirNews_Advanced_Customizer {
             $css .= ".container { max-width: {$container_width}px; }";
         }
 
-        // Content and sidebar widths
-        $content_width = get_theme_mod('nosfirnews_content_width', '70');
-        $sidebar_width = get_theme_mod('nosfirnews_sidebar_width', '25');
-        if ($content_width !== '70' || $sidebar_width !== '25') {
-            $css .= ".content-area { width: {$content_width}%; }";
-            $css .= ".widget-area { width: {$sidebar_width}%; }";
+        // Content and sidebar widths (usar seletores reais do tema) com validação
+        $content_width = intval( get_theme_mod('nosfirnews_content_width', '70') );
+        $sidebar_width = intval( get_theme_mod('nosfirnews_sidebar_width', '25') );
+        if ( $content_width < 0 ) { $content_width = 0; }
+        if ( $sidebar_width < 0 ) { $sidebar_width = 0; }
+        if ( ($content_width + $sidebar_width) > 100 ) {
+            $sidebar_width = max( 0, 100 - $content_width );
         }
+        $css .= ".content-layout .site-main { flex: 0 0 {$content_width}%; }";
+        $css .= ".content-layout .widget-area.sidebar { flex: 0 0 {$sidebar_width}%; }";
 
         // Colors
         $primary_color = get_theme_mod('nosfirnews_primary_color', '#1a73e8');
