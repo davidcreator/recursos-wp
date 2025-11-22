@@ -1,0 +1,4 @@
+body{direction:rtl}
+.hfg-header,.hfg-footer{text-align:right}
+.hfg-nav{display:flex;flex-direction:row-reverse;gap:.5rem}
+.hfg-nav a{padding:.5rem .75rem}

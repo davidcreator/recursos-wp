@@ -1,0 +1,15 @@
+:root{--white:#fff;--text:#333;--primary:#1a73e8;--border:#e1e5e9;--muted:#6b7280}
+.nn-container{max-width:1200px;margin:0 auto;padding:0 1rem}
+.nn-grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.nn-card{background:var(--white);border:1px solid var(--border);border-radius:.5rem;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
+.nn-card .nn-card-body{padding:1rem}
+.nn-card .nn-card-title{margin:0 0 .5rem;font-weight:600}
+.nn-card .nn-card-text{margin:0;color:var(--muted)}
+.nn-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem .75rem;border-radius:.375rem;border:1px solid var(--border);background:var(--white);color:var(--text);text-decoration:none}
+.nn-btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.nn-badge{display:inline-block;padding:.125rem .5rem;border-radius:999px;background:rgba(26,115,232,.12);color:var(--primary);font-size:.75rem}
+.nn-header{background:var(--white);border-bottom:1px solid var(--border)}
+.nn-header .nn-container{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.nn-nav{display:flex;gap:.5rem}
+.nn-nav a{display:block;padding:.5rem .75rem;border-radius:.375rem;color:var(--text);text-decoration:none}
+.nn-nav a:hover{background:rgba(26,115,232,.1);color:var(--primary)}

@@ -1,0 +1,2 @@
+<?php
+class NosfirNews_Admin_Control_Radio extends NosfirNews_Admin_Control_Base { public function render(){ $choices=isset($this->args['choices'])?$this->args['choices']:[]; foreach($choices as $val=>$lab){ echo '<label><input type="radio" name="'.$this->id.'" value="'.esc_attr($val).'" '.( $this->value==$val?'checked':'' ).' /> '.esc_html($lab).'</label><br>'; } } }
