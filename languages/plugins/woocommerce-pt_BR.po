@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - WooCommerce - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-11-12 18:30:51+0000\n"
+"PO-Revision-Date: 2025-11-30 22:02:05+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -8290,24 +8290,6 @@ msgctxt "block description"
 msgid "A product price block with currency display."
 msgstr "Um bloco de preço do produto com exibição de moeda."
 
-#: assets/client/admin/product-editor/blocks/product-fields/name/block.json
-#: assets/client/admin/product-editor/blocks/product-fields/product-name-field/block.json
-msgctxt "block keyword"
-msgid "title"
-msgstr "título"
-
-#: assets/client/admin/product-editor/blocks/product-fields/name/block.json
-#: assets/client/admin/product-editor/blocks/product-fields/product-name-field/block.json
-msgctxt "block keyword"
-msgid "name"
-msgstr "nome"
-
-#: assets/client/admin/product-editor/blocks/product-fields/name/block.json
-#: assets/client/admin/product-editor/blocks/product-fields/product-name-field/block.json
-msgctxt "block description"
-msgid "The product name."
-msgstr "O nome do produto."
-
 #: assets/client/admin/product-editor/blocks/generic/checkbox/block.json
 #: assets/client/admin/product-editor/blocks/generic/linked-product-list/block.json
 #: assets/client/admin/product-editor/blocks/generic/notice/block.json
@@ -8404,6 +8386,24 @@ msgstr "Contêiner para renderizar apenas blocos internos condicionalmente."
 msgctxt "block title"
 msgid "Conditional"
 msgstr "Condicional"
+
+#: assets/client/admin/product-editor/blocks/product-fields/name/block.json
+#: assets/client/admin/product-editor/blocks/product-fields/product-name-field/block.json
+msgctxt "block keyword"
+msgid "title"
+msgstr "título"
+
+#: assets/client/admin/product-editor/blocks/product-fields/name/block.json
+#: assets/client/admin/product-editor/blocks/product-fields/product-name-field/block.json
+msgctxt "block keyword"
+msgid "name"
+msgstr "nome"
+
+#: assets/client/admin/product-editor/blocks/product-fields/name/block.json
+#: assets/client/admin/product-editor/blocks/product-fields/product-name-field/block.json
+msgctxt "block description"
+msgid "The product name."
+msgstr "O nome do produto."
 
 #: assets/client/admin/product-editor/blocks/product-fields/name/block.json
 #: assets/client/admin/product-editor/blocks/product-fields/product-name-field/block.json

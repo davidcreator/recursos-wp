@@ -10,6 +10,7 @@ function nosfirnews_setup() {
         'secondary' => __( 'Secondary Menu', 'nosfirnews' ),
         'footer'    => __( 'Footer Menu', 'nosfirnews' ),
     ] );
+    load_theme_textdomain( 'nosfirnews', get_template_directory() . '/language' );
 }
 add_action( 'after_setup_theme', 'nosfirnews_setup' );
 
@@ -42,6 +43,10 @@ if ( file_exists( $customizer_loader ) ) require_once $customizer_loader;
 // Admin pages
 $admin_dashboard = get_template_directory() . '/inc/admin/dashboard/main.php';
 if ( file_exists( $admin_dashboard ) ) require_once $admin_dashboard;
+$admin_changelog = get_template_directory() . '/inc/admin/dashboard/changelog_handler.php';
+if ( file_exists( $admin_changelog ) ) require_once $admin_changelog;
+$admin_plugin_helper = get_template_directory() . '/inc/admin/dashboard/plugin_helper.php';
+if ( file_exists( $admin_plugin_helper ) ) require_once $admin_plugin_helper;
 $admin_troubleshoot = get_template_directory() . '/inc/admin/troubleshoot/main.php';
 if ( file_exists( $admin_troubleshoot ) ) require_once $admin_troubleshoot;
 $admin_upsell = get_template_directory() . '/inc/admin/hooks_upsells.php';
@@ -70,3 +75,31 @@ add_action( 'widgets_init', 'nosfirnews_widgets_init' );
 function nosfirnews_do_loop_hook( $position ) {
     do_action( 'nosfirnews_loop_' . $position );
 }
+$views_dirs = [ '/inc/views', '/inc/views/inline', '/inc/views/layouts', '/inc/views/partials', '/inc/views/pluggable' ];
+foreach ( $views_dirs as $sub ) { foreach ( glob( get_template_directory() . $sub . '/*.php' ) as $f ) { require_once $f; } }
+
+function nosfirnews_register_block_patterns() {
+    if ( function_exists( 'register_block_pattern' ) ) {
+        register_block_pattern_category( 'nosfirnews', [ 'label' => __( 'NosfirNews', 'nosfirnews' ) ] );
+        foreach ( glob( get_template_directory() . '/inc/compability/block-patterns/*.php' ) as $file ) {
+            $pattern = require $file;
+            if ( is_array( $pattern ) && isset( $pattern['title'], $pattern['content'] ) ) {
+                register_block_pattern( 'nosfirnews/' . basename( $file, '.php' ), $pattern );
+            }
+        }
+    }
+}
+add_action( 'init', 'nosfirnews_register_block_patterns' );
+
+function nosfirnews_register_starter_content() {
+    $dir = get_template_directory() . '/inc/compability/starter-content';
+    if ( is_dir( $dir ) ) {
+        $mods = file_exists( $dir . '/theme-mods.php' ) ? require $dir . '/theme-mods.php' : [];
+        $posts = [];
+        foreach ( [ 'home', 'about', 'contact', 'portofolio', 'project-details' ] as $p ) {
+            $file = $dir . '/' . $p . '.php'; if ( file_exists( $file ) ) { $posts[ $p ] = require $file; }
+        }
+        add_theme_support( 'starter-content', [ 'theme_mods' => $mods, 'posts' => $posts ] );
+    }
+}
+add_action( 'after_setup_theme', 'nosfirnews_register_starter_content' );
