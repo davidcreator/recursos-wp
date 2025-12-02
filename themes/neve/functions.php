@@ -152,6 +152,16 @@ if ( neve_is_new_widget_editor() ) {
 require_once get_template_directory() . '/header-footer-grid/loader.php';
 
 add_filter(
+    'neve_register_nav_menus',
+    function ( $menus ) {
+        $menus['mobile']  = esc_html__( 'Mobile Menu', 'neve' );
+        $menus['sidebar'] = esc_html__( 'Sidebar Menu', 'neve' );
+        $menus['social']  = esc_html__( 'Social Menu', 'neve' );
+        return $menus;
+    }
+);
+
+add_filter(
 	'neve_welcome_metadata',
 	function() {
 		return [
