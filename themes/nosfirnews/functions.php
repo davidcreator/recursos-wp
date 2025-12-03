@@ -155,10 +155,12 @@ add_action( 'customize_register', function( $wp_customize ) {
     $wp_customize->add_control( 'nn_logo_alignment', [ 'type' => 'select', 'section' => 'nn_header', 'label' => __( 'Logo Alignment', 'nosfirnews' ), 'choices' => [ 'left' => __( 'Left', 'nosfirnews' ), 'center' => __( 'Center', 'nosfirnews' ), 'right' => __( 'Right', 'nosfirnews' ) ] ] );
     $wp_customize->add_setting( 'nn_mobile_menu_location', [ 'default' => 'mobile', 'sanitize_callback' => function( $v ){ $a = [ 'mobile','primary','sidebar' ]; return in_array( $v, $a, true ) ? $v : 'mobile'; }, 'transport' => 'refresh' ] );
     $wp_customize->add_control( 'nn_mobile_menu_location', [ 'type' => 'select', 'section' => 'nn_header', 'label' => __( 'Mobile Menu Location', 'nosfirnews' ), 'choices' => [ 'mobile' => __( 'Mobile', 'nosfirnews' ), 'primary' => __( 'Primary', 'nosfirnews' ), 'sidebar' => __( 'Sidebar', 'nosfirnews' ) ] ] );
-    $wp_customize->add_setting( 'nn_mobile_breakpoint', [ 'default' => 990, 'sanitize_callback' => 'absint', 'transport' => 'refresh' ] );
+    $wp_customize->add_setting( 'nn_mobile_breakpoint', [ 'default' => 998, 'sanitize_callback' => 'absint', 'transport' => 'refresh' ] );
     $wp_customize->add_control( 'nn_mobile_breakpoint', [ 'type' => 'number', 'section' => 'nn_header', 'label' => __( 'Mobile Breakpoint (px)', 'nosfirnews' ), 'input_attrs' => [ 'min' => 480, 'max' => 1200 ] ] );
     $wp_customize->add_setting( 'nn_nav_alignment', [ 'default' => 'right', 'sanitize_callback' => function( $v ){ $a = [ 'left','center','right' ]; return in_array( $v, $a, true ) ? $v : 'right'; }, 'transport' => 'refresh' ] );
     $wp_customize->add_control( 'nn_nav_alignment', [ 'type' => 'select', 'section' => 'nn_header', 'label' => __( 'Navigation Alignment', 'nosfirnews' ), 'choices' => [ 'left' => __( 'Left', 'nosfirnews' ), 'center' => __( 'Center', 'nosfirnews' ), 'right' => __( 'Right', 'nosfirnews' ) ] ] );
+    $wp_customize->add_setting( 'nn_header_order', [ 'default' => 'logo_first', 'sanitize_callback' => function( $v ){ $a = [ 'logo_first','nav_first' ]; return in_array( $v, $a, true ) ? $v : 'logo_first'; }, 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_header_order', [ 'type' => 'select', 'section' => 'nn_header', 'label' => __( 'Header Order', 'nosfirnews' ), 'choices' => [ 'logo_first' => __( 'Logo first, Nav after', 'nosfirnews' ), 'nav_first' => __( 'Nav first, Logo after', 'nosfirnews' ) ] ] );
     $wp_customize->add_section( 'nn_footer', [ 'title' => __( 'Footer', 'nosfirnews' ), 'panel' => 'nosfirnews_site_options' ] );
     $wp_customize->add_setting( 'nn_footer_show_logo', [ 'default' => false, 'sanitize_callback' => 'rest_sanitize_boolean', 'transport' => 'refresh' ] );
     $wp_customize->add_control( 'nn_footer_show_logo', [ 'type' => 'checkbox', 'section' => 'nn_footer', 'label' => __( 'Show footer logo', 'nosfirnews' ) ] );
@@ -249,16 +251,23 @@ add_action( 'wp_footer', function(){
     .nav-pos-left { grid-column: 1; justify-self: start; }
     .nav-pos-center { grid-column: 2; justify-self: center; }
     .nav-pos-right { grid-column: 3; justify-self: end; }
+    .header-inner.toggle-pos-left .nav-toggle { grid-column: 1; justify-self: start; }
+    .header-inner.toggle-pos-center .nav-toggle { grid-column: 2; justify-self: center; }
+    .header-inner.toggle-pos-right .nav-toggle { grid-column: 3; justify-self: end; }
     .nav-toggle { display:none; margin-right:8px; font-size:22px; line-height:1; border:0; background:none; cursor:pointer; order:-1; }
     .nn-mobile-drawer { display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:999; }
     .nn-mobile-drawer.open { display:block; }
     .nn-mobile-drawer nav, .nn-mobile-drawer ul { list-style:none; margin:0; padding:0; }
     .nn-mobile-drawer .mobile-nav-menu { position:absolute; top:0; right:0; width:80%; max-width:360px; height:100%; background:#fff; box-shadow:-6px 0 18px rgba(0,0,0,.12); padding:20px; overflow:auto; transform: translateX(100%); transition: transform .25s ease; }
     .nn-mobile-drawer.open .mobile-nav-menu { transform: translateX(0); }
-    .nn-mobile-drawer .mobile-nav-menu > li > a { display:block; padding:12px 8px; border-bottom:1px solid rgba(0,0,0,.06); }
+    .nn-mobile-drawer .mobile-nav li > a { display:block; padding:12px 8px; border-bottom:1px solid rgba(0,0,0,.06); }
     .nn-mobile-drawer .sub-menu { padding-left:12px; }
+    .nn-mobile-drawer .drawer-close { position:absolute; top:10px; right:10px; background:none; border:0; font-size:24px; cursor:pointer; }
+    .site-header { position: sticky; top: 0; z-index: 1000; background: #fff; }
+    .site-header { transition: box-shadow .2s ease, padding .2s ease; }
+    .site-header.header-scrolled { box-shadow: 0 4px 16px rgba(0,0,0,.08); }
     .nn-lock { overflow:hidden; }
-    @media (max-width: <?php echo (int) get_theme_mod('nn_mobile_breakpoint', 990 ); ?>px) {
+    @media (max-width: <?php echo (int) get_theme_mod('nn_mobile_breakpoint', 998 ); ?>px) {
         .site-nav { display:none !important; }
         .nav-toggle { display:inline-block !important; }
     }
@@ -267,11 +276,15 @@ add_action( 'wp_footer', function(){
     (function(){
       var btn = document.querySelector('.nav-toggle');
       var drawer = document.getElementById('mobile-menu');
+      var closeBtn = drawer ? drawer.querySelector('.drawer-close') : null;
       if (!btn || !drawer) return;
       function toggle(){ var open = drawer.classList.toggle('open'); btn.setAttribute('aria-expanded', open ? 'true' : 'false'); drawer.setAttribute('aria-hidden', open ? 'false' : 'true'); document.body.classList.toggle('nn-lock', open); }
       btn.addEventListener('click', toggle);
       drawer.addEventListener('click', function(e){ if (e.target === drawer) toggle(); });
       document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && drawer.classList.contains('open')) toggle(); });
+      if (closeBtn) closeBtn.addEventListener('click', toggle);
+      function onScroll(){ var y = window.scrollY || document.documentElement.scrollTop; var header = document.querySelector('.site-header'); if (!header) return; header.classList.toggle('header-scrolled', y > 10); }
+      window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
     })();
     </script>
     <?php
