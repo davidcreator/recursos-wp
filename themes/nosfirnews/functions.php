@@ -180,6 +180,8 @@ add_action( 'customize_register', function( $wp_customize ) {
     $wp_customize->add_control( 'nn_nav_alignment', [ 'type' => 'select', 'section' => 'nn_header', 'label' => __( 'Navigation Alignment', 'nosfirnews' ), 'choices' => [ 'left' => __( 'Left', 'nosfirnews' ), 'center' => __( 'Center', 'nosfirnews' ), 'right' => __( 'Right', 'nosfirnews' ) ] ] );
     $wp_customize->add_setting( 'nn_header_order', [ 'default' => 'logo_first', 'sanitize_callback' => function( $v ){ $a = [ 'logo_first','nav_first' ]; return in_array( $v, $a, true ) ? $v : 'logo_first'; }, 'transport' => 'refresh' ] );
     $wp_customize->add_control( 'nn_header_order', [ 'type' => 'select', 'section' => 'nn_header', 'label' => __( 'Header Order', 'nosfirnews' ), 'choices' => [ 'logo_first' => __( 'Logo first, Nav after', 'nosfirnews' ), 'nav_first' => __( 'Nav first, Logo after', 'nosfirnews' ) ] ] );
+    $wp_customize->add_setting( 'nn_header_logo_height', [ 'default' => 48, 'sanitize_callback' => 'absint', 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_header_logo_height', [ 'type' => 'number', 'section' => 'nn_header', 'label' => __( 'Header Logo Height (px)', 'nosfirnews' ), 'input_attrs' => [ 'min' => 24, 'max' => 160 ] ] );
     $wp_customize->add_section( 'nn_footer', [ 'title' => __( 'Footer', 'nosfirnews' ), 'panel' => 'nosfirnews_site_options' ] );
     $wp_customize->add_setting( 'nn_footer_show_logo', [ 'default' => false, 'sanitize_callback' => 'rest_sanitize_boolean', 'transport' => 'refresh' ] );
     $wp_customize->add_control( 'nn_footer_show_logo', [ 'type' => 'checkbox', 'section' => 'nn_footer', 'label' => __( 'Show footer logo', 'nosfirnews' ) ] );
@@ -197,6 +199,42 @@ add_action( 'customize_register', function( $wp_customize ) {
     $wp_customize->add_control( 'nn_footer_gap', [ 'type' => 'number', 'section' => 'nn_footer', 'label' => __( 'Footer Gap (px)', 'nosfirnews' ), 'input_attrs' => [ 'min' => 0, 'max' => 40 ] ] );
     $wp_customize->add_setting( 'nn_footer_align', [ 'default' => 'stretch', 'sanitize_callback' => function( $v ){ $a = [ 'left','center','right','space-between','stretch' ]; return in_array( $v, $a, true ) ? $v : 'stretch'; }, 'transport' => 'refresh' ] );
     $wp_customize->add_control( 'nn_footer_align', [ 'type' => 'select', 'section' => 'nn_footer', 'label' => __( 'Footer Alignment', 'nosfirnews' ), 'choices' => [ 'left' => __( 'Left', 'nosfirnews' ), 'center' => __( 'Center', 'nosfirnews' ), 'right' => __( 'Right', 'nosfirnews' ), 'space-between' => __( 'Space between', 'nosfirnews' ), 'stretch' => __( 'Stretch', 'nosfirnews' ) ] ] );
+    $wp_customize->add_setting( 'nn_footer_logo_height', [ 'default' => 50, 'sanitize_callback' => 'absint', 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_footer_logo_height', [ 'type' => 'number', 'section' => 'nn_footer', 'label' => __( 'Footer Logo Height (px)', 'nosfirnews' ), 'input_attrs' => [ 'min' => 24, 'max' => 160 ] ] );
+    $wp_customize->add_section( 'nn_media', [ 'title' => __( 'Media', 'nosfirnews' ), 'panel' => 'nosfirnews_site_options' ] );
+    $wp_customize->add_setting( 'nn_post_thumb_show', [ 'default' => true, 'sanitize_callback' => 'rest_sanitize_boolean', 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_post_thumb_show', [ 'type' => 'checkbox', 'section' => 'nn_media', 'label' => __( 'Show post thumbnails (archive)', 'nosfirnews' ) ] );
+    $wp_customize->add_setting( 'nn_single_thumb_show', [ 'default' => true, 'sanitize_callback' => 'rest_sanitize_boolean', 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_single_thumb_show', [ 'type' => 'checkbox', 'section' => 'nn_media', 'label' => __( 'Show featured image on single posts', 'nosfirnews' ) ] );
+    $wp_customize->add_setting( 'nn_page_featured_show', [ 'default' => true, 'sanitize_callback' => 'rest_sanitize_boolean', 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_page_featured_show', [ 'type' => 'checkbox', 'section' => 'nn_media', 'label' => __( 'Show featured image on pages', 'nosfirnews' ) ] );
+    $wp_customize->add_setting( 'nn_archive_show_excerpt', [ 'default' => true, 'sanitize_callback' => 'rest_sanitize_boolean', 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_archive_show_excerpt', [ 'type' => 'checkbox', 'section' => 'nn_media', 'label' => __( 'Show excerpt on archive cards', 'nosfirnews' ) ] );
+    $wp_customize->add_setting( 'nn_archive_show_read_more', [ 'default' => true, 'sanitize_callback' => 'rest_sanitize_boolean', 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_archive_show_read_more', [ 'type' => 'checkbox', 'section' => 'nn_media', 'label' => __( 'Show "Read more" button on archive cards', 'nosfirnews' ) ] );
+    $wp_customize->add_setting( 'nn_read_more_text', [ 'default' => __( 'Leia mais', 'nosfirnews' ), 'sanitize_callback' => 'sanitize_text_field', 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_read_more_text', [ 'type' => 'text', 'section' => 'nn_media', 'label' => __( 'Read more text', 'nosfirnews' ) ] );
+    $wp_customize->add_setting( 'nn_read_more_style', [ 'default' => 'primary', 'sanitize_callback' => function( $v ){ $a = [ 'primary','link' ]; return in_array( $v, $a, true ) ? $v : 'primary'; }, 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_read_more_style', [ 'type' => 'select', 'section' => 'nn_media', 'label' => __( 'Read more style', 'nosfirnews' ), 'choices' => [ 'primary' => __( 'Primary button', 'nosfirnews' ), 'link' => __( 'Link', 'nosfirnews' ) ] ] );
+    $wp_customize->add_setting( 'nn_thumb_width', [ 'default' => 320, 'sanitize_callback' => 'absint', 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_thumb_width', [ 'type' => 'number', 'section' => 'nn_media', 'label' => __( 'Thumbnail width (px)', 'nosfirnews' ), 'input_attrs' => [ 'min' => 120, 'max' => 800 ] ] );
+    $wp_customize->add_setting( 'nn_thumb_height', [ 'default' => 180, 'sanitize_callback' => 'absint', 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_thumb_height', [ 'type' => 'number', 'section' => 'nn_media', 'label' => __( 'Thumbnail height (px)', 'nosfirnews' ), 'input_attrs' => [ 'min' => 90, 'max' => 600 ] ] );
+    $wp_customize->add_setting( 'nn_thumb_size', [ 'default' => 'large', 'sanitize_callback' => function( $v ){ $a = [ 'thumbnail','medium','large','full' ]; return in_array( $v, $a, true ) ? $v : 'large'; }, 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_thumb_size', [ 'type' => 'select', 'section' => 'nn_media', 'label' => __( 'WordPress image size to use', 'nosfirnews' ), 'choices' => [ 'thumbnail' => 'thumbnail', 'medium' => 'medium', 'large' => 'large', 'full' => 'full' ] ] );
+    $wp_customize->add_setting( 'nn_thumb_fit', [ 'default' => 'contain', 'sanitize_callback' => function( $v ){ $a = [ 'cover','contain','auto' ]; return in_array( $v, $a, true ) ? $v : 'contain'; }, 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_thumb_fit', [ 'type' => 'select', 'section' => 'nn_media', 'label' => __( 'Thumb fit mode', 'nosfirnews' ), 'choices' => [ 'cover' => __( 'Crop (cover)', 'nosfirnews' ), 'contain' => __( 'Contain without crop', 'nosfirnews' ), 'auto' => __( 'Auto height', 'nosfirnews' ) ] ] );
+    $wp_customize->add_setting( 'nn_thumb_border_radius', [ 'default' => 8, 'sanitize_callback' => 'absint', 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_thumb_border_radius', [ 'type' => 'number', 'section' => 'nn_media', 'label' => __( 'Thumb border radius (px)', 'nosfirnews' ), 'input_attrs' => [ 'min' => 0, 'max' => 50 ] ] );
+    $wp_customize->add_setting( 'nn_thumb_shadow', [ 'default' => 'none', 'sanitize_callback' => function( $v ){ $a = [ 'none','soft','medium','hard' ]; return in_array( $v, $a, true ) ? $v : 'none'; }, 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_thumb_shadow', [ 'type' => 'select', 'section' => 'nn_media', 'label' => __( 'Thumb shadow', 'nosfirnews' ), 'choices' => [ 'none' => __( 'None', 'nosfirnews' ), 'soft' => __( 'Soft', 'nosfirnews' ), 'medium' => __( 'Medium', 'nosfirnews' ), 'hard' => __( 'Hard', 'nosfirnews' ) ] ] );
+    $wp_customize->add_setting( 'nn_thumb_filter', [ 'default' => 'none', 'sanitize_callback' => function( $v ){ $a = [ 'none','grayscale','sepia','saturate','contrast','brightness','blur' ]; return in_array( $v, $a, true ) ? $v : 'none'; }, 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_thumb_filter', [ 'type' => 'select', 'section' => 'nn_media', 'label' => __( 'Thumb filter effect', 'nosfirnews' ), 'choices' => [ 'none' => __( 'None', 'nosfirnews' ), 'grayscale' => __( 'Grayscale', 'nosfirnews' ), 'sepia' => __( 'Sepia', 'nosfirnews' ), 'saturate' => __( 'Saturate', 'nosfirnews' ), 'contrast' => __( 'Contrast', 'nosfirnews' ), 'brightness' => __( 'Brightness', 'nosfirnews' ), 'blur' => __( 'Blur', 'nosfirnews' ) ] ] );
+    $wp_customize->add_setting( 'nn_thumb_hover_effect', [ 'default' => 'none', 'sanitize_callback' => function( $v ){ $a = [ 'none','zoom','lift' ]; return in_array( $v, $a, true ) ? $v : 'none'; }, 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_thumb_hover_effect', [ 'type' => 'select', 'section' => 'nn_media', 'label' => __( 'Thumb hover effect', 'nosfirnews' ), 'choices' => [ 'none' => __( 'None', 'nosfirnews' ), 'zoom' => __( 'Zoom', 'nosfirnews' ), 'lift' => __( 'Lift', 'nosfirnews' ) ] ] );
+    $wp_customize->add_section( 'nn_theme', [ 'title' => __( 'Theme', 'nosfirnews' ), 'panel' => 'nosfirnews_site_options' ] );
+    $wp_customize->add_setting( 'nn_enable_bootstrap', [ 'default' => true, 'sanitize_callback' => 'rest_sanitize_boolean', 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_enable_bootstrap', [ 'type' => 'checkbox', 'section' => 'nn_theme', 'label' => __( 'Enable Bootstrap 5', 'nosfirnews' ) ] );
 } );
 
 add_filter( 'nosfirnews_container_class_filter', function( $classes, $context ) {
@@ -230,6 +268,25 @@ add_action( 'wp_footer', function(){
     $ff = get_theme_mod( 'nn_base_font_family', 'system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial' );
     $fs = (int) get_theme_mod( 'nn_base_font_size', 16 );
     $hs = floatval( get_theme_mod( 'nn_headings_scale', 1.0 ) );
+    $hlh = (int) get_theme_mod( 'nn_header_logo_height', 48 );
+    $flh = (int) get_theme_mod( 'nn_footer_logo_height', 50 );
+    $tw = (int) get_theme_mod( 'nn_thumb_width', 320 );
+    $th = (int) get_theme_mod( 'nn_thumb_height', 180 );
+    $tbr = (int) get_theme_mod( 'nn_thumb_border_radius', 8 );
+    $tsh = get_theme_mod( 'nn_thumb_shadow', 'none' );
+    $tfl = get_theme_mod( 'nn_thumb_filter', 'none' );
+    $hover = get_theme_mod( 'nn_thumb_hover_effect', 'none' );
+    $shadow_css = '0 0 0 rgba(0,0,0,0)';
+    if ( $tsh === 'soft' ) { $shadow_css = '0 4px 12px rgba(0,0,0,.08)'; }
+    if ( $tsh === 'medium' ) { $shadow_css = '0 8px 24px rgba(0,0,0,.12)'; }
+    if ( $tsh === 'hard' ) { $shadow_css = '0 12px 32px rgba(0,0,0,.18)'; }
+    $filter_css = 'none';
+    if ( $tfl === 'grayscale' ) { $filter_css = 'grayscale(1)'; }
+    if ( $tfl === 'sepia' ) { $filter_css = 'sepia(1)'; }
+    if ( $tfl === 'saturate' ) { $filter_css = 'saturate(1.6)'; }
+    if ( $tfl === 'contrast' ) { $filter_css = 'contrast(1.2)'; }
+    if ( $tfl === 'brightness' ) { $filter_css = 'brightness(1.1)'; }
+    if ( $tfl === 'blur' ) { $filter_css = 'blur(2px)'; }
     ?>
     <style>
     .container { max-width: <?php echo esc_html( $maxw ); ?>px; }
@@ -237,6 +294,7 @@ add_action( 'wp_footer', function(){
     h1 { font-size: calc(2.2rem * <?php echo esc_html( $hs ); ?>); }
     h2 { font-size: calc(1.8rem * <?php echo esc_html( $hs ); ?>); }
     a { color: <?php echo esc_html( $primary ); ?>; }
+    .site-header .custom-logo { max-height: <?php echo esc_html( $hlh ); ?>px; height: auto; width: auto; }
     .nn-grid { display: grid; gap: 20px; }
     .nn-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .nn-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -261,7 +319,7 @@ add_action( 'wp_footer', function(){
     .menu-item-social a { opacity:.85; }
     .menu-item-social a:hover { opacity:1; }
     .footer-brand { display:flex; align-items:flex-start; gap:16px; margin:20px 0; }
-    .footer-logo img { max-height:50px; height:auto; width:auto; }
+    .footer-logo img, .site-footer .custom-logo { max-height: <?php echo esc_html( $flh ); ?>px; height:auto; width:auto; }
     .footer-desc { color:#5e5e5e; }
     .footer-links { list-style:none; margin:10px 0; padding:0; display:flex; flex-wrap:wrap; gap:10px; }
     .footer-links a { text-decoration:none; padding:4px 6px; border-radius:4px; }
@@ -269,6 +327,50 @@ add_action( 'wp_footer', function(){
     .footer-social { list-style:none; margin:10px 0; padding:0; display:flex; gap:10px; }
     .footer-social a { opacity:.85; }
     .footer-social a:hover { opacity:1; }
+    .entry-thumb { width: var(--nn-thumb-w, <?php echo esc_html( $tw ); ?>px); overflow:hidden; border-radius: var(--nn-thumb-br, <?php echo esc_html( $tbr ); ?>px); box-shadow: var(--nn-thumb-shadow, <?php echo esc_html( $shadow_css ); ?>); }
+    .single-featured, .page-featured { overflow:hidden; border-radius: var(--nn-thumb-br, <?php echo esc_html( $tbr ); ?>px); box-shadow: var(--nn-thumb-shadow, <?php echo esc_html( $shadow_css ); ?>); }
+    .entry-thumb img { width:100%; display:block; filter: var(--nn-thumb-filter, <?php echo esc_html( $filter_css ); ?>); }
+    .single-featured img, .page-featured img { width:100%; height:auto; display:block; filter: var(--nn-thumb-filter, <?php echo esc_html( $filter_css ); ?>); }
+    .thumb-fit-cover .entry-thumb { height: var(--nn-thumb-h, <?php echo esc_html( $th ); ?>px); }
+    .thumb-fit-cover .entry-thumb img { height:100%; object-fit: cover; }
+    .thumb-fit-contain .entry-thumb { height: var(--nn-thumb-h, <?php echo esc_html( $th ); ?>px); }
+    .thumb-fit-contain .entry-thumb img { height:100%; object-fit: contain; background:#fff; }
+    .thumb-fit-auto .entry-thumb { height: auto; }
+    .thumb-fit-auto .entry-thumb img { height:auto; object-fit: contain; }
+    .thumb-effect-zoom .entry-thumb:hover, .thumb-effect-zoom .single-featured:hover, .thumb-effect-zoom .page-featured:hover { transform: scale(1.03); }
+    .thumb-effect-lift .entry-thumb:hover, .thumb-effect-lift .single-featured:hover, .thumb-effect-lift .page-featured:hover { box-shadow: 0 16px 38px rgba(0,0,0,.16); }
+    .entry-thumb, .single-featured, .page-featured { transition: transform .2s ease, box-shadow .2s ease; }
+    .nn-read-more { display:inline-block; margin-top:10px; text-decoration:none; }
+    .nn-read-more.primary { background: <?php echo esc_html( $primary ); ?>; color:#fff; padding:8px 12px; border-radius:6px; }
+    .nn-read-more.link { color: <?php echo esc_html( $primary ); ?>; }
+    .single { max-width: <?php echo esc_html( $maxw ); ?>px; }
+    .single-header { margin-bottom: 16px; }
+    .entry-title { margin: 0 0 8px; line-height: 1.2; }
+    .post-meta { display:flex; gap:12px; color:#666; font-size:.95rem; }
+    .single-featured { margin: 16px 0; }
+    .entry-content { font-size: 1.05rem; line-height: 1.75; }
+    .entry-content > p { margin: 0 0 1.1em; }
+    .entry-content img { max-width:100%; height:auto; }
+    .post-tags a { display:inline-block; padding:6px 10px; margin:4px; border-radius:16px; background: rgba(0,0,0,.05); text-decoration:none; font-size:.9rem; }
+    .post-tags a:hover { background: rgba(0,0,0,.1); }
+    .post-nav { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+    .post-nav .prev a, .post-nav .next a { display:block; padding:10px; border-radius:8px; background: rgba(0,0,0,.04); text-decoration:none; }
+    .post-nav .prev a:hover, .post-nav .next a:hover { background: rgba(0,0,0,.08); }
+    .author-box { display:flex; gap:12px; padding:14px; border:1px solid rgba(0,0,0,.08); border-radius:10px; background:#fff; }
+    .author-avatar { border-radius:50%; }
+    .author-name { margin:0 0 6px; font-size:1rem; }
+    .author-bio { margin:0; color:#555; }
+    .comments-area { margin-top: 24px; }
+    .comment-list { list-style:none; margin:0; padding:0; }
+    .comment-list .comment { margin-bottom:14px; }
+    .comment-body { padding:12px; border:1px solid rgba(0,0,0,.08); border-radius:10px; background:#fff; }
+    .comment-meta { font-size:.9rem; color:#666; margin-bottom:8px; display:flex; gap:8px; align-items:center; }
+    .comment-author .avatar { border-radius:50%; }
+    .comment-content { line-height:1.6; }
+    .reply a { text-decoration:none; font-size:.9rem; color: <?php echo esc_html( $primary ); ?>; }
+    .comment-respond { margin-top: 20px; padding:14px; border:1px solid rgba(0,0,0,.08); border-radius:10px; background:#fff; }
+    .comment-respond input[type="text"], .comment-respond input[type="email"], .comment-respond textarea { width:100%; border:1px solid rgba(0,0,0,.2); border-radius:8px; padding:8px 10px; }
+    .comment-respond .submit { background: <?php echo esc_html( $primary ); ?>; color:#fff; border:0; border-radius:8px; padding:8px 14px; cursor:pointer; }
     .header-inner { display:grid; grid-template-columns: 1fr 1fr 1fr; align-items:center; gap:20px; }
     .branding-pos-left { grid-column: 1; justify-self: start; }
     .branding-pos-center { grid-column: 2; justify-self: center; }
@@ -636,6 +738,57 @@ add_action( 'widgets_init', function(){
     }
 } );
 
+add_action( 'add_meta_boxes', function(){
+    foreach ( [ 'post', 'page' ] as $pt ) {
+        add_meta_box( 'nn_media_options', __( 'NosfirNews: Media Options', 'nosfirnews' ), function( $post ){
+            wp_nonce_field( 'nn_media_opts', 'nn_media_opts_nonce' );
+            $br = get_post_meta( $post->ID, 'nn_meta_thumb_border_radius', true );
+            $shadow = get_post_meta( $post->ID, 'nn_meta_thumb_shadow', true );
+            $filter = get_post_meta( $post->ID, 'nn_meta_thumb_filter', true );
+            $hover = get_post_meta( $post->ID, 'nn_meta_thumb_hover', true );
+            $fit = get_post_meta( $post->ID, 'nn_meta_thumb_fit', true );
+            $hide_thumb = (bool) get_post_meta( $post->ID, 'nn_meta_hide_thumb', false );
+            $hide_ex = (bool) get_post_meta( $post->ID, 'nn_meta_hide_excerpt', false );
+            $hide_rm = (bool) get_post_meta( $post->ID, 'nn_meta_hide_read_more', false );
+            $rm_text = get_post_meta( $post->ID, 'nn_meta_read_more_text', true );
+            echo '<p><label>' . esc_html__( 'Thumb border radius (px)', 'nosfirnews' ) . '</label><input type="number" name="nn_meta_thumb_border_radius" value="' . esc_attr( $br ) . '" min="0" max="50" class="widefat" /></p>';
+            echo '<p><label>' . esc_html__( 'Thumb shadow', 'nosfirnews' ) . '</label><select name="nn_meta_thumb_shadow" class="widefat">';
+            foreach ( [ 'default' => __( 'Use global', 'nosfirnews' ), 'none' => __( 'None', 'nosfirnews' ), 'soft' => __( 'Soft', 'nosfirnews' ), 'medium' => __( 'Medium', 'nosfirnews' ), 'hard' => __( 'Hard', 'nosfirnews' ) ] as $k => $lbl ) { $sel = ( $shadow === $k ) ? ' selected' : ''; echo '<option value="' . esc_attr( $k ) . '"' . $sel . '>' . esc_html( $lbl ) . '</option>'; } echo '</select></p>';
+            echo '<p><label>' . esc_html__( 'Thumb filter', 'nosfirnews' ) . '</label><select name="nn_meta_thumb_filter" class="widefat">';
+            foreach ( [ 'default' => __( 'Use global', 'nosfirnews' ), 'none' => __( 'None', 'nosfirnews' ), 'grayscale' => __( 'Grayscale', 'nosfirnews' ), 'sepia' => __( 'Sepia', 'nosfirnews' ), 'saturate' => __( 'Saturate', 'nosfirnews' ), 'contrast' => __( 'Contrast', 'nosfirnews' ), 'brightness' => __( 'Brightness', 'nosfirnews' ), 'blur' => __( 'Blur', 'nosfirnews' ) ] as $k => $lbl ) { $sel = ( $filter === $k ) ? ' selected' : ''; echo '<option value="' . esc_attr( $k ) . '"' . $sel . '>' . esc_html( $lbl ) . '</option>'; } echo '</select></p>';
+            echo '<p><label>' . esc_html__( 'Hover effect', 'nosfirnews' ) . '</label><select name="nn_meta_thumb_hover" class="widefat">';
+            foreach ( [ 'default' => __( 'Use global', 'nosfirnews' ), 'none' => __( 'None', 'nosfirnews' ), 'zoom' => __( 'Zoom', 'nosfirnews' ), 'lift' => __( 'Lift', 'nosfirnews' ) ] as $k => $lbl ) { $sel = ( $hover === $k ) ? ' selected' : ''; echo '<option value="' . esc_attr( $k ) . '"' . $sel . '>' . esc_html( $lbl ) . '</option>'; } echo '</select></p>';
+            echo '<p><label>' . esc_html__( 'Thumb fit mode', 'nosfirnews' ) . '</label><select name="nn_meta_thumb_fit" class="widefat">';
+            foreach ( [ 'default' => __( 'Use global', 'nosfirnews' ), 'cover' => __( 'Crop (cover)', 'nosfirnews' ), 'contain' => __( 'Contain without crop', 'nosfirnews' ), 'auto' => __( 'Auto height', 'nosfirnews' ) ] as $k => $lbl ) { $sel = ( $fit === $k ) ? ' selected' : ''; echo '<option value="' . esc_attr( $k ) . '"' . $sel . '>' . esc_html( $lbl ) . '</option>'; } echo '</select></p>';
+            echo '<p><label><input type="checkbox" name="nn_meta_hide_thumb" value="1"' . ( $hide_thumb ? ' checked' : '' ) . ' /> ' . esc_html__( 'Hide featured image', 'nosfirnews' ) . '</label></p>';
+            echo '<p><label><input type="checkbox" name="nn_meta_hide_excerpt" value="1"' . ( $hide_ex ? ' checked' : '' ) . ' /> ' . esc_html__( 'Hide excerpt (archive)', 'nosfirnews' ) . '</label></p>';
+            echo '<p><label><input type="checkbox" name="nn_meta_hide_read_more" value="1"' . ( $hide_rm ? ' checked' : '' ) . ' /> ' . esc_html__( 'Hide "Read more" (archive)', 'nosfirnews' ) . '</label></p>';
+            echo '<p><label>' . esc_html__( 'Read more text (override)', 'nosfirnews' ) . '</label><input type="text" name="nn_meta_read_more_text" value="' . esc_attr( $rm_text ) . '" class="widefat" /></p>';
+        }, $pt, 'side' );
+    }
+} );
+
+add_action( 'save_post', function( $post_id ){
+    if ( ! isset( $_POST['nn_media_opts_nonce'] ) || ! wp_verify_nonce( $_POST['nn_media_opts_nonce'], 'nn_media_opts' ) ) return;
+    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+    if ( ! current_user_can( 'edit_post', $post_id ) ) return;
+    $fields = [
+        'nn_meta_thumb_border_radius' => function( $v ){ return absint( $v ); },
+        'nn_meta_thumb_shadow' => function( $v ){ $a = [ 'default','none','soft','medium','hard' ]; return in_array( $v, $a, true ) ? $v : 'default'; },
+        'nn_meta_thumb_filter' => function( $v ){ $a = [ 'default','none','grayscale','sepia','saturate','contrast','brightness','blur' ]; return in_array( $v, $a, true ) ? $v : 'default'; },
+        'nn_meta_thumb_hover' => function( $v ){ $a = [ 'default','none','zoom','lift' ]; return in_array( $v, $a, true ) ? $v : 'default'; },
+        'nn_meta_hide_thumb' => function( $v ){ return $v ? '1' : ''; },
+        'nn_meta_hide_excerpt' => function( $v ){ return $v ? '1' : ''; },
+        'nn_meta_hide_read_more' => function( $v ){ return $v ? '1' : ''; },
+        'nn_meta_read_more_text' => function( $v ){ return sanitize_text_field( $v ); },
+        'nn_meta_thumb_fit' => function( $v ){ $a = [ 'default','cover','contain','auto' ]; return in_array( $v, $a, true ) ? $v : 'default'; },
+    ];
+    foreach ( $fields as $key => $san ) {
+        $val = isset( $_POST[ $key ] ) ? $san( $_POST[ $key ] ) : '';
+        if ( $val === '' ) { delete_post_meta( $post_id, $key ); } else { update_post_meta( $post_id, $key, $val ); }
+    }
+} );
+
 add_action( 'wp_footer', function(){
     $left = (int) get_theme_mod( 'nosfirnews_sidebar_left_width', 25 );
     $right = (int) get_theme_mod( 'nosfirnews_sidebar_right_width', 25 );
@@ -660,6 +813,20 @@ add_action( 'wp_footer', function(){
     .footer-widgets.footer-align-stretch { justify-items: stretch; }
     .footer-widgets.footer-align-space-between { justify-content: space-between; }
     .footer-widgets .footer-col { min-width: 0; }
+    .widget { background:#fff; border:1px solid rgba(0,0,0,.08); border-radius:10px; padding:12px; margin-bottom:16px; }
+    .widget-title { font-size:1rem; margin:0 0 10px; padding-bottom:6px; border-bottom:1px solid rgba(0,0,0,.06); }
+    .widget ul { list-style:none; margin:0; padding:0; }
+    .widget ul li { padding:6px 0; border-bottom:1px solid rgba(0,0,0,.06); }
+    .widget ul li:last-child { border-bottom:0; }
+    .widget a { text-decoration:none; }
+    .nn-social-widget { display:flex; gap:8px; flex-wrap:wrap; padding:0; margin:0; }
+    .nn-social-widget li { list-style:none; }
+    .nn-social-widget a { display:inline-block; padding:6px 10px; border-radius:6px; background: rgba(0,0,0,.05); }
+    .nn-social-widget a:hover { background: rgba(0,0,0,.1); }
+    .comment-list .children { margin-left:20px; padding-left:10px; border-left:2px solid rgba(0,0,0,.06); }
+    .comment-author .fn { font-weight:600; }
+    .comment-meta time { color:#888; }
+    .reply a { display:inline-block; padding:6px 10px; border-radius:16px; border:1px solid currentColor; }
     </style>
     <?php if ( $resizable ) { ?>
     <script>
@@ -723,3 +890,27 @@ function nosfirnews_register_starter_content() {
     }
 }
 add_action( 'after_setup_theme', 'nosfirnews_register_starter_content' );
+add_action( 'wp_enqueue_scripts', function(){
+    if ( (bool) get_theme_mod( 'nn_enable_bootstrap', true ) ) {
+        wp_enqueue_style( 'bootstrap5', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css', [], '5.3.2' );
+        wp_enqueue_script( 'bootstrap5', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js', [], '5.3.2', true );
+    }
+} );
+
+add_filter( 'comment_form_defaults', function( $d ){
+    $d['class_form'] = trim( ( $d['class_form'] ?? '' ) . ' needs-validation' );
+    $d['submit_button'] = '<button name="%1$s" type="submit" id="%2$s" class="submit btn btn-primary">%4$s</button>';
+    return $d;
+} );
+
+add_filter( 'comment_form_fields', function( $fields ){
+    $add_class = function( $html ){
+        $html = preg_replace( '/<input(.*?)class="([^"]*)"/i', '<input$1class="$2 form-control"', $html );
+        $html = preg_replace( '/<input(?!.*class=)/i', '<input class="form-control"', $html );
+        $html = preg_replace( '/<textarea(.*?)class="([^"]*)"/i', '<textarea$1class="$2 form-control"', $html );
+        $html = preg_replace( '/<textarea(?!.*class=)/i', '<textarea class="form-control"', $html );
+        return $html;
+    };
+    foreach ( $fields as $k => $html ) { $fields[ $k ] = $add_class( $html ); }
+    return $fields;
+} );

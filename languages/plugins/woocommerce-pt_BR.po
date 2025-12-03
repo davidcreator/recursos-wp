@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - WooCommerce - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-11-30 22:02:05+0000\n"
+"PO-Revision-Date: 2025-12-03 14:42:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -10,6 +10,46 @@ msgstr ""
 "X-Generator: GlotPress/4.0.3\n"
 "Language: pt_BR\n"
 "Project-Id-Version: Plugins - WooCommerce - Stable (latest release)\n"
+
+#: src/Internal/Abilities/AbilitiesCategories.php:46
+msgid "WooCommerce REST API"
+msgstr "API REST do WooCommerce"
+
+#: assets/client/blocks/add-to-cart-with-options-variation-description/block.json
+msgctxt "block description"
+msgid "Displays the description of the selected variation."
+msgstr "Exibe a descrição da variação selecionada."
+
+#: assets/client/blocks/add-to-cart-with-options-variation-description/block.json
+msgctxt "block title"
+msgid "Variation Description (Beta)"
+msgstr "Descrição da variação (Beta)"
+
+#: src/Internal/MCP/Transport/WooCommerceRestTransport.php:135
+#: src/Internal/MCP/Transport/WooCommerceRestTransport.php:144
+msgid "Authentication failed."
+msgstr "A autenticação falhou."
+
+#. translators: %1$s placeholder is the unsubscribe link, %2$s placeholder is
+#. the Unsubscribe text link.
+#: templates/emails/customer-stock-notification-verified.php:67
+#: templates/emails/customer-stock-notification.php:72
+msgctxt "unsubscribe cta for stock notifications for guests"
+msgid "click here"
+msgstr "clique aqui"
+
+#. translators: %1$s placeholder is the unsubscribe link, %2$s placeholder is
+#. the Unsubscribe text link.
+#: templates/emails/customer-stock-notification-verified.php:62
+#: templates/emails/customer-stock-notification.php:67
+msgctxt "unsubscribe cta for stock notifications for existing customers"
+msgid "click here"
+msgstr "clique aqui"
+
+#: src/Internal/StockNotifications/Frontend/ProductPageIntegration.php:155
+msgctxt "back in stock form"
+msgid "log in"
+msgstr "acessar"
 
 #: templates/emails/block/customer-processing-order.php:38
 #: templates/emails/customer-processing-order.php:43
@@ -17230,7 +17270,7 @@ msgid "%1$s (update to version %2$s is available)"
 msgstr "%1$s (atualização para a versão %2$s está disponível)"
 
 #. translators: %s: URL of WooCommerce.com subscriptions tab.
-#: includes/admin/helper/class-wc-helper-updater.php:837
+#: includes/admin/helper/class-wc-helper-updater.php:864
 msgid "Please visit the <a href=\"%s\" target=\"_blank\">subscriptions page</a> and renew to continue receiving updates."
 msgstr "Visite a <a href=\"%s\" target=\"_blank\">página de assinaturas</a> e renove para continuar recebendo atualizações."
 
@@ -41621,7 +41661,7 @@ msgstr "SKU"
 msgid "Custom field updated."
 msgstr "Campo personalizado atualizado."
 
-#: includes/abstracts/abstract-wc-order.php:2512
+#: includes/abstracts/abstract-wc-order.php:2517
 #: includes/admin/class-wc-admin-dashboard.php:496
 #: includes/admin/list-tables/class-wc-admin-list-table-orders.php:123
 #: includes/admin/meta-boxes/class-wc-meta-box-order-data.php:214
