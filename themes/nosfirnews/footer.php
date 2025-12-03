@@ -28,12 +28,22 @@ if ( ! defined( 'ABSPATH' ) ) exit;
             wp_nav_menu( [ 'theme_location' => 'social', 'container' => false, 'menu_class' => 'footer-social' ] );
         }
         ?>
-        <?php if ( is_active_sidebar( 'footer-1' ) || is_active_sidebar( 'footer-2' ) ) { ?>
-            <div class="footer-widgets">
-                <?php if ( is_active_sidebar( 'footer-1' ) ) { echo '<div class="footer-col">'; dynamic_sidebar( 'footer-1' ); echo '</div>'; } ?>
-                <?php if ( is_active_sidebar( 'footer-2' ) ) { echo '<div class="footer-col">'; dynamic_sidebar( 'footer-2' ); echo '</div>'; } ?>
-            </div>
-        <?php } ?>
+        <?php
+        $cols = max( 1, min( 4, (int) get_theme_mod( 'nn_footer_columns', 2 ) ) );
+        $align = get_theme_mod( 'nn_footer_align', 'stretch' );
+        $gap = (int) get_theme_mod( 'nn_footer_gap', 20 );
+        $has_any = false;
+        for ( $i = 1; $i <= $cols; $i++ ) { if ( is_active_sidebar( 'footer-' . $i ) ) { $has_any = true; break; } }
+        if ( $has_any ) {
+            echo '<div class="footer-widgets footer-cols-' . esc_attr( $cols ) . ' footer-align-' . esc_attr( $align ) . '" style="--nn-footer-gap:' . esc_attr( $gap ) . 'px">';
+            for ( $i = 1; $i <= $cols; $i++ ) {
+                echo '<div class="footer-col">';
+                if ( is_active_sidebar( 'footer-' . $i ) ) { dynamic_sidebar( 'footer-' . $i ); }
+                echo '</div>';
+            }
+            echo '</div>';
+        }
+        ?>
         <p>&copy; <?php echo esc_html( date('Y') ); ?> <?php bloginfo('name'); ?></p>
     </div>
 </footer>

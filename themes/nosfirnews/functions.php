@@ -88,6 +88,25 @@ add_action( 'customize_register', function( $wp_customize ) {
             'sidebar' => __( 'Sidebar', 'nosfirnews' ),
         ],
     ] );
+    $wp_customize->add_section( 'nn_woocommerce', [ 'title' => __( 'WooCommerce', 'nosfirnews' ), 'panel' => 'nosfirnews_site_options' ] );
+    $wp_customize->add_setting( 'nn_wc_enable_carousel', [ 'default' => true, 'sanitize_callback' => 'rest_sanitize_boolean', 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_wc_enable_carousel', [ 'type' => 'checkbox', 'section' => 'nn_woocommerce', 'label' => __( 'Enable product carousel shortcode', 'nosfirnews' ) ] );
+    $wp_customize->add_setting( 'nn_wc_carousel_items', [ 'default' => 4, 'sanitize_callback' => 'absint', 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_wc_carousel_items', [ 'type' => 'number', 'section' => 'nn_woocommerce', 'label' => __( 'Carousel items per view', 'nosfirnews' ), 'input_attrs' => [ 'min' => 2, 'max' => 6 ] ] );
+    $wp_customize->add_setting( 'nn_wc_carousel_autoplay', [ 'default' => true, 'sanitize_callback' => 'rest_sanitize_boolean', 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_wc_carousel_autoplay', [ 'type' => 'checkbox', 'section' => 'nn_woocommerce', 'label' => __( 'Autoplay carousel', 'nosfirnews' ) ] );
+    $wp_customize->add_setting( 'nn_wc_enable_featured_block', [ 'default' => true, 'sanitize_callback' => 'rest_sanitize_boolean', 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_wc_enable_featured_block', [ 'type' => 'checkbox', 'section' => 'nn_woocommerce', 'label' => __( 'Show featured products block on shop', 'nosfirnews' ) ] );
+    $wp_customize->add_setting( 'nn_wc_featured_count', [ 'default' => 8, 'sanitize_callback' => 'absint', 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_wc_featured_count', [ 'type' => 'number', 'section' => 'nn_woocommerce', 'label' => __( 'Featured products count', 'nosfirnews' ), 'input_attrs' => [ 'min' => 3, 'max' => 12 ] ] );
+    $wp_customize->add_setting( 'nn_wc_popup_enable', [ 'default' => false, 'sanitize_callback' => 'rest_sanitize_boolean', 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_wc_popup_enable', [ 'type' => 'checkbox', 'section' => 'nn_woocommerce', 'label' => __( 'Enable WooCommerce popup', 'nosfirnews' ) ] );
+    $wp_customize->add_setting( 'nn_wc_popup_scope', [ 'default' => 'shop', 'sanitize_callback' => function( $v ){ $a = [ 'shop','product','all' ]; return in_array( $v, $a, true ) ? $v : 'shop'; }, 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_wc_popup_scope', [ 'type' => 'select', 'section' => 'nn_woocommerce', 'label' => __( 'Popup scope', 'nosfirnews' ), 'choices' => [ 'shop' => __( 'Shop and categories', 'nosfirnews' ), 'product' => __( 'Single product pages', 'nosfirnews' ), 'all' => __( 'All WooCommerce pages', 'nosfirnews' ) ] ] );
+    $wp_customize->add_setting( 'nn_wc_popup_delay', [ 'default' => 3, 'sanitize_callback' => 'absint', 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_wc_popup_delay', [ 'type' => 'number', 'section' => 'nn_woocommerce', 'label' => __( 'Popup delay (seconds)', 'nosfirnews' ), 'input_attrs' => [ 'min' => 0, 'max' => 30 ] ] );
+    $wp_customize->add_setting( 'nn_wc_popup_content', [ 'default' => '', 'sanitize_callback' => 'wp_kses_post', 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_wc_popup_content', [ 'type' => 'textarea', 'section' => 'nn_woocommerce', 'label' => __( 'Popup content (HTML allowed)', 'nosfirnews' ) ] );
 } );
 
 add_action( 'customize_register', function( $wp_customize ) {
@@ -172,6 +191,12 @@ add_action( 'customize_register', function( $wp_customize ) {
     $wp_customize->add_control( 'nn_footer_show_social', [ 'type' => 'checkbox', 'section' => 'nn_footer', 'label' => __( 'Show social menu', 'nosfirnews' ) ] );
     $wp_customize->add_setting( 'nn_footer_links_menu_location', [ 'default' => 'footer', 'sanitize_callback' => function( $v ){ $a = [ 'footer','primary','secondary' ]; return in_array( $v, $a, true ) ? $v : 'footer'; }, 'transport' => 'refresh' ] );
     $wp_customize->add_control( 'nn_footer_links_menu_location', [ 'type' => 'select', 'section' => 'nn_footer', 'label' => __( 'Links Menu Location', 'nosfirnews' ), 'choices' => [ 'footer' => __( 'Footer', 'nosfirnews' ), 'primary' => __( 'Primary', 'nosfirnews' ), 'secondary' => __( 'Secondary', 'nosfirnews' ) ] ] );
+    $wp_customize->add_setting( 'nn_footer_columns', [ 'default' => 2, 'sanitize_callback' => function( $v ){ $v = absint( $v ); if ( $v < 1 ) $v = 1; if ( $v > 4 ) $v = 4; return $v; }, 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_footer_columns', [ 'type' => 'number', 'section' => 'nn_footer', 'label' => __( 'Footer Columns', 'nosfirnews' ), 'input_attrs' => [ 'min' => 1, 'max' => 4 ] ] );
+    $wp_customize->add_setting( 'nn_footer_gap', [ 'default' => 20, 'sanitize_callback' => 'absint', 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_footer_gap', [ 'type' => 'number', 'section' => 'nn_footer', 'label' => __( 'Footer Gap (px)', 'nosfirnews' ), 'input_attrs' => [ 'min' => 0, 'max' => 40 ] ] );
+    $wp_customize->add_setting( 'nn_footer_align', [ 'default' => 'stretch', 'sanitize_callback' => function( $v ){ $a = [ 'left','center','right','space-between','stretch' ]; return in_array( $v, $a, true ) ? $v : 'stretch'; }, 'transport' => 'refresh' ] );
+    $wp_customize->add_control( 'nn_footer_align', [ 'type' => 'select', 'section' => 'nn_footer', 'label' => __( 'Footer Alignment', 'nosfirnews' ), 'choices' => [ 'left' => __( 'Left', 'nosfirnews' ), 'center' => __( 'Center', 'nosfirnews' ), 'right' => __( 'Right', 'nosfirnews' ), 'space-between' => __( 'Space between', 'nosfirnews' ), 'stretch' => __( 'Stretch', 'nosfirnews' ) ] ] );
 } );
 
 add_filter( 'nosfirnews_container_class_filter', function( $classes, $context ) {
@@ -290,6 +315,107 @@ add_action( 'wp_footer', function(){
     <?php
 } );
 
+add_shortcode( 'nn_wc_carousel', function( $atts ){
+    if ( ! class_exists( 'WooCommerce' ) ) return '';
+    $atts = shortcode_atts( [ 'featured' => 'false', 'limit' => 12 ], $atts, 'nn_wc_carousel' );
+    $items = max( 2, (int) get_theme_mod( 'nn_wc_carousel_items', 4 ) );
+    $autoplay = (bool) get_theme_mod( 'nn_wc_carousel_autoplay', true );
+    $args = [ 'limit' => (int) $atts['limit'], 'status' => 'publish', 'orderby' => 'date', 'order' => 'DESC' ];
+    if ( $atts['featured'] === 'true' ) { $args['featured'] = true; }
+    $products = function_exists( 'wc_get_products' ) ? wc_get_products( $args ) : [];
+    if ( empty( $products ) ) return '';
+    $out = '<div class="nn-wc-carousel" data-items="' . esc_attr( $items ) . '" data-autoplay="' . ( $autoplay ? '1' : '0' ) . '"><div class="nn-wc-track">';
+    foreach ( $products as $p ) {
+        $link = get_permalink( $p->get_id() );
+        $img = wp_get_attachment_image( $p->get_image_id(), 'medium' );
+        $title = esc_html( $p->get_name() );
+        $price = wp_kses_post( $p->get_price_html() );
+        $out .= '<div class="nn-wc-item"><a class="nn-wc-thumb" href="' . esc_url( $link ) . '">' . $img . '</a><div class="nn-wc-info"><a class="nn-wc-title" href="' . esc_url( $link ) . '">' . $title . '</a><div class="nn-wc-price">' . $price . '</div></div></div>';
+    }
+    $out .= '</div><button class="nn-wc-prev" aria-label="Anterior">‹</button><button class="nn-wc-next" aria-label="Próximo">›</button></div>';
+    return $out;
+} );
+
+add_action( 'woocommerce_before_shop_loop', function(){
+    if ( ! class_exists( 'WooCommerce' ) ) return;
+    if ( ! (bool) get_theme_mod( 'nn_wc_enable_featured_block', true ) ) return;
+    $count = max( 1, (int) get_theme_mod( 'nn_wc_featured_count', 8 ) );
+    $products = function_exists( 'wc_get_products' ) ? wc_get_products( [ 'featured' => true, 'limit' => $count ] ) : [];
+    if ( empty( $products ) ) return;
+    echo '<section class="nn-wc-featured container">';
+    echo '<h2>' . esc_html__( 'Produtos em destaque', 'nosfirnews' ) . '</h2>';
+    echo '<div class="nn-wc-featured-grid">';
+    foreach ( $products as $p ) {
+        $link = get_permalink( $p->get_id() ); $img = wp_get_attachment_image( $p->get_image_id(), 'medium' ); $title = esc_html( $p->get_name() ); $price = wp_kses_post( $p->get_price_html() );
+        echo '<div class="nn-wc-card"><a href="' . esc_url( $link ) . '" class="nn-wc-thumb">' . $img . '</a><a href="' . esc_url( $link ) . '" class="nn-wc-title">' . $title . '</a><div class="nn-wc-price">' . $price . '</div></div>';
+    }
+    echo '</div></section>';
+} );
+
+add_action( 'wp_footer', function(){
+    if ( ! class_exists( 'WooCommerce' ) ) return;
+    ?>
+    <style>
+    .nn-wc-carousel { position: relative; overflow: hidden; }
+    .nn-wc-track { display: flex; gap: 16px; transition: transform .25s ease; will-change: transform; }
+    .nn-wc-item { min-width: calc(100% / var(--nn-wc-items, 4)); background:#fff; border:1px solid rgba(0,0,0,.08); border-radius:8px; overflow:hidden; }
+    .nn-wc-thumb img { width:100%; height:auto; display:block; }
+    .nn-wc-info { padding:10px; }
+    .nn-wc-title { display:block; text-decoration:none; color:inherit; margin-bottom:6px; }
+    .nn-wc-price { font-weight:600; }
+    .nn-wc-prev, .nn-wc-next { position:absolute; top:50%; transform:translateY(-50%); border:0; background:#fff; box-shadow:0 2px 6px rgba(0,0,0,.12); width:32px; height:32px; border-radius:16px; cursor:pointer; }
+    .nn-wc-prev { left:8px; }
+    .nn-wc-next { right:8px; }
+    .nn-wc-featured { margin: 20px 0; }
+    .nn-wc-featured-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap:16px; }
+    .nn-wc-card { background:#fff; border:1px solid rgba(0,0,0,.08); border-radius:8px; overflow:hidden; padding-bottom:10px; }
+    .nn-wc-popup { display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:9999; }
+    .nn-wc-popup.open { display:block; }
+    .nn-wc-popup .nn-wc-popup-inner { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:90%; max-width:520px; background:#fff; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,.2); padding:20px; }
+    .nn-wc-popup .nn-wc-popup-close { position:absolute; top:10px; right:10px; background:none; border:0; font-size:24px; cursor:pointer; }
+    </style>
+    <script>
+    (function(){
+      document.querySelectorAll('.nn-wc-carousel').forEach(function(car){
+        var items = parseInt(car.dataset.items||'4',10); car.style.setProperty('--nn-wc-items', items);
+        var track = car.querySelector('.nn-wc-track'); var idx = 0; var autoplay = car.dataset.autoplay==='1';
+        function update(){ var w = car.clientWidth; var step = w / items; track.style.transform = 'translateX(' + (-idx*step) + 'px)'; }
+        function next(){ idx = Math.min(idx+1, Math.max(0, track.children.length - items)); update(); }
+        function prev(){ idx = Math.max(idx-1, 0); update(); }
+        car.querySelector('.nn-wc-next')?.addEventListener('click', next);
+        car.querySelector('.nn-wc-prev')?.addEventListener('click', prev);
+        window.addEventListener('resize', update); update();
+        var t; function start(){ if(!autoplay) return; clearInterval(t); t = setInterval(function(){ if(idx >= Math.max(0, track.children.length - items)) idx = 0; else idx++; update(); }, 4000); }
+        start();
+      });
+      var enable = <?php echo json_encode( (bool) get_theme_mod('nn_wc_popup_enable', false) ); ?>;
+      if(enable){
+        var scope = <?php echo json_encode( get_theme_mod('nn_wc_popup_scope','shop') ); ?>;
+        var delay = <?php echo (int) get_theme_mod('nn_wc_popup_delay', 3 ); ?> * 1000;
+        var isShop = document.body.classList.contains('woocommerce') || document.body.classList.contains('archive') || document.body.classList.contains('tax-product_cat');
+        var isProduct = document.body.classList.contains('single-product');
+        var show = (scope==='all') || (scope==='shop' && isShop) || (scope==='product' && isProduct);
+        if(show){
+          var pop = document.getElementById('nn-wc-popup');
+          if(pop){ setTimeout(function(){ pop.classList.add('open'); }, delay); var close = pop.querySelector('.nn-wc-popup-close'); if(close) close.addEventListener('click', function(){ pop.classList.remove('open'); }); pop.addEventListener('click', function(e){ if(e.target===pop) pop.classList.remove('open'); }); }
+        }
+      }
+    })();
+    </script>
+    <?php
+} );
+
+add_action( 'wp_footer', function(){
+    if ( ! class_exists( 'WooCommerce' ) ) return;
+    $enabled = (bool) get_theme_mod( 'nn_wc_popup_enable', false );
+    if ( ! $enabled ) return;
+    $content = get_theme_mod( 'nn_wc_popup_content', '' );
+    if ( ! $content ) return;
+    echo '<div id="nn-wc-popup" class="nn-wc-popup"><div class="nn-wc-popup-inner">';
+    echo '<button class="nn-wc-popup-close" aria-label="Fechar">&times;</button>';
+    echo wp_kses_post( $content );
+    echo '</div></div>';
+} );
 function nosfirnews_social_menu_items_markup() {
     $locations = get_nav_menu_locations();
     if ( empty( $locations['social'] ) ) return '';
@@ -439,6 +565,22 @@ function nosfirnews_widgets_init() {
         'after_title'   => '</h3>',
     ] );
     register_sidebar( [
+        'name' => __( 'Footer Column 3', 'nosfirnews' ),
+        'id'   => 'footer-3',
+        'before_widget' => '<section id="%1$s" class="widget %2$s">',
+        'after_widget'  => '</section>',
+        'before_title'  => '<h3 class="widget-title">',
+        'after_title'   => '</h3>',
+    ] );
+    register_sidebar( [
+        'name' => __( 'Footer Column 4', 'nosfirnews' ),
+        'id'   => 'footer-4',
+        'before_widget' => '<section id="%1$s" class="widget %2$s">',
+        'after_widget'  => '</section>',
+        'before_title'  => '<h3 class="widget-title">',
+        'after_title'   => '</h3>',
+    ] );
+    register_sidebar( [
         'name' => __( 'Bottom Widgets', 'nosfirnews' ),
         'id'   => 'bottom-widgets',
         'before_widget' => '<section id="%1$s" class="widget %2$s">',
@@ -507,8 +649,17 @@ add_action( 'wp_footer', function(){
     .nn-index-posts.blog.col { flex: 1 1 auto; }
     .nn-resize-handle { width: 6px; cursor: col-resize; align-self: stretch; background: rgba(0,0,0,.1); margin: 0 4px; }
     .nn-bottom-widgets { margin-top: 30px; }
-    .footer-widgets { display:flex; gap:20px; margin-bottom:20px; }
-    .footer-widgets .footer-col { flex:1 1 0; }
+    .footer-widgets { display:grid; margin-bottom:20px; gap: var(--nn-footer-gap, 20px); }
+    .footer-widgets.footer-cols-1 { grid-template-columns: 1fr; }
+    .footer-widgets.footer-cols-2 { grid-template-columns: repeat(2, 1fr); }
+    .footer-widgets.footer-cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .footer-widgets.footer-cols-4 { grid-template-columns: repeat(4, 1fr); }
+    .footer-widgets.footer-align-left { justify-items: start; }
+    .footer-widgets.footer-align-center { justify-items: center; }
+    .footer-widgets.footer-align-right { justify-items: end; }
+    .footer-widgets.footer-align-stretch { justify-items: stretch; }
+    .footer-widgets.footer-align-space-between { justify-content: space-between; }
+    .footer-widgets .footer-col { min-width: 0; }
     </style>
     <?php if ( $resizable ) { ?>
     <script>
