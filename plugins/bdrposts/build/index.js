@@ -1,6 +1,6 @@
 (function() {
     const { registerBlockType } = wp.blocks;
-    const { InspectorControls } = wp.blockEditor || wp.editor;
+    const { InspectorControls, BlockControls, useBlockProps } = wp.blockEditor || wp.editor;
     const { ServerSideRender } = wp.serverSideRender || wp.editor || { ServerSideRender: null };
     const { PanelBody, SelectControl, ToggleControl, RangeControl, TextControl, Spinner, CheckboxControl } = wp.components;
     const { __ } = wp.i18n;
@@ -14,7 +14,19 @@
         keywords: [__('posts', 'bdrposts'), __('grid', 'bdrposts'), __('blog', 'bdrposts')],
         supports: {
             align: ['wide', 'full'],
-            html: false
+            html: false,
+            color: {
+                text: true,
+                background: true,
+                link: true
+            },
+            spacing: {
+                padding: true,
+                margin: true
+            },
+            typography: {
+                fontSize: true
+            }
         },
         attributes: {
             layout: { type: 'string', default: 'grid' },
@@ -49,10 +61,16 @@
             showReadMore: { type: 'boolean', default: true },
             readMoreText: { type: 'string', default: 'Ler Mais' },
             enablePagination: { type: 'boolean', default: false },
-            showReadingTime: { type: 'boolean', default: false }
+            showReadingTime: { type: 'boolean', default: false },
+            tickerLabel: { type: 'string', default: wp.i18n.__('Destaques', 'bdrposts') },
+            showFilterBar: { type: 'boolean', default: false },
+            filterMode: { type: 'string', default: 'category' },
+            filterTerms: { type: 'array', default: [] },
+            filterAllLabel: { type: 'string', default: wp.i18n.__('Todos', 'bdrposts') }
         },
         edit: function(props) {
             const { attributes, setAttributes } = props;
+            const blockProps = useBlockProps ? useBlockProps() : { className: (props.className || '') };
             const [postTypes, setPostTypes] = useState([]);
             const [taxonomies, setTaxonomies] = useState([]);
             const [categories, setCategories] = useState([]);
@@ -122,7 +140,10 @@
                 return newArray;
             };
 
-            return wp.element.createElement('div', { className: 'bdrposts-editor-wrapper' },
+            const wrapperClass = (blockProps.className ? blockProps.className + ' ' : '') + 'bdrposts-editor-wrapper';
+            const rootProps = Object.assign({}, blockProps, { className: wrapperClass });
+            return wp.element.createElement('div', rootProps,
+                BlockControls ? wp.element.createElement(BlockControls, null) : null,
                 wp.element.createElement(InspectorControls, {},
                     // Layout Panel
                     wp.element.createElement(PanelBody, { 
@@ -158,6 +179,53 @@
                             min: 1,
                             max: 6,
                             onChange: (v) => setAttributes({ columns: v })
+                        })
+                    ),
+
+                    // Ticker Panel
+                    attributes.layout === 'ticker' && wp.element.createElement(PanelBody, {
+                        title: __('Ticker', 'bdrposts'),
+                        initialOpen: false
+                    },
+                        wp.element.createElement(TextControl, {
+                            label: __('Rótulo do Ticker', 'bdrposts'),
+                            value: attributes.tickerLabel,
+                            onChange: (v) => setAttributes({ tickerLabel: v })
+                        })
+                    ),
+
+                    // Filtros (frontend)
+                    wp.element.createElement(PanelBody, {
+                        title: __('Barra de Filtros (frontend)', 'bdrposts'),
+                        initialOpen: false
+                    },
+                        wp.element.createElement(ToggleControl, {
+                            label: __('Mostrar barra de filtros', 'bdrposts'),
+                            checked: attributes.showFilterBar,
+                            onChange: (v) => setAttributes({ showFilterBar: v })
+                        }),
+                        attributes.showFilterBar && wp.element.createElement(SelectControl, {
+                            label: __('Filtrar por', 'bdrposts'),
+                            value: attributes.filterMode,
+                            options: [
+                                { label: __('Categoria', 'bdrposts'), value: 'category' },
+                                { label: __('Tag', 'bdrposts'), value: 'tag' }
+                            ],
+                            onChange: (v) => setAttributes({ filterMode: v })
+                        }),
+                        attributes.showFilterBar && wp.element.createElement(TextControl, {
+                            label: __('IDs de Termos (opcional)', 'bdrposts'),
+                            help: __('Separados por vírgula; vazio lista os 10 mais populares', 'bdrposts'),
+                            value: attributes.filterTerms.join(','),
+                            onChange: (v) => {
+                                const ids = v ? v.split(',').map(id => parseInt(id.trim(), 10)).filter(id => !isNaN(id)) : [];
+                                setAttributes({ filterTerms: ids });
+                            }
+                        }),
+                        attributes.showFilterBar && wp.element.createElement(TextControl, {
+                            label: __('Rótulo do botão "Todos"', 'bdrposts'),
+                            value: attributes.filterAllLabel,
+                            onChange: (v) => setAttributes({ filterAllLabel: v })
                         })
                     ),
 
@@ -439,7 +507,23 @@
                 ),
 
                 // Preview
-                wp.element.createElement('div', { className: 'bdrposts-editor-preview' },
+                wp.element.createElement('div', { 
+                    className: 'bdrposts-editor-preview', 
+                    tabIndex: 0,
+                    role: 'button',
+                    onClick: function(ev) {
+                        try { if (ev.target && ev.target.closest && ev.target.closest('a')) { ev.preventDefault(); } } catch(e) {}
+                        if (wp && wp.data && wp.data.dispatch) { wp.data.dispatch('core/block-editor').selectBlock(props.clientId); }
+                    },
+                    onMouseDown: function() {
+                        if (wp && wp.data && wp.data.dispatch) { wp.data.dispatch('core/block-editor').selectBlock(props.clientId); }
+                    },
+                    onKeyDown: function(ev) {
+                        if (ev.key === 'Enter' || ev.key === ' ') {
+                            if (wp && wp.data && wp.data.dispatch) { wp.data.dispatch('core/block-editor').selectBlock(props.clientId); }
+                        }
+                    }
+                },
                     wp.element.createElement('div', { className: 'bdrposts-editor-header' },
                         wp.element.createElement('h3', {}, __('📋 BDR Posts', 'bdrposts')),
                         wp.element.createElement('p', {}, __('Visualização do bloco', 'bdrposts'))

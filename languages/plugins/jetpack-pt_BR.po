@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Jetpack &#8211; WP Security, Backup, Speed, &amp; Growth - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-12-03 20:41:27+0000\n"
+"PO-Revision-Date: 2025-12-04 15:54:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,7 +16,7 @@ msgid "Comma-separated list of asset types to exclude from the response. Support
 msgstr "Lista separada por vírgulas de tipos de ativos a serem excluídos da resposta. Valores compatíveis: \"core\" (ativos principais do WordPress), \"gutenberg\" (ativos de plugin do Gutenberg) e prefixos de identificadores de plugins (por exemplo, \"contact-form-7\")."
 
 #. translators: Placeholder is the browser and platform used to submit a form.
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2327
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2337
 msgid "Browser: %1$s"
 msgstr "Navegador: %1$s"
 
@@ -64,10 +64,10 @@ msgstr "%s (excluído)"
 msgid "(trashed) %s"
 msgstr "%s (excluído)"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2038
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2042
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2046
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2049
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2048
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2052
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2056
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2059
 msgid "Form ID mismatch."
 msgstr "ID de formulário não compatível."
 
@@ -1302,7 +1302,7 @@ msgstr "Estado das intersticiais do produto. Verdadeiro significa que o usuário
 msgid "Key-value pairs of product slugs and their interstitial states."
 msgstr "Pares de chave-valor de slugs do produto e estados das intersticiais."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:3055
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:3065
 msgid "Please fill out at least one field."
 msgstr "Preencha pelo menos um campo."
 
@@ -1445,7 +1445,7 @@ msgstr "Assinantes dos formulários do Jetpack"
 msgid "Field"
 msgstr "Campo"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:895
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:905
 msgid "Connection issue while submitting the form. Check that you are connected to the Internet and try again."
 msgstr "Problema de conexão ao enviar o formulário. Verifique se você está conectado à Internet e tente novamente."
 
@@ -1732,15 +1732,15 @@ msgstr "Todas as ferramentas necessárias para fazer seu negócio crescer."
 msgid "Improves your site speed and performance."
 msgstr "Melhora o desempenho e a velocidade do site."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2402
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2412
 msgid "View in dashboard"
 msgstr "Visualizar no painel"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:894
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:904
 msgid "Please fill out the form correctly."
 msgstr "Preencha o formulário de forma correta."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:892
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:902
 msgid "This field is required."
 msgstr "Este campo é obrigatório."
 
@@ -2003,7 +2003,7 @@ msgid "Does the form response contain a file."
 msgstr "A resposta ao formulário contém um arquivo."
 
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-admin.php:732
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1585
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1595
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-feedback-field.php:238
 msgid "Attached file"
 msgstr "Arquivo anexado"
@@ -2198,7 +2198,7 @@ msgstr "A ID do post pela qual filtrar os itens."
 msgid "Account protection"
 msgstr "Proteção de conta"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2865
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2875
 msgid "Failed to upload file."
 msgstr "Não foi possível fazer upload do arquivo."
 
@@ -2487,7 +2487,7 @@ msgstr "O Jetpack não está conectado. Conecte-o e tente novamente."
 msgid "The jetpack_offline_mode option is set to true."
 msgstr "A opção jetpack_offline_mode está definida como true."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1863
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1873
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:1
 msgid "Upload a file"
 msgstr "Fazer upload de um arquivo"
@@ -2594,7 +2594,7 @@ msgstr "Tema comprometido: %1$s (versão %2$s)"
 msgid "Vulnerable plugin: %1$s (version %2$s)"
 msgstr "Plugin vulnerável: %1$s (versão %2$s)"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1833
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1843
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:8
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:19
 msgid "Number"
@@ -3495,7 +3495,7 @@ msgstr "Alguém assinar meu blog"
 
 #: jetpack_vendor/automattic/jetpack-connection/src/sso/class-user-admin.php:1208
 msgid "This user doesn&#8217;t have a Jetpack SSO connection to WordPress.com. Invite them to the site to increase security and improve their experience."
-msgstr "Este usuário não tem uma conexão SSO com o WordPress.com. Convide-o para aumentar a segurança e melhorar a experiência dele no site."
+msgstr "Este usuário não tem uma conexão SSO do Jetpack com o WordPress.com. Convide-o para o site e garanta maior segurança e uma experiência mais eficiente."
 
 #: jetpack_vendor/automattic/jetpack-connection/src/sso/class-user-admin.php:1207
 msgid "Send invite"
@@ -4225,7 +4225,7 @@ msgstr "Jetpack Manage"
 msgid "Jetpack Manage"
 msgstr "Jetpack Manage"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1253
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1263
 msgid "Warning."
 msgstr "Atenção."
 
@@ -5800,18 +5800,18 @@ msgid "Move important styling information to the start of the page, which helps 
 msgstr "Mova informações importantes sobre estilo para o início da página, ajudando o conteúdo das páginas a ser exibido mais cedo. Assim, os usuários não precisem esperar que a página inteira carregue. Comumente chamado de CSS crítico."
 
 #. translators: Placeholder is the URL of the page where a form was submitted.
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2334
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2344
 msgid "Source URL: %1$s"
 msgstr "URL de origem: %1$s"
 
 #. translators: Placeholder is the IP address of the person who submitted a
 #. form.
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2319
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2329
 msgid "IP Address: %1$s"
 msgstr "Endereço de IP: %1$s"
 
 #. translators: Placeholder is the date and time when a form was submitted.
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2309
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2319
 msgid "Time: %1$s"
 msgstr "Horário: %1$s"
 
@@ -5849,7 +5849,7 @@ msgstr "Assinantes pagantes"
 msgid "Ask"
 msgstr "Perguntar"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2350
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2360
 msgid "Mark as spam"
 msgstr "Marcar como spam"
 
@@ -6269,14 +6269,14 @@ msgstr "A IA do Jetpack não está disponível no modo offline."
 msgid "Sorry, you are not allowed to access Jetpack AI help on this site."
 msgstr "Você não tem permissão para acessar os dados da IA do Jetpack neste site."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1854
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1864
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:1
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:8
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:19
 msgid "Choose one option"
 msgstr "Escolha uma opção"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1851
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1861
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:8
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:14
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:19
@@ -7127,8 +7127,8 @@ msgstr "O gerenciador de upload não pode fazer upload de arquivos"
 msgid "Type your email…"
 msgstr "Digite seu e-mail…"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1200
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1295
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1210
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1305
 msgid "Go back"
 msgstr "Voltar"
 
@@ -8108,7 +8108,7 @@ msgstr "Pesquisar respostas"
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:237
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:1411
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:1412
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:823
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:833
 msgid "Form Responses"
 msgstr "Formulário de respostas"
 
@@ -8566,7 +8566,7 @@ msgstr "Escolha um valor"
 
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2536
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2809
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1860
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1870
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:8
 msgid "Consent"
 msgstr "Consentimento"
@@ -10732,11 +10732,11 @@ msgstr "Não foi possível dispensar o cartão"
 msgid "Are sharing buttons enabled?"
 msgstr "Os botões de compartilhamento estão ativados?"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1857
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1867
 msgid "Select one"
 msgstr "Selecionar um"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1845
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1855
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:8
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:19
 msgid "Phone"
@@ -11029,7 +11029,7 @@ msgstr "Permita que as pessoas comprem mais de um item por vez."
 msgid "Remove image"
 msgstr "Remover imagem"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1869
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1879
 #: jetpack_vendor/automattic/jetpack-paypal-payments/src/widget/simple-payments/form.php:119
 msgid "Select an image"
 msgstr "Selecionar uma imagem"
@@ -15843,7 +15843,7 @@ msgstr "Clique para exibir o slide."
 msgid "Slideshow"
 msgstr "Apresentação de slides"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1866
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1876
 #: modules/widgets/milestone/class-milestone-widget.php:691
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:8
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:19
@@ -17802,7 +17802,7 @@ msgstr "Opções"
 msgid "Textarea"
 msgstr "Área de texto"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1827
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1837
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-editor-view.php:245
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-form-view.php:235
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:8
@@ -18012,16 +18012,16 @@ msgstr "(obrigatório)"
 msgid "%s requires a valid email address."
 msgstr "%s requer um endereço de e-mail válido"
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2304
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2314
 msgid "Sent by an unverified visitor to your site."
 msgstr "Enviado ao seu site por um visitante não identificado."
 
 #. translators: the name of the site.
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2300
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2310
 msgid "Sent by a verified %s user."
 msgstr "Enviado por um usuário verificado de %s."
 
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1006
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1016
 msgid "Error!"
 msgstr "Erro!"
 
@@ -18030,13 +18030,13 @@ msgid "Subject"
 msgstr "Assunto"
 
 #. translators: the blog name and post title.
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:758
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:768
 msgctxt "%1$s = blog name, %2$s = post title"
 msgid "%1$s %2$s"
 msgstr "%1$s %2$s"
 
 #. translators: '%1$s the blog name
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:766
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:776
 msgctxt "%1$s = blog name"
 msgid "%1$s Sidebar"
 msgstr "%1$s Barra Lateral"
@@ -18098,7 +18098,7 @@ msgid "You are not allowed to move this item out of the Trash."
 msgstr "Sem permissão para mover este item para a Lixeira."
 
 #. translators: the time of the form submission.
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2195
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:2205
 msgctxt "{$date_format} \\a\\t {$time_format}"
 msgid "%1$s \\a\\t %2$s"
 msgstr "%1$s \\à\\s %2$s"
@@ -18127,7 +18127,7 @@ msgstr "Restaurar este item da Lixeira"
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-admin.php:622
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2514
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:2790
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1842
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1852
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-editor-view.php:254
 #: jetpack_vendor/automattic/jetpack-search/src/widgets/class-search-widget.php:1015
 #: jetpack_vendor/automattic/jetpack-search/src/widgets/class-search-widget.php:1058
@@ -18143,7 +18143,7 @@ msgid "Date"
 msgstr "Data"
 
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:247
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1848
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1858
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-editor-view.php:117
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:8
 #: jetpack_vendor/automattic/jetpack-forms/dist/blocks/editor.js:19
@@ -18351,7 +18351,7 @@ msgid "Missing attachment ID."
 msgstr "Faltando a ID do anexo."
 
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:239
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1839
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1849
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-editor-view.php:116
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-editor-view.php:248
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-form-view.php:237
@@ -18368,7 +18368,7 @@ msgid "Website"
 msgstr "Site"
 
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:238
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1836
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1846
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-editor-view.php:115
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-editor-view.php:247
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-form-view.php:232
@@ -18950,7 +18950,7 @@ msgstr "Pesquisar módulos..."
 #: class.jetpack-modules-list-table.php:272
 #: jetpack_vendor/automattic/jetpack-classic-theme-helper/src/custom-post-types/class-nova-restaurant.php:1284
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:237
-#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1830
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form.php:1840
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-editor-view.php:114
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-editor-view.php:246
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-form-view.php:233

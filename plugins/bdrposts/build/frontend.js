@@ -61,6 +61,12 @@
         const tickers = document.querySelectorAll('.bdrposts-ticker .bdrposts-ticker-content');
         
         tickers.forEach(function(ticker) {
+            // Respeita preferências de movimento reduzido
+            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                ticker.style.transform = 'none';
+                ticker.style.animation = 'none';
+                return;
+            }
             // Calcula largura total
             let totalWidth = 0;
             const items = ticker.querySelectorAll('.bdrposts-ticker-item');
@@ -162,6 +168,62 @@
     }
 
     /**
+     * Inicializa filtros de categoria/tag
+     */
+    function initFilters() {
+        const wrappers = document.querySelectorAll('.bdrposts-wrapper');
+        wrappers.forEach(function(wrapper) {
+            const filter = wrapper.querySelector('.bdrposts-filter');
+            if (!filter) return;
+            const buttons = filter.querySelectorAll('.bdrposts-filter-item');
+            const attrsRaw = wrapper.getAttribute('data-bdrposts-attrs');
+            let attrs = {};
+            try {
+                attrs = attrsRaw ? JSON.parse(attrsRaw) : {};
+            } catch (e) {}
+            buttons.forEach(function(btn) {
+                btn.addEventListener('click', function(ev) {
+                    ev.preventDefault();
+                    const taxonomy = btn.getAttribute('data-taxonomy');
+                    const termId = btn.getAttribute('data-term');
+                    const payload = {
+                        attributes: { ...attrs },
+                        taxonomy: taxonomy || '',
+                        term: termId ? parseInt(termId, 10) : 0
+                    };
+                    // Atualiza estado local para próxima interação
+                    if (payload.taxonomy === 'category') {
+                        payload.attributes.categories = payload.term ? [payload.term] : [];
+                        payload.attributes.tags = [];
+                    } else if (payload.taxonomy === 'post_tag') {
+                        payload.attributes.tags = payload.term ? [payload.term] : [];
+                        payload.attributes.categories = [];
+                    }
+                    // Chama REST para renderizar
+                    if (window.wp && wp.apiFetch) {
+                        wp.apiFetch({
+                            path: '/bdrposts/v1/render',
+                            method: 'POST',
+                            data: payload
+                        }).then(function(html) {
+                            const container = document.createElement('div');
+                            container.innerHTML = html;
+                            const newWrapper = container.firstElementChild;
+                            if (newWrapper && newWrapper.classList.contains('bdrposts-wrapper')) {
+                                wrapper.replaceWith(newWrapper);
+                                // Re-inicializa tudo no novo conteúdo
+                                init();
+                            }
+                        }).catch(function(err) {
+                            console.error('BDRPosts: erro ao filtrar', err);
+                        });
+                    }
+                });
+            });
+        });
+    }
+
+    /**
      * Função principal de inicialização
      */
     function init() {
@@ -170,6 +232,7 @@
             initTickers();
             initMasonry();
             addInteractivity();
+            initFilters();
         } catch (error) {
             console.error('BDRPosts: Erro na inicialização', error);
         }
@@ -214,6 +277,7 @@
         initSliders: initSliders,
         initTickers: initTickers,
         initMasonry: initMasonry,
+        initFilters: initFilters,
         version: '1.0.0'
     };
 

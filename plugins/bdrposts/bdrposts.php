@@ -121,6 +121,15 @@ class BDRPosts {
                 return current_user_can('edit_posts');
             }
         ));
+
+        // Renderização pública do bloco (frontend filtro)
+        register_rest_route('bdrposts/v1', '/render', array(
+            'methods' => 'POST',
+            'callback' => array($this, 'rest_render'),
+            'permission_callback' => function() {
+                return true;
+            }
+        ));
     }
     
     /**
@@ -227,6 +236,30 @@ class BDRPosts {
         
         return rest_ensure_response($result);
     }
+
+    /**
+     * REST: Renderiza bloco com atributos fornecidos
+     */
+    public function rest_render($request) {
+        $attributes = $request->get_param('attributes');
+        if (!is_array($attributes)) {
+            $attributes = array();
+        }
+        $taxonomy = sanitize_text_field($request->get_param('taxonomy'));
+        $term = intval($request->get_param('term'));
+        if ($taxonomy && $term > 0) {
+            if ($taxonomy === 'category') {
+                $attributes['categories'] = array($term);
+                $attributes['tags'] = array();
+            } elseif ($taxonomy === 'post_tag') {
+                $attributes['tags'] = array($term);
+                $attributes['categories'] = array();
+            }
+        }
+        // Evita upscaling de paginação para filtros
+        $attributes['enablePagination'] = false;
+        return $this->render_block($attributes);
+    }
     
     /**
      * Registra o bloco Gutenberg
@@ -279,7 +312,12 @@ class BDRPosts {
             'showReadMore' => array('type' => 'boolean', 'default' => true),
             'readMoreText' => array('type' => 'string', 'default' => 'Ler Mais'),
             'enablePagination' => array('type' => 'boolean', 'default' => false),
-            'showReadingTime' => array('type' => 'boolean', 'default' => false)
+            'showReadingTime' => array('type' => 'boolean', 'default' => false),
+            'tickerLabel' => array('type' => 'string', 'default' => __('Destaques', 'bdrposts')),
+            'showFilterBar' => array('type' => 'boolean', 'default' => false),
+            'filterMode' => array('type' => 'string', 'default' => 'category'),
+            'filterTerms' => array('type' => 'array', 'default' => array(), 'items' => array('type' => 'number')),
+            'filterAllLabel' => array('type' => 'string', 'default' => __('Todos', 'bdrposts'))
         );
     }
     
@@ -298,6 +336,11 @@ class BDRPosts {
                 BDRPOSTS_VERSION,
                 true
             );
+            wp_localize_script('bdrposts-block-editor', 'bdrpostsData', array(
+                'restUrl' => rest_url('bdrposts/v1/'),
+                'nonce' => wp_create_nonce('wp_rest'),
+                'pluginUrl' => BDRPOSTS_PLUGIN_URL
+            ));
         }
         
         if (file_exists($css_file)) {
@@ -309,34 +352,13 @@ class BDRPosts {
             );
         }
         
-        // Passa dados para o JavaScript
-        wp_localize_script('bdrposts-block-editor', 'bdrpostsData', array(
-            'restUrl' => rest_url('bdrposts/v1/'),
-            'nonce' => wp_create_nonce('wp_rest'),
-            'pluginUrl' => BDRPOSTS_PLUGIN_URL
-        ));
     }
     
     /**
      * Enfileira assets do frontend
      */
     public function enqueue_block_assets() {
-        // Swiper CSS/JS para slider
-        wp_enqueue_style(
-            'bdrposts-swiper-style',
-            'https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css',
-            array(),
-            '9.0.0'
-        );
         
-        wp_enqueue_script(
-            'bdrposts-swiper',
-            'https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js',
-            array(),
-            '9.0.0',
-            true
-        );
-
         // Estilos do bloco
         $style_file = BDRPOSTS_PLUGIN_DIR . 'build/style.css';
         if (file_exists($style_file)) {
@@ -347,21 +369,31 @@ class BDRPosts {
                 BDRPOSTS_VERSION
             );
         } else {
-            wp_add_inline_style('wp-block-library', $this->get_inline_styles());
+            if (!wp_style_is('bdrposts-inline-style', 'registered')) {
+                wp_register_style('bdrposts-inline-style', false);
+            }
+            wp_enqueue_style('bdrposts-inline-style');
+            wp_add_inline_style('bdrposts-inline-style', $this->get_inline_styles());
         }
         
         // JS do frontend
         $js_file = BDRPOSTS_PLUGIN_DIR . 'build/frontend.js';
-        if (file_exists($js_file)) {
-            wp_enqueue_script(
-                'bdrposts-frontend',
-                BDRPOSTS_PLUGIN_URL . 'build/frontend.js',
-                array('jquery', 'bdrposts-swiper'),
-                BDRPOSTS_VERSION,
-                true
-            );
-        } else {
-            wp_add_inline_script('bdrposts-swiper', $this->get_inline_script());
+        if (!is_admin()) {
+            if (file_exists($js_file)) {
+                wp_enqueue_script(
+                    'bdrposts-frontend',
+                    BDRPOSTS_PLUGIN_URL . 'build/frontend.js',
+                    array('jquery'),
+                    BDRPOSTS_VERSION,
+                    true
+                );
+            } else {
+                if (!wp_script_is('bdrposts-inline-script', 'registered')) {
+                    wp_register_script('bdrposts-inline-script', '', array(), BDRPOSTS_VERSION, true);
+                }
+                wp_enqueue_script('bdrposts-inline-script');
+                wp_add_inline_script('bdrposts-inline-script', $this->get_inline_script());
+            }
         }
     }
     
@@ -427,6 +459,17 @@ class BDRPosts {
      * Renderiza o bloco
      */
     public function render_block($attributes) {
+        // Cache baseado nos atributos e página atual
+        $paged = get_query_var('paged') ? intval(get_query_var('paged')) : 1;
+        $cache_key = 'bdrposts_cache_' . md5(wp_json_encode($attributes) . '|' . $paged);
+        $use_cache = empty($attributes['enablePagination']);
+        if ($use_cache) {
+            $cached = get_transient($cache_key);
+            if ($cached) {
+                return $cached;
+            }
+        }
+
         $args = $this->build_query_args($attributes);
         $query = new WP_Query($args);
         
@@ -446,8 +489,47 @@ class BDRPosts {
             'bdrposts-sublayout-' . esc_attr($sub_layout),
             'bdrposts-columns-' . esc_attr($columns)
         );
-        
-        echo '<div class="' . implode(' ', $wrapper_classes) . '">';
+        $data_attrs = esc_attr(wp_json_encode($attributes));
+        echo '<div class="' . implode(' ', $wrapper_classes) . '" data-bdrposts-attrs="' . $data_attrs . '">';
+
+        // Barra de filtros por categoria/tag
+        if (!empty($attributes['showFilterBar'])) {
+            $is_tag = isset($attributes['filterMode']) && $attributes['filterMode'] === 'tag';
+            $taxonomy = $is_tag ? 'post_tag' : 'category';
+            echo '<div class="bdrposts-filter" role="toolbar" aria-label="' . esc_attr__('Filtros', 'bdrposts') . '">';
+            $all_label = isset($attributes['filterAllLabel']) ? $attributes['filterAllLabel'] : __('Todos', 'bdrposts');
+            $active = $is_tag ? (empty($attributes['tags'])) : (empty($attributes['categories']));
+            echo '<button type="button" class="bdrposts-filter-item' . ($active ? ' is-active' : '') . '" data-taxonomy="' . esc_attr($taxonomy) . '" data-term="" aria-pressed="' . ($active ? 'true' : 'false') . '">' . esc_html($all_label) . '</button>';
+            $term_ids = array();
+            if (!empty($attributes['filterTerms']) && is_array($attributes['filterTerms'])) {
+                $term_ids = array_map('intval', $attributes['filterTerms']);
+            }
+            $terms = array();
+            if ($taxonomy === 'category') {
+                if (!empty($term_ids)) {
+                    $terms = get_categories(array('include' => $term_ids, 'hide_empty' => true));
+                } else {
+                    $terms = get_categories(array('hide_empty' => true, 'orderby' => 'count', 'order' => 'DESC', 'number' => 10));
+                }
+            } else {
+                if (!empty($term_ids)) {
+                    $terms = get_tags(array('include' => $term_ids, 'hide_empty' => true));
+                } else {
+                    $terms = get_tags(array('hide_empty' => true, 'orderby' => 'count', 'order' => 'DESC', 'number' => 10));
+                }
+            }
+            foreach ($terms as $term) {
+                $is_active = false;
+                if ($taxonomy === 'category' && !empty($attributes['categories'])) {
+                    $is_active = in_array((int)$term->term_id, array_map('intval', $attributes['categories']), true);
+                }
+                if ($taxonomy === 'post_tag' && !empty($attributes['tags'])) {
+                    $is_active = in_array((int)$term->term_id, array_map('intval', $attributes['tags']), true);
+                }
+                echo '<button type="button" class="bdrposts-filter-item' . ($is_active ? ' is-active' : '') . '" data-taxonomy="' . esc_attr($taxonomy) . '" data-term="' . esc_attr($term->term_id) . '" aria-pressed="' . ($is_active ? 'true' : 'false') . '">' . esc_html($term->name) . '</button>';
+            }
+            echo '</div>';
+        }
         
         switch ($layout) {
             case 'masonry':
@@ -472,7 +554,11 @@ class BDRPosts {
         
         wp_reset_postdata();
         
-        return ob_get_clean();
+        $html = ob_get_clean();
+        if ($use_cache) {
+            set_transient($cache_key, $html, 120);
+        }
+        return $html;
     }
     
     /**
@@ -575,21 +661,30 @@ class BDRPosts {
      * Renderiza layout Slider
      */
     private function render_slider_layout($query, $attributes) {
+        if (!is_admin()) {
+            if (!wp_style_is('bdrposts-swiper-style', 'enqueued')) {
+                wp_enqueue_style('bdrposts-swiper-style', 'https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css', array(), '9.0.0');
+            }
+            if (!wp_script_is('bdrposts-swiper', 'enqueued')) {
+                wp_enqueue_script('bdrposts-swiper', 'https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js', array(), '9.0.0', true);
+            }
+        }
         $slider_id = 'bdrposts-slider-' . wp_rand(1000, 9999);
-        echo '<div class="bdrposts-slider swiper" id="' . esc_attr($slider_id) . '">';
+        echo '<div class="bdrposts-slider swiper" id="' . esc_attr($slider_id) . '" role="region" aria-roledescription="carousel" aria-label="' . esc_attr__('Slider de posts', 'bdrposts') . '">';
         echo '<div class="swiper-wrapper">';
-        
+        $first = true;
         while ($query->have_posts()) {
             $query->the_post();
             echo '<div class="swiper-slide">';
-            $this->render_post_item($attributes);
+            $this->render_post_item($attributes, $first ? 'high' : 'low');
+            $first = false;
             echo '</div>';
         }
         
         echo '</div>';
-        echo '<div class="swiper-pagination"></div>';
-        echo '<div class="swiper-button-prev"></div>';
-        echo '<div class="swiper-button-next"></div>';
+        echo '<div class="swiper-pagination" aria-label="' . esc_attr__('Paginação do slider', 'bdrposts') . '"></div>';
+        echo '<div class="swiper-button-prev" aria-label="' . esc_attr__('Slide anterior', 'bdrposts') . '" role="button"></div>';
+        echo '<div class="swiper-button-next" aria-label="' . esc_attr__('Próximo slide', 'bdrposts') . '" role="button"></div>';
         echo '</div>';
     }
     
@@ -598,6 +693,8 @@ class BDRPosts {
      */
     private function render_ticker_layout($query, $attributes) {
         echo '<div class="bdrposts-ticker">';
+        $label = isset($attributes['tickerLabel']) ? $attributes['tickerLabel'] : __('Destaques', 'bdrposts');
+        echo '<span class="bdrposts-ticker-label" aria-hidden="true">' . esc_html($label) . ':</span>';
         echo '<div class="bdrposts-ticker-content">';
         
         $items = array();
@@ -617,25 +714,32 @@ class BDRPosts {
     /**
      * Renderiza item individual do post
      */
-    private function render_post_item($attributes) {
+    private function render_post_item($attributes, $img_priority = 'low') {
         $show_image = isset($attributes['showImage']) ? $attributes['showImage'] : true;
         $show_title = isset($attributes['showTitle']) ? $attributes['showTitle'] : true;
         $show_excerpt = isset($attributes['showExcerpt']) ? $attributes['showExcerpt'] : true;
         $show_meta = isset($attributes['showMeta']) ? $attributes['showMeta'] : true;
         $show_read_more = isset($attributes['showReadMore']) ? $attributes['showReadMore'] : true;
         
-        echo '<article class="bdrposts-item" id="post-' . get_the_ID() . '">';
+        $item_classes = apply_filters('bdrposts_item_classes', array('bdrposts-item'), get_the_ID(), $attributes);
+        echo '<article class="' . esc_attr(implode(' ', $item_classes)) . '" id="post-' . get_the_ID() . '">';
         
         // Imagem destacada
         if ($show_image && has_post_thumbnail()) {
             $image_size = isset($attributes['imageSize']) ? $attributes['imageSize'] : 'medium';
+            $image_size = apply_filters('bdrposts_image_size', $image_size, $attributes);
             $link_image = isset($attributes['linkImage']) ? $attributes['linkImage'] : true;
             
             echo '<div class="bdrposts-thumbnail">';
             if ($link_image) {
                 echo '<a href="' . esc_url(get_permalink()) . '" aria-label="' . esc_attr(get_the_title()) . '">';
             }
-            the_post_thumbnail($image_size, array('loading' => 'lazy'));
+            the_post_thumbnail($image_size, array(
+                'loading' => 'lazy',
+                'decoding' => 'async',
+                'sizes' => '(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 33vw',
+                'fetchpriority' => $img_priority
+            ));
             if ($link_image) {
                 echo '</a>';
             }
@@ -654,7 +758,7 @@ class BDRPosts {
             $link_title = isset($attributes['linkTitle']) ? $attributes['linkTitle'] : true;
             echo '<h3 class="bdrposts-title">';
             if ($link_title) {
-                echo '<a href="' . esc_url(get_permalink()) . '">' . esc_html(get_the_title()) . '</a>';
+                echo '<a href="' . esc_url(get_permalink()) . '" rel="bookmark">' . esc_html(get_the_title()) . '</a>';
             } else {
                 echo esc_html(get_the_title());
             }
@@ -801,6 +905,15 @@ class BDRPosts {
         
         return $this->render_block($attributes);
     }
+
+    /**
+     * Limpa transients de cache do plugin
+     */
+    public function purge_cache() {
+        global $wpdb;
+        $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_bdrposts_cache_%'");
+        $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_bdrposts_cache_%'");
+    }
 }
 
 /**
@@ -829,4 +942,26 @@ register_activation_hook(__FILE__, function() {
  */
 register_deactivation_hook(__FILE__, function() {
     flush_rewrite_rules();
+});
+
+// Limpa cache quando conteúdo muda
+add_action('save_post', function() {
+    if (function_exists('bdrposts_init')) {
+        bdrposts_init()->purge_cache();
+    }
+});
+add_action('created_term', function() {
+    if (function_exists('bdrposts_init')) {
+        bdrposts_init()->purge_cache();
+    }
+});
+add_action('edited_term', function() {
+    if (function_exists('bdrposts_init')) {
+        bdrposts_init()->purge_cache();
+    }
+});
+add_action('delete_term', function() {
+    if (function_exists('bdrposts_init')) {
+        bdrposts_init()->purge_cache();
+    }
 });
