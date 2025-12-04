@@ -6,7 +6,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
     <header class="entry-header">
         <?php 
         $show = (bool) get_theme_mod( 'nn_post_thumb_show', true ); 
-        $size = get_theme_mod( 'nn_thumb_size', 'large' ); 
+        $use_std = (bool) get_theme_mod( 'nn_use_standard_thumb', true );
+        $size = $use_std ? 'nn_thumb_standard' : get_theme_mod( 'nn_thumb_size', 'large' ); 
         $meta_hide = (bool) get_post_meta( get_the_ID(), 'nn_meta_hide_thumb', false );
         $br = get_post_meta( get_the_ID(), 'nn_meta_thumb_border_radius', true );
         $shadow = get_post_meta( get_the_ID(), 'nn_meta_thumb_shadow', true );
