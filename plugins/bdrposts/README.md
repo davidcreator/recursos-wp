@@ -43,9 +43,11 @@ Após instalar, verifique:
 - [ ] Plugin aparece na lista de plugins ativos
 - [ ] Bloco "BDR Posts" disponível no editor
 - [ ] Preview funciona no editor
+- [ ] Barra de ferramentas do bloco aparece (mover/excluir)
 - [ ] Posts aparecem no frontend
 - [ ] Estilos carregados corretamente
 - [ ] Slider funciona (se usar layout slider)
+- [ ] Barra de filtros funciona (quando ativada)
 
 ---
 
@@ -132,6 +134,19 @@ Mostrar: Tudo
 // Via Shortcode:
 [bdrposts categories="5,8,12"]
 ```
+
+### Barra de Filtros (frontend)
+
+No editor do bloco:
+
+```
+Mostrar barra de filtros: ✅
+Filtrar por: Categoria ou Tag
+IDs de Termos: (opcional, separados por vírgula) → lista os 10 mais populares quando vazio
+Rótulo do botão "Todos": personalizável
+```
+
+No frontend, a barra aparece acima dos cards. Ao clicar em um termo, a lista é atualizada via REST sem recarregar a página.
 
 ### Posts Aleatórios
 
@@ -235,6 +250,15 @@ Adicione no **Aparência → Personalizar → CSS Adicional**:
 1. Verifique: Tem posts publicados?
 2. Remova filtros de categoria/tag
 3. Aumente "Posts por Página"
+```
+
+### Não consigo selecionar/excluir o bloco no editor
+
+```
+1. Atualize a página do editor (Ctrl+F5)
+2. Clique dentro da área de preview do bloco para forçar a seleção
+3. Verifique se a barra do bloco aparece no topo (mover, transformar, menu de três pontos)
+4. Se usar tema com CSS agressivo, desative temporariamente estilos customizados do editor e teste
 ```
 
 ---
@@ -518,6 +542,9 @@ Verifique:
 | Twenty Twenty-Five | ❌ Erro | ✅ Funciona |
 | REST API | ⚠️ Básica | ✅ Completa |
 | Taxonomias Custom | ❌ Não | ✅ Com termos |
+| Barra de Filtros (frontend) | ❌ Não | ✅ Sim |
+| Swiper condicional | ❌ Não | ✅ Sim |
+| Cache de HTML | ❌ Não | ✅ Sim |
 
 ---
 
@@ -529,6 +556,7 @@ Verifique:
 GET /wp-json/bdrposts/v1/categories
 GET /wp-json/bdrposts/v1/tags
 GET /wp-json/bdrposts/v1/terms/{taxonomy}
+POST /wp-json/bdrposts/v1/render
 ```
 
 **Exemplo de resposta:**
@@ -544,6 +572,11 @@ GET /wp-json/bdrposts/v1/terms/{taxonomy}
   }
 ]
 ```
+
+### 2. Barra de Filtros (frontend)
+
+Renderiza termos de categoria ou tag e atualiza a lista via REST sem recarregar.
+Configurações no editor: ativar barra, escolher taxonomia, limitar por IDs e rótulo de "Todos".
 
 ### 2. Seleção Visual de Filtros
 
@@ -572,6 +605,15 @@ if (!empty($attributes['categories']) && count($attributes['categories']) > 0) {
     // Funciona corretamente
 }
 ```
+
+## 🛠️ Otimizações e Compatibilidade
+
+- Swiper condicional: só carrega em páginas que usam layout `slider`.
+- Imagens otimizadas: `sizes`, `decoding="async"`, `fetchpriority` para melhor LCP.
+- Acessibilidade: respeita `prefers-reduced-motion` para ticker/animações.
+- Cache de HTML: respostas sem paginação são cacheadas por 120s e limpas em alterações de conteúdo.
+- Editor compatível: integra `useBlockProps` e `BlockControls`; preview evita navegação e permite seleção do bloco.
+- Uninstall corrigido: remove opções/transients/meta com prefixo `bdrposts_*`.
 
 ---
 
