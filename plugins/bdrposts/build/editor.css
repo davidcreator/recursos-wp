@@ -1,10 +1,12 @@
 /* =========================================
    BDRPosts - Editor Styles (Gutenberg)
+   Otimizado para todos os dispositivos
    ========================================= */
 
 /* === Editor Wrapper === */
 .bdrposts-editor-wrapper {
     width: 100%;
+    max-width: 100%;
 }
 
 /* === Preview Container === */
@@ -15,6 +17,7 @@
     padding: 24px;
     margin: 20px 0;
     min-height: 200px;
+    overflow-x: hidden;
 }
 
 /* === Header === */
@@ -29,12 +32,14 @@
     color: #0073aa;
     font-size: 20px;
     font-weight: 700;
+    word-wrap: break-word;
 }
 
 .bdrposts-editor-header p {
     margin: 0;
     color: #666;
     font-size: 14px;
+    line-height: 1.5;
 }
 
 /* === Loading State === */
@@ -59,6 +64,7 @@
     padding: 40px 20px;
     color: #999;
     font-style: italic;
+    word-wrap: break-word;
 }
 
 /* === Editor Note === */
@@ -70,6 +76,7 @@
     margin: 20px 0 0;
     padding-top: 16px;
     border-top: 1px solid #e0e0e0;
+    word-wrap: break-word;
 }
 
 /* === Inspector Controls === */
@@ -80,6 +87,8 @@
 .components-panel__body-title button {
     font-weight: 600;
     font-size: 14px;
+    width: 100%;
+    text-align: left;
 }
 
 .components-base-control {
@@ -91,6 +100,8 @@
     margin-bottom: 8px;
     color: #1e1e1e;
     display: block;
+    line-height: 1.4;
+    word-wrap: break-word;
 }
 
 .components-base-control__help {
@@ -98,6 +109,7 @@
     font-size: 12px;
     font-style: italic;
     color: #757575;
+    line-height: 1.5;
 }
 
 /* === Toggle Control === */
@@ -108,19 +120,32 @@
 .components-toggle-control .components-base-control__field {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .components-toggle-control .components-toggle-control__label {
     font-weight: 500;
+    flex: 1;
+    min-width: 0;
 }
 
 /* === Range Control === */
 .components-range-control__wrapper {
     margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.components-range-control__slider {
+    flex: 1;
+    min-width: 120px;
 }
 
 .components-range-control__number {
     min-width: 60px;
+    max-width: 80px;
 }
 
 /* === Select Control === */
@@ -130,11 +155,14 @@
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .components-select-control__input:focus {
     border-color: #0073aa;
     box-shadow: 0 0 0 1px #0073aa;
+    outline: none;
 }
 
 /* === Text Control === */
@@ -144,11 +172,14 @@
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .components-text-control__input:focus {
     border-color: #0073aa;
     box-shadow: 0 0 0 1px #0073aa;
+    outline: none;
 }
 
 /* === Panel Sections === */
@@ -175,11 +206,19 @@
 
 .components-checkbox-control .components-base-control__field {
     margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.components-checkbox-control__input {
+    flex-shrink: 0;
 }
 
 /* === Icon Indicators === */
 .components-panel__icon {
     color: #0073aa;
+    flex-shrink: 0;
 }
 
 /* === Help Text Styling === */
@@ -212,24 +251,6 @@
 /* === Nested Controls === */
 .components-base-control + .components-base-control {
     margin-top: 16px;
-}
-
-/* === Responsive Inspector === */
-@media (max-width: 782px) {
-    .components-panel__body-toggle {
-        padding: 12px;
-    }
-    
-    .components-base-control {
-        margin-bottom: 16px;
-    }
-    
-    .components-select-control__input,
-    .components-text-control__input {
-        min-height: 36px;
-        padding: 6px 10px;
-        font-size: 13px;
-    }
 }
 
 /* === Custom Spacing for BDRPosts === */
@@ -265,6 +286,7 @@
 /* === Better Button Spacing === */
 .components-button {
     margin-right: 8px;
+    flex-shrink: 0;
 }
 
 .components-button:last-child {
@@ -285,6 +307,7 @@
     height: 24px;
     margin-right: 8px;
     color: #0073aa;
+    flex-shrink: 0;
 }
 
 /* === Compact Mode === */
@@ -344,6 +367,8 @@
 /* === Tooltip Styles === */
 .components-tooltip {
     font-size: 12px;
+    max-width: 250px;
+    word-wrap: break-word;
 }
 
 /* === Custom Scrollbar for Inspector === */
@@ -362,4 +387,620 @@
 
 .interface-complementary-area::-webkit-scrollbar-thumb:hover {
     background: #999;
+}
+
+/* ========================================
+   RESPONSIVE BREAKPOINTS
+   ======================================== */
+
+/* === Monitores Grandes (1920px+) === */
+@media (min-width: 1920px) {
+    .bdrposts-editor-preview {
+        padding: 32px;
+        margin: 24px 0;
+    }
+    
+    .bdrposts-editor-header h3 {
+        font-size: 22px;
+    }
+    
+    .bdrposts-editor-header p {
+        font-size: 15px;
+    }
+    
+    .components-panel__body-content {
+        padding: 20px;
+    }
+}
+
+/* === Monitores Médios (1440px - 1919px) === */
+@media (min-width: 1440px) and (max-width: 1919px) {
+    .bdrposts-editor-preview {
+        padding: 28px;
+        margin: 22px 0;
+    }
+    
+    .components-panel__body-content {
+        padding: 18px;
+    }
+}
+
+/* === Monitores Pequenos e Laptops (1024px - 1439px) === */
+@media (min-width: 1024px) and (max-width: 1439px) {
+    .bdrposts-editor-preview {
+        padding: 24px;
+        margin: 20px 0;
+    }
+    
+    .bdrposts-editor-header h3 {
+        font-size: 19px;
+    }
+    
+    .components-panel__body-content {
+        padding: 16px;
+    }
+}
+
+/* === Tablets e WordPress Mobile (600px - 1023px) === */
+@media (min-width: 600px) and (max-width: 1023px) {
+    .bdrposts-editor-preview {
+        padding: 20px;
+        margin: 16px 0;
+    }
+    
+    .bdrposts-editor-header {
+        padding-bottom: 12px;
+        margin-bottom: 20px;
+    }
+    
+    .bdrposts-editor-header h3 {
+        font-size: 18px;
+    }
+    
+    .bdrposts-editor-header p {
+        font-size: 13px;
+    }
+    
+    .bdrposts-loading {
+        padding: 40px 16px;
+    }
+    
+    .bdrposts-no-posts {
+        padding: 30px 16px;
+    }
+    
+    .components-panel__body-toggle {
+        padding: 14px;
+    }
+    
+    .components-base-control {
+        margin-bottom: 18px;
+    }
+    
+    .components-select-control__input,
+    .components-text-control__input {
+        min-height: 38px;
+        padding: 7px 11px;
+        font-size: 13px;
+    }
+    
+    .components-select-control__input {
+        padding-right: 30px;
+    }
+    
+    .components-range-control__number {
+        min-width: 55px;
+        max-width: 70px;
+    }
+    
+    .bdrposts-editor-note {
+        font-size: 12px;
+    }
+    
+    .components-panel__body-content {
+        padding: 14px;
+    }
+    
+    /* Melhor uso do espaço em tablets */
+    .components-panel__body-title button {
+        font-size: 13px;
+    }
+}
+
+/* === WordPress Mobile / Tablets Portrait (782px breakpoint do WP) === */
+@media (max-width: 782px) {
+    .bdrposts-editor-preview {
+        padding: 16px;
+        margin: 12px 0;
+        border-radius: 6px;
+    }
+    
+    .bdrposts-editor-header {
+        padding-bottom: 12px;
+        margin-bottom: 16px;
+        border-bottom-width: 2px;
+    }
+    
+    .bdrposts-editor-header h3 {
+        font-size: 17px;
+        margin-bottom: 6px;
+    }
+    
+    .bdrposts-editor-header p {
+        font-size: 13px;
+    }
+    
+    .bdrposts-loading {
+        padding: 30px 12px;
+    }
+    
+    .bdrposts-loading p {
+        font-size: 13px;
+    }
+    
+    .bdrposts-no-posts {
+        padding: 25px 12px;
+        font-size: 13px;
+    }
+    
+    .components-panel__body-toggle {
+        padding: 12px;
+    }
+    
+    .components-base-control {
+        margin-bottom: 16px;
+    }
+    
+    .components-base-control__label {
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+    
+    .components-base-control__help {
+        font-size: 11px;
+        margin-top: 6px;
+    }
+    
+    .components-select-control__input,
+    .components-text-control__input {
+        min-height: 36px;
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+    
+    .components-select-control__input {
+        padding-right: 28px;
+    }
+    
+    .components-range-control__wrapper {
+        gap: 10px;
+    }
+    
+    .components-range-control__slider {
+        min-width: 100px;
+    }
+    
+    .components-range-control__number {
+        min-width: 50px;
+        max-width: 65px;
+        font-size: 13px;
+    }
+    
+    .components-button {
+        font-size: 13px;
+        padding: 6px 12px;
+        margin-right: 6px;
+    }
+    
+    .bdrposts-icon-preview {
+        width: 20px;
+        height: 20px;
+        margin-right: 6px;
+    }
+    
+    .bdrposts-editor-note {
+        font-size: 11px;
+        margin-top: 16px;
+        padding-top: 12px;
+    }
+    
+    .components-panel__body-content {
+        padding: 12px;
+    }
+    
+    .components-panel__body-title button {
+        font-size: 13px;
+    }
+    
+    .components-tooltip {
+        font-size: 11px;
+        max-width: 200px;
+    }
+    
+    /* Ajuste para controles em linha */
+    .components-toggle-control .components-base-control__field {
+        gap: 8px;
+    }
+    
+    .components-checkbox-control .components-base-control__field {
+        gap: 6px;
+    }
+}
+
+/* === Celulares Grandes (480px - 599px) === */
+@media (min-width: 480px) and (max-width: 599px) {
+    .bdrposts-editor-preview {
+        padding: 14px;
+        margin: 10px 0;
+        border-radius: 6px;
+    }
+    
+    .bdrposts-editor-header {
+        padding-bottom: 10px;
+        margin-bottom: 14px;
+    }
+    
+    .bdrposts-editor-header h3 {
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+    
+    .bdrposts-editor-header p {
+        font-size: 12px;
+    }
+    
+    .bdrposts-loading {
+        padding: 25px 10px;
+    }
+    
+    .bdrposts-loading p {
+        font-size: 12px;
+    }
+    
+    .bdrposts-no-posts {
+        padding: 20px 10px;
+        font-size: 12px;
+    }
+    
+    .components-panel__body-toggle {
+        padding: 10px;
+    }
+    
+    .components-base-control {
+        margin-bottom: 14px;
+    }
+    
+    .components-base-control__label {
+        font-size: 12px;
+        margin-bottom: 5px;
+    }
+    
+    .components-base-control__help {
+        font-size: 10px;
+        margin-top: 5px;
+    }
+    
+    .components-select-control__input,
+    .components-text-control__input {
+        min-height: 34px;
+        padding: 5px 9px;
+        font-size: 12px;
+    }
+    
+    .components-select-control__input {
+        padding-right: 26px;
+    }
+    
+    .components-range-control__wrapper {
+        gap: 8px;
+    }
+    
+    .components-range-control__slider {
+        min-width: 90px;
+    }
+    
+    .components-range-control__number {
+        min-width: 45px;
+        max-width: 60px;
+        font-size: 12px;
+        padding: 4px 6px;
+    }
+    
+    .components-button {
+        font-size: 12px;
+        padding: 5px 10px;
+        margin-right: 5px;
+    }
+    
+    .bdrposts-icon-preview {
+        width: 18px;
+        height: 18px;
+        margin-right: 5px;
+    }
+    
+    .bdrposts-editor-note {
+        font-size: 10px;
+        margin-top: 14px;
+        padding-top: 10px;
+    }
+    
+    .components-panel__body-content {
+        padding: 10px;
+    }
+    
+    .components-panel__body-title button {
+        font-size: 12px;
+        padding: 8px 10px;
+    }
+    
+    .components-tooltip {
+        font-size: 10px;
+        max-width: 180px;
+    }
+}
+
+/* === Celulares Pequenos (< 480px) === */
+@media (max-width: 479px) {
+    .bdrposts-editor-preview {
+        padding: 12px;
+        margin: 8px 0;
+        border-radius: 4px;
+        border-width: 1px;
+    }
+    
+    .bdrposts-editor-header {
+        padding-bottom: 8px;
+        margin-bottom: 12px;
+        border-bottom-width: 2px;
+    }
+    
+    .bdrposts-editor-header h3 {
+        font-size: 15px;
+        margin-bottom: 4px;
+        line-height: 1.3;
+    }
+    
+    .bdrposts-editor-header p {
+        font-size: 11px;
+        line-height: 1.4;
+    }
+    
+    .bdrposts-loading {
+        padding: 20px 8px;
+    }
+    
+    .bdrposts-loading p {
+        font-size: 11px;
+    }
+    
+    .bdrposts-no-posts {
+        padding: 18px 8px;
+        font-size: 11px;
+    }
+    
+    .components-panel__body-toggle {
+        padding: 8px;
+    }
+    
+    .components-base-control {
+        margin-bottom: 12px;
+    }
+    
+    .components-base-control__label {
+        font-size: 11px;
+        margin-bottom: 4px;
+    }
+    
+    .components-base-control__help {
+        font-size: 10px;
+        margin-top: 4px;
+        line-height: 1.4;
+    }
+    
+    .components-select-control__input,
+    .components-text-control__input {
+        min-height: 32px;
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+    
+    .components-select-control__input {
+        padding-right: 24px;
+    }
+    
+    .components-range-control__wrapper {
+        gap: 6px;
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .components-range-control__slider {
+        min-width: 100%;
+        order: 2;
+    }
+    
+    .components-range-control__number {
+        min-width: 100%;
+        max-width: 100%;
+        font-size: 11px;
+        padding: 4px 8px;
+        order: 1;
+    }
+    
+    .components-button {
+        font-size: 11px;
+        padding: 4px 8px;
+        margin-right: 4px;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .components-button + .components-button {
+        margin-top: 4px;
+    }
+    
+    .bdrposts-icon-preview {
+        width: 16px;
+        height: 16px;
+        margin-right: 4px;
+    }
+    
+    .bdrposts-editor-note {
+        font-size: 9px;
+        margin-top: 12px;
+        padding-top: 8px;
+    }
+    
+    .components-panel__body-content {
+        padding: 8px;
+    }
+    
+    .components-panel__body-title button {
+        font-size: 11px;
+        padding: 6px 8px;
+    }
+    
+    .components-tooltip {
+        font-size: 9px;
+        max-width: 150px;
+    }
+    
+    /* Stack controls verticalmente */
+    .components-toggle-control .components-base-control__field {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+    
+    .components-toggle-control .components-toggle-control__label {
+        width: 100%;
+    }
+    
+    .components-checkbox-control .components-base-control__field {
+        gap: 5px;
+    }
+    
+    /* Ajuste de espaçamento */
+    .components-panel__body-content > .components-base-control:not(:last-child) {
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+    }
+    
+    .components-base-control + .components-base-control {
+        margin-top: 12px;
+    }
+}
+
+/* === Ajustes para Orientação Paisagem em Mobile === */
+@media (max-height: 500px) and (orientation: landscape) {
+    .bdrposts-editor-preview {
+        padding: 10px;
+        margin: 8px 0;
+    }
+    
+    .bdrposts-editor-header {
+        padding-bottom: 6px;
+        margin-bottom: 10px;
+    }
+    
+    .bdrposts-editor-header h3 {
+        font-size: 14px;
+        margin-bottom: 3px;
+    }
+    
+    .bdrposts-editor-header p {
+        font-size: 11px;
+    }
+    
+    .bdrposts-loading,
+    .bdrposts-no-posts {
+        padding: 15px 8px;
+    }
+    
+    .components-panel__body-toggle {
+        padding: 6px 8px;
+    }
+    
+    .components-base-control {
+        margin-bottom: 10px;
+    }
+    
+    .components-base-control__label {
+        font-size: 11px;
+        margin-bottom: 3px;
+    }
+}
+
+/* === Ajustes para Sidebar do WordPress (Interface Complementar) === */
+@media (max-width: 1280px) {
+    .interface-complementary-area .components-panel__body-content {
+        padding: 12px;
+    }
+    
+    .interface-complementary-area .components-base-control__label {
+        font-size: 12px;
+    }
+    
+    .interface-complementary-area .components-select-control__input,
+    .interface-complementary-area .components-text-control__input {
+        font-size: 12px;
+    }
+}
+
+/* === Otimização para Touch Devices === */
+@media (hover: none) and (pointer: coarse) {
+    .components-button {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .components-toggle-control__input {
+        min-width: 44px;
+        min-height: 44px;
+    }
+    
+    .components-checkbox-control__input {
+        min-width: 24px;
+        min-height: 24px;
+    }
+    
+    .components-panel__body-toggle {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+}
+
+/* === Modo de Alto Contraste === */
+@media (prefers-contrast: high) {
+    .bdrposts-editor-preview {
+        border-width: 3px;
+        border-color: #000;
+    }
+    
+    .components-base-control__label {
+        font-weight: 700;
+    }
+    
+    .components-select-control__input:focus,
+    .components-text-control__input:focus {
+        border-width: 2px;
+    }
+}
+
+/* === Animações Reduzidas === */
+@media (prefers-reduced-motion: reduce) {
+    .bdrposts-editor-preview .bdrposts-item {
+        animation: none;
+    }
+    
+    .components-panel__body {
+        transition: none;
+    }
+    
+    .components-button,
+    .components-select-control__input,
+    .components-text-control__input {
+        transition: none;
+    }
 }

@@ -1,5 +1,5 @@
 /**
- * BRDPosts Editor Styles
+ * BDRPosts Editor Styles (Responsivo Otimizado)
  * Estilos para o editor Gutenberg
  */
 
@@ -10,6 +10,8 @@
     border-radius: 8px;
     padding: 20px;
     margin: 20px 0;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .brdposts-editor-header {
@@ -22,12 +24,14 @@
     margin: 0 0 5px;
     color: #0073aa;
     font-size: 18px;
+    line-height: 1.4;
 }
 
 .brdposts-editor-header p {
     margin: 0;
     color: #666;
     font-size: 14px;
+    line-height: 1.5;
 }
 
 /* === Loading State === */
@@ -60,6 +64,7 @@
     display: grid;
     gap: 20px;
     margin-bottom: 20px;
+    width: 100%;
 }
 
 .brdposts-columns-1 .brdposts-preview-grid {
@@ -78,12 +83,26 @@
     grid-template-columns: repeat(4, 1fr);
 }
 
+.brdposts-columns-5 .brdposts-preview-grid {
+    grid-template-columns: repeat(5, 1fr);
+}
+
+.brdposts-columns-6 .brdposts-preview-grid {
+    grid-template-columns: repeat(6, 1fr);
+}
+
 /* === Preview Item === */
 .brdposts-preview-item {
     background: #f9f9f9;
     border: 1px solid #e0e0e0;
     border-radius: 6px;
     overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.brdposts-preview-item:hover {
+    border-color: #0073aa;
+    box-shadow: 0 2px 8px rgba(0, 115, 170, 0.1);
 }
 
 .brdposts-preview-thumbnail {
@@ -91,12 +110,14 @@
     height: 150px;
     overflow: hidden;
     background: #e0e0e0;
+    position: relative;
 }
 
 .brdposts-preview-thumbnail img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
 }
 
 .brdposts-preview-content {
@@ -108,12 +129,16 @@
     font-size: 16px;
     line-height: 1.4;
     color: #333;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .brdposts-preview-content div {
     font-size: 14px;
     color: #666;
     line-height: 1.6;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 /* === Editor Note === */
@@ -135,6 +160,7 @@
 .components-base-control__label {
     font-weight: 600;
     margin-bottom: 8px;
+    display: block;
 }
 
 .components-toggle-control {
@@ -160,13 +186,15 @@
     transform: translateY(-50%);
     width: 40px;
     height: 40px;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.5);
     color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
     font-size: 24px;
+    cursor: pointer;
+    z-index: 1;
 }
 
 .brdposts-layout-slider .brdposts-preview-grid:before {
@@ -191,12 +219,18 @@
     display: flex;
     align-items: center;
     gap: 15px;
+    flex-wrap: wrap;
 }
 
 .brdposts-layout-ticker .brdposts-preview-thumbnail {
     width: 60px;
     height: 60px;
     flex-shrink: 0;
+}
+
+.brdposts-layout-ticker .brdposts-preview-content {
+    flex: 1;
+    min-width: 0;
 }
 
 .brdposts-layout-masonry .brdposts-preview-grid {
@@ -207,30 +241,7 @@
 .brdposts-layout-masonry .brdposts-preview-item {
     break-inside: avoid;
     margin-bottom: 20px;
-}
-
-/* === Responsivo === */
-@media (max-width: 782px) {
-    .brdposts-columns-3 .brdposts-preview-grid,
-    .brdposts-columns-4 .brdposts-preview-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .brdposts-layout-masonry .brdposts-preview-grid {
-        columns: 2;
-    }
-}
-
-@media (max-width: 600px) {
-    .brdposts-columns-2 .brdposts-preview-grid,
-    .brdposts-columns-3 .brdposts-preview-grid,
-    .brdposts-columns-4 .brdposts-preview-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .brdposts-layout-masonry .brdposts-preview-grid {
-        columns: 1;
-    }
+    page-break-inside: avoid;
 }
 
 /* === Checkbox Group === */
@@ -253,12 +264,16 @@
 .components-select-control__input {
     min-height: 40px;
     padding: 8px 12px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* === Text Control === */
 .components-text-control__input {
     min-height: 40px;
     padding: 8px 12px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* === Panel Spacing === */
@@ -280,4 +295,417 @@
     font-size: 12px;
     font-style: italic;
     color: #757575;
+    line-height: 1.4;
+}
+
+/* =========================================
+   RESPONSIVE DESIGN (Mobile-First)
+   ========================================= */
+
+/* === Mobile Pequeno (até 374px) === */
+@media (max-width: 374px) {
+    .brdposts-editor-preview {
+        padding: 12px;
+        margin: 12px 0;
+    }
+    
+    .brdposts-editor-header {
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .brdposts-editor-header h3 {
+        font-size: 16px;
+    }
+    
+    .brdposts-editor-header p {
+        font-size: 12px;
+    }
+    
+    .brdposts-preview-grid {
+        gap: 12px;
+        margin-bottom: 15px;
+    }
+    
+    .brdposts-preview-thumbnail {
+        height: 120px;
+    }
+    
+    .brdposts-preview-content {
+        padding: 10px;
+    }
+    
+    .brdposts-preview-content h4 {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+    
+    .brdposts-preview-content div {
+        font-size: 12px;
+    }
+    
+    .brdposts-loading,
+    .brdposts-no-posts {
+        padding: 30px 15px;
+    }
+    
+    .brdposts-editor-note {
+        font-size: 11px;
+        margin-top: 12px;
+        padding-top: 12px;
+    }
+    
+    /* Slider controls menores */
+    .brdposts-layout-slider .brdposts-preview-grid {
+        padding: 0 35px;
+    }
+    
+    .brdposts-layout-slider .brdposts-preview-grid:before,
+    .brdposts-layout-slider .brdposts-preview-grid:after {
+        width: 30px;
+        height: 30px;
+        font-size: 18px;
+    }
+    
+    /* Ticker compacto */
+    .brdposts-layout-ticker .brdposts-preview-grid {
+        padding: 10px;
+    }
+    
+    .brdposts-layout-ticker .brdposts-preview-thumbnail {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .brdposts-layout-ticker .brdposts-preview-item {
+        gap: 10px;
+    }
+}
+
+/* === Mobile (375px - 600px) === */
+@media (max-width: 600px) {
+    .brdposts-editor-preview {
+        padding: 15px;
+        margin: 15px 0;
+    }
+    
+    .brdposts-editor-header h3 {
+        font-size: 17px;
+    }
+    
+    .brdposts-editor-header p {
+        font-size: 13px;
+    }
+    
+    /* Força 1 coluna em mobile */
+    .brdposts-columns-2 .brdposts-preview-grid,
+    .brdposts-columns-3 .brdposts-preview-grid,
+    .brdposts-columns-4 .brdposts-preview-grid,
+    .brdposts-columns-5 .brdposts-preview-grid,
+    .brdposts-columns-6 .brdposts-preview-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .brdposts-preview-grid {
+        gap: 15px;
+    }
+    
+    .brdposts-preview-thumbnail {
+        height: 140px;
+    }
+    
+    .brdposts-preview-content {
+        padding: 12px;
+    }
+    
+    .brdposts-preview-content h4 {
+        font-size: 15px;
+    }
+    
+    .brdposts-preview-content div {
+        font-size: 13px;
+    }
+    
+    /* Masonry em 1 coluna */
+    .brdposts-layout-masonry .brdposts-preview-grid {
+        columns: 1;
+        column-gap: 15px;
+    }
+    
+    .brdposts-layout-masonry .brdposts-preview-item {
+        margin-bottom: 15px;
+    }
+    
+    /* Slider responsivo */
+    .brdposts-layout-slider .brdposts-preview-grid {
+        padding: 0 40px;
+    }
+    
+    .brdposts-layout-slider .brdposts-preview-grid:before,
+    .brdposts-layout-slider .brdposts-preview-grid:after {
+        width: 32px;
+        height: 32px;
+        font-size: 20px;
+    }
+    
+    /* Ticker responsivo */
+    .brdposts-layout-ticker .brdposts-preview-grid {
+        padding: 12px;
+    }
+    
+    .brdposts-layout-ticker .brdposts-preview-item {
+        gap: 12px;
+    }
+    
+    /* Inspector controls */
+    .components-base-control__label {
+        font-size: 14px;
+    }
+    
+    .components-select-control__input,
+    .components-text-control__input {
+        min-height: 36px;
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+    
+    .components-base-control__help {
+        font-size: 11px;
+    }
+}
+
+/* === Tablet Pequeno (601px - 782px) === */
+@media (min-width: 601px) and (max-width: 782px) {
+    .brdposts-preview-grid {
+        gap: 18px;
+    }
+    
+    /* 2 colunas para grids maiores */
+    .brdposts-columns-3 .brdposts-preview-grid,
+    .brdposts-columns-4 .brdposts-preview-grid,
+    .brdposts-columns-5 .brdposts-preview-grid,
+    .brdposts-columns-6 .brdposts-preview-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .brdposts-preview-thumbnail {
+        height: 140px;
+    }
+    
+    /* Masonry 2 colunas */
+    .brdposts-layout-masonry .brdposts-preview-grid {
+        columns: 2;
+        column-gap: 18px;
+    }
+    
+    .brdposts-layout-masonry .brdposts-preview-item {
+        margin-bottom: 18px;
+    }
+}
+
+/* === Tablet Grande / Editor Responsivo (783px - 1024px) === */
+@media (min-width: 783px) and (max-width: 1024px) {
+    .brdposts-editor-preview {
+        padding: 18px;
+    }
+    
+    /* 3 colunas para grids de 4+ */
+    .brdposts-columns-4 .brdposts-preview-grid,
+    .brdposts-columns-5 .brdposts-preview-grid,
+    .brdposts-columns-6 .brdposts-preview-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    /* Mantém 3 colunas para grid 3 */
+    .brdposts-columns-3 .brdposts-preview-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .brdposts-preview-thumbnail {
+        height: 130px;
+    }
+    
+    /* Masonry ajustado */
+    .brdposts-layout-masonry .brdposts-preview-grid {
+        columns: 2;
+    }
+}
+
+/* === Desktop Pequeno (1025px - 1280px) === */
+@media (min-width: 1025px) and (max-width: 1280px) {
+    .brdposts-editor-preview {
+        padding: 20px;
+    }
+    
+    /* Mantém 4 colunas no máximo para grids grandes */
+    .brdposts-columns-5 .brdposts-preview-grid,
+    .brdposts-columns-6 .brdposts-preview-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .brdposts-columns-4 .brdposts-preview-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .brdposts-preview-thumbnail {
+        height: 140px;
+    }
+    
+    /* Masonry 3 colunas */
+    .brdposts-layout-masonry .brdposts-preview-grid {
+        columns: 3;
+    }
+}
+
+/* === Desktop Médio (1281px - 1440px) === */
+@media (min-width: 1281px) and (max-width: 1440px) {
+    .brdposts-preview-grid {
+        gap: 20px;
+    }
+    
+    .brdposts-preview-thumbnail {
+        height: 150px;
+    }
+    
+    /* Respeita configurações originais */
+    .brdposts-columns-5 .brdposts-preview-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .brdposts-columns-6 .brdposts-preview-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+/* === Desktop Grande (1441px+) === */
+@media (min-width: 1441px) {
+    .brdposts-editor-preview {
+        padding: 24px;
+    }
+    
+    .brdposts-preview-grid {
+        gap: 24px;
+    }
+    
+    .brdposts-preview-thumbnail {
+        height: 160px;
+    }
+    
+    .brdposts-preview-content h4 {
+        font-size: 17px;
+    }
+    
+    .brdposts-preview-content div {
+        font-size: 15px;
+    }
+    
+    /* Permite 5 e 6 colunas */
+    .brdposts-columns-5 .brdposts-preview-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+    
+    .brdposts-columns-6 .brdposts-preview-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+
+/* === Landscape Mobile (orientação específica) === */
+@media (max-height: 500px) and (orientation: landscape) {
+    .brdposts-editor-preview {
+        padding: 12px;
+    }
+    
+    .brdposts-preview-thumbnail {
+        height: 100px;
+    }
+    
+    .brdposts-layout-slider .brdposts-preview-grid:before,
+    .brdposts-layout-slider .brdposts-preview-grid:after {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+/* === Admin Sidebar Ajustado === */
+@media (min-width: 783px) {
+    /* Quando o sidebar do admin está aberto */
+    body.auto-fold .brdposts-columns-4 .brdposts-preview-grid,
+    body.auto-fold .brdposts-columns-5 .brdposts-preview-grid,
+    body.auto-fold .brdposts-columns-6 .brdposts-preview-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    body.folded .brdposts-columns-5 .brdposts-preview-grid,
+    body.folded .brdposts-columns-6 .brdposts-preview-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* === Touch Devices === */
+@media (hover: none) and (pointer: coarse) {
+    .brdposts-preview-item:hover {
+        border-color: #e0e0e0;
+        box-shadow: none;
+    }
+    
+    /* Aumenta área de toque */
+    .components-select-control__input,
+    .components-text-control__input,
+    .components-toggle-control .components-form-toggle {
+        min-height: 44px;
+    }
+    
+    .components-checkbox-control input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+/* === Acessibilidade === */
+@media (prefers-reduced-motion: reduce) {
+    .brdposts-preview-item {
+        transition: none !important;
+    }
+    
+    .brdposts-loading p:before {
+        animation: none !important;
+    }
+}
+
+/* === Print Styles === */
+@media print {
+    .brdposts-editor-preview {
+        border: 1px solid #ddd;
+        page-break-inside: avoid;
+    }
+    
+    .brdposts-layout-slider .brdposts-preview-grid:before,
+    .brdposts-layout-slider .brdposts-preview-grid:after {
+        display: none;
+    }
+    
+    .brdposts-preview-grid {
+        display: block;
+    }
+    
+    .brdposts-preview-item {
+        break-inside: avoid;
+        margin-bottom: 15px;
+    }
+}
+
+/* === High Contrast Mode === */
+@media (prefers-contrast: high) {
+    .brdposts-editor-preview {
+        border-width: 3px;
+    }
+    
+    .brdposts-preview-item {
+        border-width: 2px;
+    }
+    
+    .components-base-control__label {
+        font-weight: 700;
+    }
 }

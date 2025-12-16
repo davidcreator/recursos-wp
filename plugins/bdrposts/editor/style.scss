@@ -1,12 +1,14 @@
 /**
  * BRDPosts Frontend Styles
- * Estilos para exibição no frontend
+ * Estilos responsivos otimizados para todos os dispositivos
  */
 
 /* === Wrapper Principal === */
 .brdposts-wrapper {
     margin: 20px 0;
     width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 /* === Layout Grid === */
@@ -191,6 +193,8 @@
     font-weight: 600;
     line-height: 1.4;
     margin: 0 0 15px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .brdposts-title a {
@@ -241,6 +245,8 @@
     line-height: 1.6;
     margin-bottom: 15px;
     flex: 1;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 /* === Read More Button === */
@@ -282,68 +288,6 @@
 .brdposts-pagination .page-numbers.current {
     background: #0073aa;
     color: #fff;
-}
-
-/* === Responsive === */
-@media (max-width: 1024px) {
-    .brdposts-columns-4 .brdposts-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-    
-    .brdposts-columns-4 .brdposts-masonry {
-        column-count: 3;
-    }
-}
-
-@media (max-width: 768px) {
-    .brdposts-columns-3 .brdposts-grid,
-    .brdposts-columns-4 .brdposts-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .brdposts-columns-3 .brdposts-masonry,
-    .brdposts-columns-4 .brdposts-masonry {
-        column-count: 2;
-    }
-    
-    .brdposts-grid {
-        gap: 20px;
-    }
-    
-    .brdposts-masonry {
-        column-gap: 20px;
-    }
-}
-
-@media (max-width: 480px) {
-    .brdposts-columns-2 .brdposts-grid,
-    .brdposts-columns-3 .brdposts-grid,
-    .brdposts-columns-4 .brdposts-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .brdposts-masonry {
-        column-count: 1;
-    }
-    
-    .brdposts-content {
-        padding: 15px;
-    }
-    
-    .brdposts-title {
-        font-size: 18px;
-    }
-    
-    .brdposts-meta {
-        gap: 10px;
-        font-size: 13px;
-    }
-    
-    .swiper-button-prev,
-    .swiper-button-next {
-        width: 30px;
-        height: 30px;
-    }
 }
 
 /* === Sub-layouts === */
@@ -406,8 +350,151 @@
     background: rgba(255, 255, 255, 0.3);
 }
 
-/* Responsive para sub-layouts */
-@media (max-width: 768px) {
+/* ========================================
+   RESPONSIVE BREAKPOINTS
+   ======================================== */
+
+/* === Monitores Grandes (1920px+) === */
+@media (min-width: 1920px) {
+    .brdposts-wrapper {
+        margin: 30px auto;
+        max-width: 1800px;
+    }
+    
+    .brdposts-grid {
+        gap: 40px;
+    }
+    
+    .brdposts-masonry {
+        column-gap: 40px;
+    }
+    
+    .brdposts-columns-4 .brdposts-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* === Monitores Médios (1440px - 1919px) === */
+@media (min-width: 1440px) and (max-width: 1919px) {
+    .brdposts-wrapper {
+        margin: 25px auto;
+        max-width: 1400px;
+    }
+    
+    .brdposts-grid {
+        gap: 35px;
+    }
+    
+    .brdposts-columns-4 .brdposts-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* === Monitores Pequenos e Laptops (1024px - 1439px) === */
+@media (min-width: 1024px) and (max-width: 1439px) {
+    .brdposts-wrapper {
+        margin: 20px;
+    }
+    
+    .brdposts-grid {
+        gap: 25px;
+    }
+    
+    .brdposts-masonry {
+        column-gap: 25px;
+    }
+    
+    .brdposts-columns-4 .brdposts-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .brdposts-columns-4 .brdposts-masonry {
+        column-count: 3;
+    }
+}
+
+/* === Tablets Landscape (768px - 1023px) === */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .brdposts-wrapper {
+        margin: 15px;
+    }
+    
+    .brdposts-grid {
+        gap: 20px;
+    }
+    
+    .brdposts-masonry {
+        column-gap: 20px;
+    }
+    
+    .brdposts-columns-3 .brdposts-grid,
+    .brdposts-columns-4 .brdposts-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .brdposts-columns-3 .brdposts-masonry,
+    .brdposts-columns-4 .brdposts-masonry {
+        column-count: 2;
+    }
+    
+    .brdposts-title {
+        font-size: 18px;
+    }
+    
+    .brdposts-content {
+        padding: 18px;
+    }
+    
+    /* Sub-layouts em tablets */
+    .brdposts-sublayout-left-image .brdposts-thumbnail,
+    .brdposts-sublayout-right-image .brdposts-thumbnail {
+        width: 45%;
+    }
+    
+    .brdposts-sublayout-left-image .brdposts-content,
+    .brdposts-sublayout-right-image .brdposts-content {
+        width: 55%;
+    }
+}
+
+/* === Tablets Portrait (600px - 767px) === */
+@media (min-width: 600px) and (max-width: 767px) {
+    .brdposts-wrapper {
+        margin: 15px;
+    }
+    
+    .brdposts-grid {
+        gap: 20px;
+    }
+    
+    .brdposts-masonry {
+        column-gap: 20px;
+    }
+    
+    .brdposts-columns-2 .brdposts-grid,
+    .brdposts-columns-3 .brdposts-grid,
+    .brdposts-columns-4 .brdposts-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .brdposts-masonry {
+        column-count: 2;
+    }
+    
+    .brdposts-title {
+        font-size: 18px;
+    }
+    
+    .brdposts-content {
+        padding: 16px;
+    }
+    
+    .brdposts-meta {
+        gap: 12px;
+        font-size: 13px;
+    }
+    
+    /* Sub-layouts viram verticais */
     .brdposts-sublayout-left-image .brdposts-item,
     .brdposts-sublayout-right-image .brdposts-item {
         flex-direction: column;
@@ -418,5 +505,267 @@
     .brdposts-sublayout-left-image .brdposts-content,
     .brdposts-sublayout-right-image .brdposts-content {
         width: 100%;
+    }
+    
+    /* Slider ajustado */
+    .brdposts-slider {
+        padding: 0 40px;
+    }
+    
+    .swiper-button-prev,
+    .swiper-button-next {
+        width: 35px;
+        height: 35px;
+    }
+}
+
+/* === Celulares Grandes (480px - 599px) === */
+@media (min-width: 480px) and (max-width: 599px) {
+    .brdposts-wrapper {
+        margin: 10px;
+    }
+    
+    .brdposts-grid {
+        gap: 15px;
+        grid-template-columns: 1fr !important;
+    }
+    
+    .brdposts-masonry {
+        column-count: 1 !important;
+        column-gap: 0;
+    }
+    
+    .brdposts-content {
+        padding: 15px;
+    }
+    
+    .brdposts-title {
+        font-size: 17px;
+        margin-bottom: 12px;
+    }
+    
+    .brdposts-meta {
+        gap: 10px;
+        font-size: 12px;
+    }
+    
+    .brdposts-excerpt {
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+    
+    .brdposts-read-more {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+    
+    /* Slider mobile */
+    .brdposts-slider {
+        padding: 0 30px;
+    }
+    
+    .swiper-button-prev,
+    .swiper-button-next {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+    }
+    
+    .swiper-button-prev {
+        left: 5px;
+    }
+    
+    .swiper-button-next {
+        right: 5px;
+    }
+    
+    /* Ticker mobile */
+    .brdposts-ticker {
+        padding: 12px 0;
+    }
+    
+    .brdposts-ticker-item {
+        padding: 0 20px;
+    }
+    
+    /* Sub-layouts mobile */
+    .brdposts-sublayout-left-image .brdposts-item,
+    .brdposts-sublayout-right-image .brdposts-item {
+        flex-direction: column;
+    }
+    
+    .brdposts-sublayout-left-image .brdposts-thumbnail,
+    .brdposts-sublayout-right-image .brdposts-thumbnail,
+    .brdposts-sublayout-left-image .brdposts-content,
+    .brdposts-sublayout-right-image .brdposts-content {
+        width: 100%;
+    }
+    
+    /* Pagination mobile */
+    .brdposts-pagination {
+        margin-top: 30px;
+    }
+    
+    .brdposts-pagination .page-numbers {
+        padding: 6px 12px;
+        margin: 0 3px;
+        font-size: 14px;
+    }
+}
+
+/* === Celulares Pequenos (< 480px) === */
+@media (max-width: 479px) {
+    .brdposts-wrapper {
+        margin: 10px 5px;
+    }
+    
+    .brdposts-grid {
+        gap: 12px;
+        grid-template-columns: 1fr !important;
+    }
+    
+    .brdposts-masonry {
+        column-count: 1 !important;
+        column-gap: 0;
+    }
+    
+    .brdposts-masonry .brdposts-item {
+        margin-bottom: 12px;
+    }
+    
+    .brdposts-content {
+        padding: 12px;
+    }
+    
+    .brdposts-title {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+    
+    .brdposts-meta {
+        gap: 8px;
+        font-size: 11px;
+        margin-bottom: 10px;
+    }
+    
+    .brdposts-meta .dashicons {
+        width: 14px;
+        height: 14px;
+        font-size: 14px;
+    }
+    
+    .brdposts-excerpt {
+        font-size: 13px;
+        margin-bottom: 10px;
+        line-height: 1.5;
+    }
+    
+    .brdposts-read-more {
+        padding: 8px 14px;
+        font-size: 13px;
+        width: 100%;
+        text-align: center;
+    }
+    
+    /* Slider ultra mobile */
+    .brdposts-slider {
+        padding: 0 25px;
+    }
+    
+    .swiper-button-prev,
+    .swiper-button-next {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+    
+    .swiper-button-prev {
+        left: 2px;
+    }
+    
+    .swiper-button-next {
+        right: 2px;
+    }
+    
+    /* Ticker ultra mobile */
+    .brdposts-ticker {
+        padding: 10px 0;
+    }
+    
+    .brdposts-ticker-item {
+        padding: 0 15px;
+        font-size: 13px;
+    }
+    
+    /* Sub-layouts ultra mobile */
+    .brdposts-sublayout-left-image .brdposts-item,
+    .brdposts-sublayout-right-image .brdposts-item {
+        flex-direction: column;
+    }
+    
+    .brdposts-sublayout-left-image .brdposts-thumbnail,
+    .brdposts-sublayout-right-image .brdposts-thumbnail,
+    .brdposts-sublayout-left-image .brdposts-content,
+    .brdposts-sublayout-right-image .brdposts-content {
+        width: 100%;
+    }
+    
+    /* Pagination ultra mobile */
+    .brdposts-pagination {
+        margin-top: 25px;
+    }
+    
+    .brdposts-pagination .page-numbers {
+        padding: 5px 10px;
+        margin: 0 2px;
+        font-size: 13px;
+    }
+    
+    /* Ajuste hover para touch devices */
+    .brdposts-item:hover {
+        transform: none;
+    }
+}
+
+/* === Ajustes para Touch Devices === */
+@media (hover: none) and (pointer: coarse) {
+    .brdposts-item:hover {
+        transform: none;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .brdposts-item:hover .brdposts-thumbnail img {
+        transform: none;
+    }
+    
+    .brdposts-item:active {
+        transform: scale(0.98);
+    }
+}
+
+/* === Ajustes para modo paisagem em celulares === */
+@media (max-height: 500px) and (orientation: landscape) {
+    .brdposts-item {
+        flex-direction: row;
+    }
+    
+    .brdposts-thumbnail {
+        width: 40%;
+        flex-shrink: 0;
+    }
+    
+    .brdposts-content {
+        width: 60%;
+        padding: 12px;
+    }
+    
+    .brdposts-title {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+    
+    .brdposts-excerpt {
+        font-size: 12px;
+        margin-bottom: 8px;
     }
 }

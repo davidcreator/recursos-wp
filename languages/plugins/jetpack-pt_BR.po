@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Jetpack &#8211; WP Security, Backup, Speed, &amp; Growth - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-12-04 15:54:10+0000\n"
+"PO-Revision-Date: 2025-12-12 14:51:26+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,6 +20,10 @@ msgstr "Lista separada por vírgulas de tipos de ativos a serem excluídos da re
 msgid "Browser: %1$s"
 msgstr "Navegador: %1$s"
 
+#: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:1888
+msgid "This form is no longer available."
+msgstr "Este formulário não está mais disponível."
+
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-plugin.php:1818
 msgid "An error occurred. Please reload the page and try again — data entered may be lost."
 msgstr "Ocorreu um erro. Recarregue a página e tente novamente. Os dados inseridos podem ter sido perdidos."
@@ -27,6 +31,110 @@ msgstr "Ocorreu um erro. Recarregue a página e tente novamente. Os dados inseri
 #: jetpack_vendor/automattic/jetpack-forms/src/contact-form/class-contact-form-endpoint.php:493
 msgid "The display name of the person who submitted the form. Either the name or the email if the name is not set."
 msgstr "O nome de exibição da pessoa que enviou o formulário. O nome ou o e-mail se o nome não estiver definido."
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:326
+msgid "Response ID is required."
+msgstr "A ID da resposta é obrigatória."
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:244
+msgid "Set true to count only unread, false for only read."
+msgstr "Defina verdadeiro para contar apenas itens não lidos, falso para lidos."
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:239
+msgid "Only count responses after this date (ISO8601 format)."
+msgstr "Apenas conte respostas após esta data (formato ISO8601)."
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:234
+msgid "Only count responses before this date (ISO8601 format)."
+msgstr "Apenas conte respostas antes desta data (formato ISO8601)."
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:230
+msgid "Only count responses from a specific page or post."
+msgstr "Apenas conte respostas de uma página ou post específico."
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:226
+msgid "Only count responses matching this search term."
+msgstr "Conte apenas as respostas correspondentes a este termo de pesquisa."
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:218
+msgid "Get a summary of form responses grouped by status. Returns counts for inbox (active), spam, and trash. Useful for dashboard stats or checking if there are new responses."
+msgstr "Obtenha um resumo das respostas do formulário agrupadas por status. Retorna contagens da caixa de entrada (ativa), spam e lixeira. Útil para estatísticas do painel ou para verificar se há novas respostas."
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:217
+msgid "Get response status counts"
+msgstr "Obtenha contagens de status de resposta"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:189
+msgid "Set false to mark as read, true to mark as unread."
+msgstr "Defina falso para marcar como lida, verdadeiro para marcar como não lida."
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:184
+msgid "New status: \"publish\" (restore), \"spam\" (mark spam), \"trash\" (soft delete)."
+msgstr "Novo status: \"publicar\" (restaurar), \"spam\" (marcar como spam), \"lixeira\" (inativar sem excluir)."
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:180
+msgid "The response ID to update."
+msgstr "A ID da resposta a ser atualizada."
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:172
+msgid "Modify a form response. Use to mark as spam, move to trash, restore from trash, or toggle read/unread state."
+msgstr "Modifique uma resposta do formulário. Use para marcar como spam, mover para a lixeira, restaurar da lixeira ou alternar o estado de lida/não lida."
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:171
+msgid "Update form response"
+msgstr "Atualizar resposta do formulário"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:142
+msgid "Only responses after this date (ISO8601 format)."
+msgstr "Apenas respostas após esta data (formato ISO8601)."
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:137
+msgid "Only responses before this date (ISO8601 format)."
+msgstr "Apenas respostas antes desta data (formato ISO8601)."
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:133
+msgid "Search within response content and sender info."
+msgstr "Pesquise no conteúdo da resposta e nas informações do remetente."
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:129
+msgid "Set true for unread only, false for read only."
+msgstr "Configure verdadeiro para somente não lidas, falso para somente lidas."
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:124
+msgid "Filter by response status."
+msgstr "Filtre por status da resposta."
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:119
+msgid "Filter by the page or post ID where the form is embedded."
+msgstr "Filtre pela ID da página ou do post em que o formulário está incorporado."
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:114
+msgid "Number of responses to return per page (max 100)."
+msgstr "Número de respostas a serem retornadas por página (máximo 100)."
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:109
+msgid "Page number for paginated results."
+msgstr "Número da página para resultados paginados."
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:104
+msgid "Fetch specific responses by their IDs."
+msgstr "Busque respostas específicas por suas IDs."
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:96
+msgid "List or search form responses. Returns response data including sender info, form fields, and metadata. Supports filtering by status, date range, read state, and search terms."
+msgstr "Liste ou pesquise respostas do formulário. Retorna dados de resposta incluindo informações do remetente, campos do formulário e metadados. Oferece suporte à filtragem por status, intervalo de datas, estado de leitura e termos de pesquisa."
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:95
+msgid "Get form responses"
+msgstr "Obter respostas do formulário"
+
+#: jetpack_vendor/automattic/jetpack-forms/src/abilities/class-forms-abilities.php:66
+msgid "Abilities for managing Jetpack Forms responses."
+msgstr "Habilidades para gerenciar respostas dos Formulários do Jetpack."
+
+#: jetpack_vendor/automattic/jetpack-connection/src/sso/class-user-admin.php:798
+msgid "Mark as external collaborator"
+msgstr "Marcar como colaborador externo"
 
 #: jetpack_vendor/automattic/jetpack-search/src/widgets/class-search-widget.php:1109
 msgid "Select which attributes to display as filters. Leave blank to show all."
