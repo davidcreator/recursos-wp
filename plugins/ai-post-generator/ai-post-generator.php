@@ -14,6 +14,8 @@
  * Requires PHP: 7.4
  */
 
+/* AI Post Generator Pro - Admin Script */
+
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -160,6 +162,12 @@ class AI_Post_Generator {
         register_setting('aipg_settings', 'aipg_huggingface_key');
         register_setting('aipg_settings', 'aipg_mistral_key');
         register_setting('aipg_settings', 'aipg_unsplash_key');
+        register_setting('aipg_settings', 'aipg_image_provider');
+        register_setting('aipg_settings', 'aipg_pexels_key');
+        register_setting('aipg_settings', 'aipg_pixabay_key');
+        register_setting('aipg_settings', 'aipg_stability_key');
+        register_setting('aipg_settings', 'aipg_image_width');
+        register_setting('aipg_settings', 'aipg_image_height');
         register_setting('aipg_settings', 'aipg_default_category');
         register_setting('aipg_settings', 'aipg_post_status');
         register_setting('aipg_settings', 'aipg_default_author');
@@ -647,6 +655,176 @@ class AI_Post_Generator {
                             <input type="text" id="aipg_unsplash_key" name="aipg_unsplash_key" 
                                    value="<?php echo esc_attr(get_option('aipg_unsplash_key')); ?>" class="regular-text">
                             <p class="description"><?php _e('Para gerar imagens automaticamente', 'ai-post-generator'); ?> - https://unsplash.com/developers</p>
+                        </td>
+                    </tr>
+                </table>
+                
+                <h2 class="title"><?php _e('Configurações de Imagens', 'ai-post-generator'); ?></h2>
+                <table class="form-table">
+                    <tr>
+                        <th scope="row">
+                            <label for="aipg_image_provider"><?php _e('Provedor de Imagens', 'ai-post-generator'); ?></label>
+                        </th>
+                        <td>
+                            <select id="aipg_image_provider" name="aipg_image_provider" class="aipg-provider-select">
+                                <optgroup label="<?php _e('Fotos Stock (GRATUITAS)', 'ai-post-generator'); ?>">
+                                    <option value="unsplash" <?php selected(get_option('aipg_image_provider', 'unsplash'), 'unsplash'); ?>>
+                                        📷 Unsplash (GRÁTIS - 50 req/hora)
+                                    </option>
+                                    <option value="pexels" <?php selected(get_option('aipg_image_provider'), 'pexels'); ?>>
+                                        🎨 Pexels (GRÁTIS - 200 req/hora)
+                                    </option>
+                                    <option value="pixabay" <?php selected(get_option('aipg_image_provider'), 'pixabay'); ?>>
+                                        🖼️ Pixabay (GRÁTIS - Ilimitado)
+                                    </option>
+                                </optgroup>
+                                <optgroup label="<?php _e('IA Geração de Imagens (Algumas Pagas)', 'ai-post-generator'); ?>">
+                                    <option value="dall-e" <?php selected(get_option('aipg_image_provider'), 'dall-e'); ?>>
+                                        🤖 DALL-E 3 (OpenAI - $0.04/imagem)
+                                    </option>
+                                    <option value="stability" <?php selected(get_option('aipg_image_provider'), 'stability'); ?>>
+                                        🎭 Stable Diffusion (Stability AI - GRÁTIS 25 créditos)
+                                    </option>
+                                    <option value="pollinations" <?php selected(get_option('aipg_image_provider'), 'pollinations'); ?>>
+                                        🌺 Pollinations (GRÁTIS - Ilimitado)
+                                    </option>
+                                </optgroup>
+                            </select>
+                            <p class="description" id="image-provider-description"></p>
+                        </td>
+                    </tr>
+                    
+                    <tr class="image-api-key-row" data-provider="pexels">
+                        <th scope="row">
+                            <label for="aipg_pexels_key"><?php _e('Chave API Pexels', 'ai-post-generator'); ?></label>
+                        </th>
+                        <td>
+                            <input type="text" id="aipg_pexels_key" name="aipg_pexels_key" 
+                                   value="<?php echo esc_attr(get_option('aipg_pexels_key')); ?>" class="regular-text">
+                            <p class="description">
+                                ✅ <strong>100% GRATUITO</strong> - Obtenha em: <a href="https://www.pexels.com/api/" target="_blank">pexels.com/api</a><br>
+                                📊 <strong>Limite:</strong> 200 requisições/hora<br>
+                                🖼️ <strong>Qualidade:</strong> Alta resolução, uso comercial permitido
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <tr class="image-api-key-row" data-provider="pixabay">
+                        <th scope="row">
+                            <label for="aipg_pixabay_key"><?php _e('Chave API Pixabay', 'ai-post-generator'); ?></label>
+                        </th>
+                        <td>
+                            <input type="text" id="aipg_pixabay_key" name="aipg_pixabay_key" 
+                                   value="<?php echo esc_attr(get_option('aipg_pixabay_key')); ?>" class="regular-text">
+                            <p class="description">
+                                ✅ <strong>100% GRATUITO</strong> - Obtenha em: <a href="https://pixabay.com/api/docs/" target="_blank">pixabay.com/api</a><br>
+                                📊 <strong>Limite:</strong> 5.000 requisições/hora (SEM LIMITE PRÁTICO!)<br>
+                                🖼️ <strong>Qualidade:</strong> Milhões de imagens grátis
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <tr class="image-api-key-row" data-provider="stability">
+                        <th scope="row">
+                            <label for="aipg_stability_key"><?php _e('Chave API Stability AI', 'ai-post-generator'); ?></label>
+                        </th>
+                        <td>
+                            <input type="password" id="aipg_stability_key" name="aipg_stability_key" 
+                                   value="<?php echo esc_attr(get_option('aipg_stability_key')); ?>" class="regular-text">
+                            <p class="description">
+                                🎁 <strong>25 créditos GRÁTIS</strong> - Obtenha em: <a href="https://platform.stability.ai/" target="_blank">platform.stability.ai</a><br>
+                                💰 <strong>Custo:</strong> ~$0.01-0.02 por imagem após créditos<br>
+                                🎨 <strong>Qualidade:</strong> Imagens únicas geradas por IA
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <tr class="image-api-key-row" data-provider="pollinations">
+                        <th scope="row">
+                            <label><?php _e('Pollinations AI', 'ai-post-generator'); ?></label>
+                        </th>
+                        <td>
+                            <p class="description" style="padding: 12px; background: #d4edda; border-left: 4px solid #46b450; border-radius: 4px;">
+                                ✅ <strong>100% GRATUITO - SEM API KEY!</strong><br>
+                                🚀 <strong>Sem limites</strong> - Use à vontade<br>
+                                🎨 <strong>Qualidade:</strong> Imagens geradas por IA (Stable Diffusion)<br>
+                                ⚡ <strong>Configuração:</strong> Apenas selecione e use!
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <tr class="image-api-key-row" data-provider="dall-e">
+                        <th scope="row">
+                            <label><?php _e('DALL-E 3 (OpenAI)', 'ai-post-generator'); ?></label>
+                        </th>
+                        <td>
+                            <p class="description">
+                                ℹ️ Usa a mesma chave API OpenAI configurada acima<br>
+                                💰 <strong>Custo:</strong> $0.04 por imagem (1024x1024)<br>
+                                🎨 <strong>Qualidade:</strong> Melhor IA de imagens disponível
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <th scope="row">
+                            <label><?php _e('Dimensões da Imagem', 'ai-post-generator'); ?></label>
+                        </th>
+                        <td>
+                            <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                                <div>
+                                    <label for="aipg_image_width" style="display: block; margin-bottom: 5px;">
+                                        <strong><?php _e('Largura (px):', 'ai-post-generator'); ?></strong>
+                                    </label>
+                                    <input type="number" id="aipg_image_width" name="aipg_image_width" 
+                                           value="<?php echo esc_attr(get_option('aipg_image_width', '1920')); ?>" 
+                                           min="200" max="4096" step="1" style="width: 120px;">
+                                </div>
+                                
+                                <div style="padding-top: 20px; font-size: 20px; font-weight: bold;">×</div>
+                                
+                                <div>
+                                    <label for="aipg_image_height" style="display: block; margin-bottom: 5px;">
+                                        <strong><?php _e('Altura (px):', 'ai-post-generator'); ?></strong>
+                                    </label>
+                                    <input type="number" id="aipg_image_height" name="aipg_image_height" 
+                                           value="<?php echo esc_attr(get_option('aipg_image_height', '1080')); ?>" 
+                                           min="200" max="4096" step="1" style="width: 120px;">
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top: 15px;">
+                                <strong><?php _e('Presets:', 'ai-post-generator'); ?></strong>
+                                <button type="button" class="button aipg-preset-size" data-width="1920" data-height="1080">
+                                    Full HD (1920×1080)
+                                </button>
+                                <button type="button" class="button aipg-preset-size" data-width="1280" data-height="720">
+                                    HD (1280×720)
+                                </button>
+                                <button type="button" class="button aipg-preset-size" data-width="1024" data-height="1024">
+                                    Quadrado (1024×1024)
+                                </button>
+                                <button type="button" class="button aipg-preset-size" data-width="1080" data-height="1920">
+                                    Vertical (1080×1920)
+                                </button>
+                                <button type="button" class="button aipg-preset-size" data-width="2560" data-height="1440">
+                                    2K (2560×1440)
+                                </button>
+                                <button type="button" class="button aipg-preset-size" data-width="3840" data-height="2160">
+                                    4K (3840×2160)
+                                </button>
+                            </div>
+                            
+                            <p class="description" style="margin-top: 10px;">
+                                <?php _e('Defina as dimensões desejadas para as imagens destacadas. Padrão: 1920×1080 (Full HD)', 'ai-post-generator'); ?>
+                            </p>
+                            
+                            <div id="aipg-image-preview" style="margin-top: 15px; padding: 10px; background: #f9f9f9; border-radius: 4px; display: none;">
+                                <strong><?php _e('Preview:', 'ai-post-generator'); ?></strong><br>
+                                <span id="aipg-preview-size"></span><br>
+                                <span id="aipg-preview-ratio"></span><br>
+                                <span id="aipg-preview-use"></span>
+                            </div>
                         </td>
                     </tr>
                 </table>

@@ -86,6 +86,78 @@
             $('#aipg_groq_model').on('change', updateGroqModelInfo);
         }
         
+        // Image provider selector
+        function updateImageProviderFields() {
+            const provider = $('#aipg_image_provider').val();
+            
+            $('.image-api-key-row').removeClass('active');
+            $('.image-api-key-row[data-provider="' + provider + '"]').addClass('active');
+            
+            const descriptions = {
+                'unsplash': '📷 Fotos profissionais gratuitas de alta qualidade',
+                'pexels': '🎨 Maior biblioteca gratuita - 200 req/hora',
+                'pixabay': '🖼️ Sem limites práticos - Melhor para alto volume',
+                'dall-e': '🤖 IA gera imagens únicas mas custa $0.04/imagem',
+                'stability': '🎭 IA de alta qualidade - 25 créditos grátis',
+                'pollinations': '🌺 IA 100% GRÁTIS e ILIMITADO - Melhor opção!'
+            };
+            
+            $('#image-provider-description').text(descriptions[provider] || '');
+        }
+        
+        if ($('#aipg_image_provider').length) {
+            updateImageProviderFields();
+            $('#aipg_image_provider').on('change', updateImageProviderFields);
+        }
+        
+        // Preset de tamanhos de imagem
+        $('.aipg-preset-size').on('click', function(e) {
+            e.preventDefault();
+            const width = $(this).data('width');
+            const height = $(this).data('height');
+            
+            $('#aipg_image_width').val(width);
+            $('#aipg_image_height').val(height);
+            
+            updateImagePreview();
+            
+            // Feedback visual
+            $('.aipg-preset-size').removeClass('button-primary');
+            $(this).addClass('button-primary');
+        });
+        
+        // Atualiza preview das dimensões
+        function updateImagePreview() {
+            const width = parseInt($('#aipg_image_width').val()) || 1920;
+            const height = parseInt($('#aipg_image_height').val()) || 1080;
+            
+            const ratio = (width / height).toFixed(2);
+            const megapixels = ((width * height) / 1000000).toFixed(1);
+            
+            let ratioName = '';
+            if (Math.abs(ratio - 1.78) < 0.05) ratioName = '16:9 (widescreen)';
+            else if (Math.abs(ratio - 1.33) < 0.05) ratioName = '4:3 (padrão)';
+            else if (Math.abs(ratio - 1) < 0.05) ratioName = '1:1 (quadrado)';
+            else if (Math.abs(ratio - 0.56) < 0.05) ratioName = '9:16 (vertical)';
+            else ratioName = 'customizado';
+            
+            let useCase = '';
+            if (width >= 3840) useCase = 'Ideal para: Impressão grande, banners';
+            else if (width >= 1920) useCase = 'Ideal para: Blog, redes sociais, web';
+            else if (width >= 1280) useCase = 'Ideal para: Thumbnails, miniaturas';
+            else useCase = 'Ideal para: Ícones, avatares';
+            
+            $('#aipg-preview-size').html(`<strong>Tamanho:</strong> ${width}×${height}px (${megapixels}MP)`);
+            $('#aipg-preview-ratio').html(`<strong>Proporção:</strong> ${ratio} ${ratioName}`);
+            $('#aipg-preview-use').html(`<strong>${useCase}</strong>`);
+            $('#aipg-image-preview').slideDown();
+        }
+        
+        if ($('#aipg_image_width').length) {
+            $('#aipg_image_width, #aipg_image_height').on('input', updateImagePreview);
+            updateImagePreview(); // Mostra ao carregar
+        }
+        
         // Template selector
         $('#aipg_template').on('change', function() {
             const templateId = $(this).val();
