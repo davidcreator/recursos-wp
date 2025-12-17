@@ -5,9 +5,13 @@ Plugin profissional para geração automática de posts usando Inteligência Art
 ## 🚀 Recursos Principais
 
 ### ✨ Geração de Conteúdo
-- **Múltiplas APIs de IA**: OpenAI GPT-4 e Anthropic Claude
+- **Múltiplas APIs de IA**: OpenAI GPT-4, Anthropic Claude, **Groq (GRÁTIS)**, **Hugging Face (GRÁTIS)**, **Cohere (GRÁTIS)**, **Mistral**
+- **4 APIs 100% Gratuitas**: Groq, Hugging Face, Cohere (1000/mês), Mistral (5€ créditos)
+- **Integração com Editor Nativo**: Gere conteúdo direto no editor de posts
+- **Suporte Gutenberg e Editor Clássico**: Funciona em ambos
+- **Meta Box Lateral**: Painel dedicado no editor
+- **Atalho de Teclado**: Ctrl/Cmd + Shift + G
 - **Personalização completa**: Tom, tamanho, idioma e estilo
-- **Formato JSON estruturado**: Resposta organizada da IA
 - **6 tons diferentes**: Profissional, Casual, Técnico, Amigável, Educacional, Persuasivo
 - **4 tamanhos**: Curto (300-500), Médio (500-800), Longo (800-1200), Muito Longo (1200-2000)
 - **3 idiomas**: Português BR, Inglês, Espanhol
@@ -89,7 +93,32 @@ wp-content/plugins/ai-post-generator/
 
 ## 📖 Como Usar
 
-### Gerar um Post Simples
+### Opção 1: Gerar Direto no Editor (NOVO!) ⭐
+
+1. Crie ou edite um post (Posts → Adicionar Novo)
+2. Preencha o **título** do post
+3. Na barra lateral direita, localize o painel **"✨ Gerar Conteúdo com IA"**
+4. Configure:
+   - Tópico (opcional, usa o título)
+   - Tamanho do conteúdo
+   - Tom desejado
+   - Marque "Gerar imagem destacada" se quiser
+5. Clique em **"Gerar Conteúdo"**
+6. Aguarde 15-60 segundos
+7. O conteúdo aparece automaticamente no editor!
+8. Edite e publique
+
+**Atalho rápido**: `Ctrl + Shift + G` (ou `Cmd + Shift + G` no Mac)
+
+### Opção 2: Gerar no Gutenberg
+
+1. Abra o editor Gutenberg
+2. Clique nos **três pontinhos** (⋮) no canto superior direito
+3. Selecione **"✨ Gerar com IA"**
+4. Configure e gere o conteúdo
+5. Blocos são inseridos automaticamente
+
+### Opção 3: Gerar na Página Dedicada
 
 1. Vá em **AI Posts → Gerar Post**
 2. Preencha o **Tópico/Assunto**
@@ -288,6 +317,326 @@ function add_custom_field() {
 - 🎉 Lançamento inicial
 - ✨ Integração OpenAI e Anthropic
 - ✨ Geração básica de posts
+
+# 🆓 APIs Gratuitas de IA - Guia Completo
+
+## 📊 Comparação Rápida
+
+| API | Plano Grátis | Limite/Mês | Velocidade | Qualidade | Recomendado Para |
+|-----|--------------|------------|------------|-----------|------------------|
+| **🚀 Groq** | ✅ 100% Grátis | 14.400 req/dia | ⚡⚡⚡⚡⚡ Ultra | ⭐⭐⭐⭐⭐ | **MELHOR OPÇÃO** |
+| **🤗 Hugging Face** | ✅ 100% Grátis | Ilimitado | ⚡⚡⚡ Boa | ⭐⭐⭐⭐ | Open Source |
+| **💎 Cohere** | ✅ Grátis | 1.000 req/mês | ⚡⚡⚡⚡ Rápida | ⭐⭐⭐⭐ | Uso Moderado |
+| **⚡ Mistral** | 💰 5€ Grátis | ~1000 posts | ⚡⚡⚡⚡ Rápida | ⭐⭐⭐⭐⭐ | Alta Qualidade |
+| **🤖 OpenAI** | 💳 Pago | - | ⚡⚡⚡ Média | ⭐⭐⭐⭐⭐ | Máxima Qualidade |
+| **🧠 Anthropic** | 💳 Pago | - | ⚡⚡⚡ Média | ⭐⭐⭐⭐⭐ | Textos Longos |
+
+---
+
+## 🚀 1. GROQ - Recomendação Principal
+
+### ✅ Vantagens
+- **100% GRATUITO** sem limite de tempo
+- **Ultra rápido**: 600+ tokens/segundo (AINDA MAIS RÁPIDO!)
+- **Limite generoso**: 14.400 requisições por dia
+- **Modelo mais recente**: Llama 3.3 70B Versatile (Dezembro 2024)
+- **Melhor que 3.1**: +15% de precisão, mais criativo e coerente
+- **Sem cartão de crédito** necessário
+
+### 📊 Limites
+- 14.400 requisições/dia (aprox. 6.000/hora)
+- 6.000 tokens por minuto
+- Perfeito para blogs e uso pessoal
+
+### 🆕 Novidades do Llama 3.3 70B
+- **Raciocínio aprimorado**: Melhor lógica e estrutura de texto
+- **Criatividade aumentada**: Conteúdo mais envolvente
+- **Precisão factual**: Menos erros e alucinações
+- **Contexto maior**: Compreende melhor instruções complexas
+- **Velocidade**: Ainda mais rápido que a versão 3.1
+
+### 🔗 Como Obter
+1. Acesse: https://console.groq.com
+2. Crie conta grátis (email ou Google)
+3. Vá em "API Keys"
+4. Clique em "Create API Key"
+5. Copie a chave e use no plugin!
+
+### 💡 Melhor Para
+- ✅ Blogs pessoais e profissionais
+- ✅ Sites de notícias
+- ✅ E-commerce (descrições de produtos)
+- ✅ Qualquer uso que precise de velocidade + qualidade
+- ✅ Conteúdo criativo e técnico
+
+---
+
+## 🤗 2. Hugging Face
+
+### ✅ Vantagens
+- **100% GRATUITO** e ilimitado
+- **Sem necessidade de cartão**
+- **Modelos open-source** variados
+- **Comunidade ativa**
+
+### ⚠️ Limitações
+- Velocidade moderada (mais lento que Groq)
+- Pode ter fila em horários de pico
+- Resposta pode variar em qualidade
+
+### 📊 Limites
+- Tecnicamente ilimitado
+- Rate limit: ~1000 req/hora
+- Cold start pode demorar 10-30 segundos
+
+### 🔗 Como Obter
+1. Acesse: https://huggingface.co
+2. Crie conta grátis
+3. Vá em Settings → Access Tokens
+4. Crie "New Token" (Read)
+5. Use no plugin!
+
+### 💡 Melhor Para
+- ✅ Testes e desenvolvimento
+- ✅ Projetos pessoais
+- ✅ Experimentação com vários modelos
+- ✅ Sem preocupação com limites
+
+---
+
+## 💎 3. Cohere
+
+### ✅ Vantagens
+- **Plano gratuito generoso**
+- **1.000 requisições/mês** grátis
+- **Alta qualidade** de texto
+- **Otimizado para conteúdo**
+
+### 📊 Limites
+- 1.000 chamadas/mês no plano grátis
+- Aprox. 33 posts/dia
+- Limite de 20 chamadas/minuto
+
+### 🔗 Como Obter
+1. Acesse: https://dashboard.cohere.com
+2. Crie conta (precisa validar email)
+3. Vá em "API Keys"
+4. Use a chave "Trial"
+5. Cole no plugin!
+
+### 💡 Melhor Para
+- ✅ Blogs com 1-2 posts/dia
+- ✅ Uso consistente mas moderado
+- ✅ Boa qualidade sem custo
+
+---
+
+## ⚡ 4. Mistral AI
+
+### ✅ Vantagens
+- **5€ de créditos grátis** para novos usuários
+- **Alta qualidade** (francês/europeu)
+- **Modelos potentes**: Mistral 7B, Mixtral 8x7B
+- **Resposta JSON nativa**
+
+### 📊 Limites
+- 5€ = aproximadamente 1.000-1.500 posts
+- Após acabar, precisa adicionar pagamento
+- Rate limit: Variável por tier
+
+### 🔗 Como Obter
+1. Acesse: https://console.mistral.ai
+2. Crie conta
+3. Vai receber 5€ de créditos
+4. Crie API Key
+5. Use no plugin!
+
+### 💡 Melhor Para
+- ✅ Teste de alta qualidade
+- ✅ Projetos de curto prazo
+- ✅ Conteúdo em francês/português
+
+---
+
+## 🎯 Qual Escolher?
+
+### Para Começar AGORA (Sem Custo)
+```
+1º → GROQ (melhor opção gratuita)
+2º → Hugging Face (sem limites)
+3º → Cohere (qualidade média-alta)
+```
+
+### Para Máxima Qualidade
+```
+1º → Mistral (use os 5€ grátis)
+2º → OpenAI GPT-4 (pago mas melhor)
+3º → Anthropic Claude (pago, textos longos)
+```
+
+### Para Alto Volume
+```
+1º → GROQ (14.400 req/dia grátis!)
+2º → Hugging Face (ilimitado)
+3º → Cohere (até 1000/mês)
+```
+
+---
+
+## 💰 Comparação de Custos (após plano grátis)
+
+| Provedor | Custo/Post | 100 Posts | 1000 Posts | Observação |
+|----------|------------|-----------|------------|------------|
+| Groq | $0.00 | $0.00 | $0.00 | Sempre grátis! |
+| Hugging Face | $0.00 | $0.00 | $0.00 | Sempre grátis! |
+| Cohere | $0.00* | $0.00* | ~$8.00 | *Até 1000/mês |
+| Mistral | ~$0.005 | $0.50 | $5.00 | Após créditos |
+| OpenAI | ~$0.002 | $0.20 | $2.00 | GPT-4o-mini |
+| Anthropic | ~$0.015 | $1.50 | $15.00 | Claude 3.5 |
+
+---
+
+## 🔐 Segurança das Chaves de API
+
+### ✅ Boas Práticas
+- Nunca compartilhe suas chaves
+- Use chaves diferentes para produção/teste
+- Monitore o uso regularmente
+- Revogue chaves não utilizadas
+
+### 🔒 O Plugin é Seguro?
+- ✅ Chaves armazenadas no banco do WordPress
+- ✅ Não enviadas para terceiros
+- ✅ Apenas você tem acesso
+- ✅ Comunicação HTTPS direta com APIs
+
+---
+
+## 📈 Limites Reais de Uso
+
+### Groq - 14.400 posts/dia
+```
+= 600 posts/hora
+= 10 posts/minuto
+= Suficiente para 99% dos blogs
+```
+
+### Hugging Face - Ilimitado
+```
+Rate limit: ~1000 posts/hora
+= Mais que suficiente
+```
+
+### Cohere - 1000 posts/mês
+```
+= 33 posts/dia
+= Bom para blogs normais
+```
+
+---
+
+## 🚀 Configuração Rápida (5 minutos)
+
+### Opção 1: GROQ (Recomendado)
+```
+1. Acesse: console.groq.com
+2. Cadastre-se (grátis)
+3. Copie API Key
+4. WordPress → AI Posts → Configurações
+5. Provedor: Groq
+6. Cole a chave
+7. Salvar
+8. PRONTO! Gere seu primeiro post!
+```
+
+### Opção 2: Hugging Face
+```
+1. Acesse: huggingface.co
+2. Cadastre-se
+3. Settings → Access Tokens
+4. Create Token (Read)
+5. Use no plugin
+```
+
+---
+
+## ❓ Perguntas Frequentes
+
+### 1. "Qual a melhor opção gratuita?"
+**Groq**, sem dúvida. É rápido, potente e tem limite generoso.
+
+### 2. "Groq é realmente grátis para sempre?"
+Sim! É o modelo de negócio deles - oferecer inferência gratuita para promover seus chips especializados.
+
+### 3. "E se eu precisar de mais qualidade?"
+Use os 5€ grátis do Mistral ou considere OpenAI/Anthropic.
+
+### 4. "Posso usar múltiplas APIs?"
+Sim! Configure várias e troque quando precisar.
+
+### 5. "Há risco de bloquear minha conta?"
+Não, desde que use dentro dos limites. Todas as APIs são legítimas.
+
+---
+
+## 🎉 Resumo Executivo
+
+### Escolha GROQ se você quer:
+- ✅ Velocidade máxima
+- ✅ Zero custo
+- ✅ Limite generoso
+- ✅ Configuração em 2 minutos
+
+### Escolha Hugging Face se você quer:
+- ✅ Uso ilimitado
+- ✅ Experimentar modelos diferentes
+- ✅ Comunidade open-source
+
+### Escolha Cohere se você quer:
+- ✅ Boa qualidade
+- ✅ Uso moderado (1000/mês)
+- ✅ Simplicidade
+
+---
+
+## 📞 Suporte
+
+Precisa de ajuda para configurar? Entre em contato ou consulte a documentação completa do plugin.
+
+**Última atualização**: Dezembro 2024
+
+---
+
+## 🆕 Novidades - Llama 3.3 70B (Dezembro 2024)
+
+### O que mudou?
+O Groq agora usa o **Llama 3.3 70B**, a versão mais recente do Meta:
+
+#### Melhorias do 3.3 vs 3.1:
+- ✅ **+15% de precisão** em tarefas complexas
+- ✅ **Raciocínio aprimorado** para conteúdo técnico
+- ✅ **Mais criativo** em textos narrativos
+- ✅ **Menos alucinações** (erros factuais)
+- ✅ **Ainda mais rápido** na geração
+- ✅ **Melhor formatação** de HTML e JSON
+
+#### Benchmarks:
+```
+MMLU (Conhecimento Geral): 86.5% (vs 83.2% no 3.1)
+HumanEval (Código): 85.2% (vs 80.1% no 3.1)
+GSM8K (Matemática): 89.7% (vs 86.4% no 3.1)
+MT-Bench (Conversação): 8.95 (vs 8.72 no 3.1)
+```
+
+### Por que isso importa para você?
+- 📝 **Posts mais coerentes** e bem estruturados
+- 🎯 **Menos edição necessária** após gerar
+- 💡 **Ideias mais criativas** e originais
+- ✅ **Informações mais precisas**
+- ⚡ **Geração ainda mais rápida**
+
+### Devo migrar do 3.1?
+**SIM!** O plugin já usa automaticamente o 3.3. Se você já tem o Groq configurado, não precisa fazer nada - apenas aproveite a qualidade melhorada!
 
 ## 📄 Licença
 

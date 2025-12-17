@@ -40,8 +40,14 @@ class AI_Post_Generator {
         add_action('wp_ajax_aipg_generate_image', array($this, 'ajax_generate_image'));
         add_action('wp_ajax_aipg_save_template', array($this, 'ajax_save_template'));
         add_action('wp_ajax_aipg_delete_template', array($this, 'ajax_delete_template'));
+        add_action('wp_ajax_aipg_get_template', array($this, 'ajax_get_template'));
+        add_action('wp_ajax_aipg_generate_content_only', array($this, 'ajax_generate_content_only'));
         add_action('admin_init', array($this, 'register_settings'));
         add_action('aipg_scheduled_post', array($this, 'process_scheduled_post'), 10, 1);
+        
+        // Integração com editor de posts
+        add_action('add_meta_boxes', array($this, 'add_editor_meta_box'));
+        add_action('enqueue_block_editor_assets', array($this, 'enqueue_gutenberg_assets'));
         
         // Adiciona coluna na lista de posts
         add_filter('manage_posts_columns', array($this, 'add_posts_column'));
@@ -106,31 +112,52 @@ class AI_Post_Generator {
     }
     
     public function enqueue_admin_scripts($hook) {
-        if (strpos($hook, 'ai-post-generator') === false) {
-            return;
+        // Enfileira em páginas do plugin
+        if (strpos($hook, 'ai-post-generator') !== false) {
+            wp_enqueue_media();
+            wp_enqueue_style('aipg-admin-style', AIPG_PLUGIN_URL . 'assets/admin-style.css', array(), AIPG_VERSION);
+            wp_enqueue_script('aipg-admin-script', AIPG_PLUGIN_URL . 'assets/admin-script.js', array('jquery'), AIPG_VERSION, true);
+            
+            wp_localize_script('aipg-admin-script', 'aipgAjax', array(
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('aipg_generate_post'),
+                'strings' => array(
+                    'generating' => __('Gerando post...', 'ai-post-generator'),
+                    'generating_image' => __('Gerando imagem...', 'ai-post-generator'),
+                    'success' => __('Post gerado com sucesso!', 'ai-post-generator'),
+                    'error' => __('Erro ao gerar post.', 'ai-post-generator'),
+                    'confirm_delete' => __('Tem certeza que deseja excluir este template?', 'ai-post-generator')
+                )
+            ));
         }
         
-        wp_enqueue_media();
-        wp_enqueue_style('aipg-admin-style', AIPG_PLUGIN_URL . 'assets/admin-style.css', array(), AIPG_VERSION);
-        wp_enqueue_script('aipg-admin-script', AIPG_PLUGIN_URL . 'assets/admin-script.js', array('jquery'), AIPG_VERSION, true);
-        
-        wp_localize_script('aipg-admin-script', 'aipgAjax', array(
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('aipg_generate_post'),
-            'strings' => array(
-                'generating' => __('Gerando post...', 'ai-post-generator'),
-                'generating_image' => __('Gerando imagem...', 'ai-post-generator'),
-                'success' => __('Post gerado com sucesso!', 'ai-post-generator'),
-                'error' => __('Erro ao gerar post.', 'ai-post-generator'),
-                'confirm_delete' => __('Tem certeza que deseja excluir este template?', 'ai-post-generator')
-            )
-        ));
+        // Enfileira no editor de posts
+        if ($hook === 'post.php' || $hook === 'post-new.php') {
+            wp_enqueue_style('aipg-editor-style', AIPG_PLUGIN_URL . 'assets/editor-style.css', array(), AIPG_VERSION);
+            wp_enqueue_script('aipg-editor-script', AIPG_PLUGIN_URL . 'assets/editor-script.js', array('jquery'), AIPG_VERSION, true);
+            
+            wp_localize_script('aipg-editor-script', 'aipgEditor', array(
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('aipg_generate_post'),
+                'post_id' => get_the_ID(),
+                'strings' => array(
+                    'generating' => __('Gerando conteúdo...', 'ai-post-generator'),
+                    'success' => __('Conteúdo gerado!', 'ai-post-generator'),
+                    'error' => __('Erro ao gerar conteúdo.', 'ai-post-generator'),
+                    'fill_topic' => __('Por favor, preencha o tópico.', 'ai-post-generator')
+                )
+            ));
+        }
     }
     
     public function register_settings() {
         register_setting('aipg_settings', 'aipg_api_provider');
         register_setting('aipg_settings', 'aipg_openai_key');
         register_setting('aipg_settings', 'aipg_anthropic_key');
+        register_setting('aipg_settings', 'aipg_groq_key');
+        register_setting('aipg_settings', 'aipg_cohere_key');
+        register_setting('aipg_settings', 'aipg_huggingface_key');
+        register_setting('aipg_settings', 'aipg_mistral_key');
         register_setting('aipg_settings', 'aipg_unsplash_key');
         register_setting('aipg_settings', 'aipg_default_category');
         register_setting('aipg_settings', 'aipg_post_status');
@@ -468,36 +495,122 @@ class AI_Post_Generator {
                             <label for="aipg_api_provider"><?php _e('Provedor de IA', 'ai-post-generator'); ?></label>
                         </th>
                         <td>
-                            <select id="aipg_api_provider" name="aipg_api_provider">
-                                <option value="openai" <?php selected(get_option('aipg_api_provider'), 'openai'); ?>>
-                                    OpenAI (ChatGPT)
-                                </option>
-                                <option value="anthropic" <?php selected(get_option('aipg_api_provider'), 'anthropic'); ?>>
-                                    Anthropic (Claude)
-                                </option>
+                            <select id="aipg_api_provider" name="aipg_api_provider" class="aipg-provider-select">
+                                <optgroup label="<?php _e('APIs Gratuitas Generosas', 'ai-post-generator'); ?>">
+                                    <option value="groq" <?php selected(get_option('aipg_api_provider'), 'groq'); ?>>
+                                        🚀 Groq (GRATUITO - Llama 3.1 - Ultra Rápido)
+                                    </option>
+                                    <option value="huggingface" <?php selected(get_option('aipg_api_provider'), 'huggingface'); ?>>
+                                        🤗 Hugging Face (GRATUITO - Vários modelos)
+                                    </option>
+                                    <option value="cohere" <?php selected(get_option('aipg_api_provider'), 'cohere'); ?>>
+                                        💎 Cohere (GRATUITO até 1000 req/mês)
+                                    </option>
+                                    <option value="mistral" <?php selected(get_option('aipg_api_provider'), 'mistral'); ?>>
+                                        ⚡ Mistral AI (GRATUITO - Mistral 7B)
+                                    </option>
+                                </optgroup>
+                                <optgroup label="<?php _e('APIs Pagas (Alta Qualidade)', 'ai-post-generator'); ?>">
+                                    <option value="openai" <?php selected(get_option('aipg_api_provider'), 'openai'); ?>>
+                                        🤖 OpenAI (ChatGPT-4o-mini)
+                                    </option>
+                                    <option value="anthropic" <?php selected(get_option('aipg_api_provider'), 'anthropic'); ?>>
+                                        🧠 Anthropic (Claude 3.5 Sonnet)
+                                    </option>
+                                </optgroup>
                             </select>
+                            <p class="description" id="provider-description"></p>
                         </td>
                     </tr>
                     
-                    <tr>
+                    <tr class="api-key-row" data-provider="groq">
+                        <th scope="row">
+                            <label for="aipg_groq_key"><?php _e('Chave API Groq', 'ai-post-generator'); ?></label>
+                        </th>
+                        <td>
+                            <input type="password" id="aipg_groq_key" name="aipg_groq_key" 
+                                   value="<?php echo esc_attr(get_option('aipg_groq_key')); ?>" class="regular-text">
+                            <p class="description">
+                                ✅ <strong>100% GRATUITO</strong> - Obtenha em: <a href="https://console.groq.com" target="_blank">console.groq.com</a><br>
+                                🚀 <strong>Ultra Rápido:</strong> 500+ tokens/segundo<br>
+                                📊 <strong>Limite:</strong> 14.400 requisições/dia GRÁTIS<br>
+                                🤖 <strong>Modelo:</strong> Llama 3.1 70B / Mixtral 8x7B
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <tr class="api-key-row" data-provider="huggingface">
+                        <th scope="row">
+                            <label for="aipg_huggingface_key"><?php _e('Token Hugging Face', 'ai-post-generator'); ?></label>
+                        </th>
+                        <td>
+                            <input type="password" id="aipg_huggingface_key" name="aipg_huggingface_key" 
+                                   value="<?php echo esc_attr(get_option('aipg_huggingface_key')); ?>" class="regular-text">
+                            <p class="description">
+                                ✅ <strong>100% GRATUITO</strong> - Obtenha em: <a href="https://huggingface.co/settings/tokens" target="_blank">huggingface.co</a><br>
+                                🎯 <strong>Sem Limites:</strong> Uso ilimitado grátis<br>
+                                🤖 <strong>Modelos:</strong> Mixtral, Falcon, Llama, Zephyr
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <tr class="api-key-row" data-provider="cohere">
+                        <th scope="row">
+                            <label for="aipg_cohere_key"><?php _e('Chave API Cohere', 'ai-post-generator'); ?></label>
+                        </th>
+                        <td>
+                            <input type="password" id="aipg_cohere_key" name="aipg_cohere_key" 
+                                   value="<?php echo esc_attr(get_option('aipg_cohere_key')); ?>" class="regular-text">
+                            <p class="description">
+                                ✅ <strong>Plano Grátis Generoso</strong> - Obtenha em: <a href="https://dashboard.cohere.com/api-keys" target="_blank">dashboard.cohere.com</a><br>
+                                📊 <strong>Limite:</strong> 1000 requisições/mês GRÁTIS<br>
+                                🤖 <strong>Modelo:</strong> Command-R+ (otimizado para texto)
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <tr class="api-key-row" data-provider="mistral">
+                        <th scope="row">
+                            <label for="aipg_mistral_key"><?php _e('Chave API Mistral', 'ai-post-generator'); ?></label>
+                        </th>
+                        <td>
+                            <input type="password" id="aipg_mistral_key" name="aipg_mistral_key" 
+                                   value="<?php echo esc_attr(get_option('aipg_mistral_key')); ?>" class="regular-text">
+                            <p class="description">
+                                ✅ <strong>Créditos Gratuitos</strong> - Obtenha em: <a href="https://console.mistral.ai" target="_blank">console.mistral.ai</a><br>
+                                💰 <strong>5€ Grátis</strong> para novos usuários<br>
+                                🤖 <strong>Modelo:</strong> Mistral 7B / Mixtral 8x7B
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <tr class="api-key-row" data-provider="openai">
                         <th scope="row">
                             <label for="aipg_openai_key"><?php _e('Chave API OpenAI', 'ai-post-generator'); ?></label>
                         </th>
                         <td>
                             <input type="password" id="aipg_openai_key" name="aipg_openai_key" 
                                    value="<?php echo esc_attr(get_option('aipg_openai_key')); ?>" class="regular-text">
-                            <p class="description">https://platform.openai.com/api-keys</p>
+                            <p class="description">
+                                💳 <strong>Pago</strong> - Obtenha em: <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a><br>
+                                💰 <strong>Custo:</strong> ~$0.002/post<br>
+                                🤖 <strong>Modelo:</strong> GPT-4o-mini
+                            </p>
                         </td>
                     </tr>
                     
-                    <tr>
+                    <tr class="api-key-row" data-provider="anthropic">
                         <th scope="row">
                             <label for="aipg_anthropic_key"><?php _e('Chave API Anthropic', 'ai-post-generator'); ?></label>
                         </th>
                         <td>
                             <input type="password" id="aipg_anthropic_key" name="aipg_anthropic_key" 
                                    value="<?php echo esc_attr(get_option('aipg_anthropic_key')); ?>" class="regular-text">
-                            <p class="description">https://console.anthropic.com/</p>
+                            <p class="description">
+                                💳 <strong>Pago</strong> - Obtenha em: <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a><br>
+                                💰 <strong>Custo:</strong> ~$0.015/post<br>
+                                🤖 <strong>Modelo:</strong> Claude 3.5 Sonnet
+                            </p>
                         </td>
                     </tr>
                     
@@ -707,8 +820,178 @@ class AI_Post_Generator {
         }
     }
     
+    public function ajax_get_template() {
+        check_ajax_referer('aipg_generate_post', 'nonce');
+        
+        $template_id = sanitize_text_field($_POST['template_id']);
+        $templates = get_option('aipg_templates', array());
+        
+        if (isset($templates[$template_id])) {
+            wp_send_json_success($templates[$template_id]);
+        } else {
+            wp_send_json_error(array('message' => __('Template não encontrado', 'ai-post-generator')));
+        }
+    }
+    
+    /**
+     * Adiciona meta box no editor de posts
+     */
+    public function add_editor_meta_box() {
+        add_meta_box(
+            'aipg_editor_meta_box',
+            '✨ ' . __('Gerar Conteúdo com IA', 'ai-post-generator'),
+            array($this, 'render_editor_meta_box'),
+            'post',
+            'side',
+            'high'
+        );
+    }
+    
+    /**
+     * Renderiza meta box no editor
+     */
+    public function render_editor_meta_box($post) {
+        $templates = get_option('aipg_templates', array());
+        ?>
+        <div class="aipg-editor-box">
+            <p class="description">
+                <?php _e('Preencha o título do post acima e clique em gerar para criar o conteúdo automaticamente.', 'ai-post-generator'); ?>
+            </p>
+            
+            <div class="aipg-editor-field">
+                <label for="aipg_editor_topic">
+                    <strong><?php _e('Tópico/Tema:', 'ai-post-generator'); ?></strong>
+                </label>
+                <input type="text" 
+                       id="aipg_editor_topic" 
+                       class="widefat" 
+                       placeholder="<?php _e('Deixe em branco para usar o título', 'ai-post-generator'); ?>">
+                <p class="description"><?php _e('Ou use o título do post automaticamente', 'ai-post-generator'); ?></p>
+            </div>
+            
+            <div class="aipg-editor-field">
+                <label for="aipg_editor_template">
+                    <strong><?php _e('Template:', 'ai-post-generator'); ?></strong>
+                </label>
+                <select id="aipg_editor_template" class="widefat">
+                    <option value=""><?php _e('Configuração padrão', 'ai-post-generator'); ?></option>
+                    <?php foreach ($templates as $id => $template): ?>
+                        <option value="<?php echo esc_attr($id); ?>">
+                            <?php echo esc_html($template['name']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            
+            <div class="aipg-editor-field">
+                <label for="aipg_editor_length">
+                    <strong><?php _e('Tamanho:', 'ai-post-generator'); ?></strong>
+                </label>
+                <select id="aipg_editor_length" class="widefat">
+                    <option value="short"><?php _e('Curto (300-500)', 'ai-post-generator'); ?></option>
+                    <option value="medium" selected><?php _e('Médio (500-800)', 'ai-post-generator'); ?></option>
+                    <option value="long"><?php _e('Longo (800-1200)', 'ai-post-generator'); ?></option>
+                    <option value="verylong"><?php _e('Muito Longo (1200-2000)', 'ai-post-generator'); ?></option>
+                </select>
+            </div>
+            
+            <div class="aipg-editor-field">
+                <label for="aipg_editor_tone">
+                    <strong><?php _e('Tom:', 'ai-post-generator'); ?></strong>
+                </label>
+                <select id="aipg_editor_tone" class="widefat">
+                    <option value="professional"><?php _e('Profissional', 'ai-post-generator'); ?></option>
+                    <option value="casual"><?php _e('Casual', 'ai-post-generator'); ?></option>
+                    <option value="technical"><?php _e('Técnico', 'ai-post-generator'); ?></option>
+                    <option value="friendly"><?php _e('Amigável', 'ai-post-generator'); ?></option>
+                    <option value="educational"><?php _e('Educacional', 'ai-post-generator'); ?></option>
+                </select>
+            </div>
+            
+            <div class="aipg-editor-field">
+                <label>
+                    <input type="checkbox" id="aipg_editor_image" value="1">
+                    <?php _e('Gerar imagem destacada', 'ai-post-generator'); ?>
+                </label>
+            </div>
+            
+            <div class="aipg-editor-actions">
+                <button type="button" id="aipg_generate_content" class="button button-primary button-large">
+                    <span class="dashicons dashicons-edit"></span>
+                    <?php _e('Gerar Conteúdo', 'ai-post-generator'); ?>
+                </button>
+                
+                <button type="button" id="aipg_improve_content" class="button button-secondary" style="display:none;">
+                    <span class="dashicons dashicons-update"></span>
+                    <?php _e('Melhorar Texto', 'ai-post-generator'); ?>
+                </button>
+            </div>
+            
+            <div id="aipg_editor_status" class="aipg-status" style="display:none;"></div>
+        </div>
+        <?php
+    }
+    
+    /**
+     * Enfileira assets para Gutenberg
+     */
+    public function enqueue_gutenberg_assets() {
+        wp_enqueue_script(
+            'aipg-gutenberg',
+            AIPG_PLUGIN_URL . 'assets/gutenberg-plugin.js',
+            array('wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-data'),
+            AIPG_VERSION,
+            true
+        );
+        
+        wp_localize_script('aipg-gutenberg', 'aipgGutenberg', array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('aipg_generate_post')
+        ));
+    }
+    
+    /**
+     * Gera apenas o conteúdo (sem criar post)
+     */
+    public function ajax_generate_content_only() {
+        check_ajax_referer('aipg_generate_post', 'nonce');
+        
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error(array('message' => __('Permissão negada', 'ai-post-generator')));
+        }
+        
+        $data = array(
+            'topic' => sanitize_text_field($_POST['topic']),
+            'keywords' => sanitize_text_field($_POST['keywords'] ?? ''),
+            'tone' => sanitize_text_field($_POST['tone'] ?? 'professional'),
+            'length' => sanitize_text_field($_POST['length'] ?? 'medium'),
+            'language' => sanitize_text_field($_POST['language'] ?? 'pt-br'),
+            'category' => 0,
+            'generate_image' => false,
+            'auto_tags' => false,
+            'seo_optimization' => false,
+            'add_internal_links' => false,
+            'schedule_post' => false,
+            'schedule_date' => ''
+        );
+        
+        // Gera conteúdo
+        $result = $this->generate_content($data);
+        
+        if (is_wp_error($result)) {
+            wp_send_json_error(array('message' => $result->get_error_message()));
+        }
+        
+        wp_send_json_success(array(
+            'title' => $result['title'],
+            'content' => $result['content'],
+            'tags' => $result['tags'] ?? array(),
+            'seo' => $result['seo'] ?? array()
+        ));
+    }
+    
     private function generate_content($data) {
-        $provider = get_option('aipg_api_provider', 'openai');
+        $provider = get_option('aipg_api_provider', 'groq');
         
         $length_words = array(
             'short' => '300-500',
@@ -749,13 +1032,23 @@ class AI_Post_Generator {
         
         $prompt .= "Retorne em formato JSON:\n{\n  \"title\": \"título do post\",\n  \"content\": \"conteúdo HTML\",\n  \"tags\": [\"tag1\", \"tag2\"],\n  \"seo\": {\"title\": \"título seo\", \"description\": \"meta description\"}\n}";
         
-        if ($provider === 'openai') {
-            return $this->generate_with_openai($prompt);
-        } elseif ($provider === 'anthropic') {
-            return $this->generate_with_anthropic($prompt);
+        // Roteamento para o provedor correto
+        switch ($provider) {
+            case 'groq':
+                return $this->generate_with_groq($prompt);
+            case 'huggingface':
+                return $this->generate_with_huggingface($prompt);
+            case 'cohere':
+                return $this->generate_with_cohere($prompt);
+            case 'mistral':
+                return $this->generate_with_mistral($prompt);
+            case 'openai':
+                return $this->generate_with_openai($prompt);
+            case 'anthropic':
+                return $this->generate_with_anthropic($prompt);
+            default:
+                return new WP_Error('no_provider', __('Provedor não configurado', 'ai-post-generator'));
         }
-        
-        return new WP_Error('no_provider', __('Provedor não configurado', 'ai-post-generator'));
     }
     
     private function generate_with_openai($prompt) {
@@ -833,6 +1126,180 @@ class AI_Post_Generator {
         $content_text = $body['content'][0]['text'];
         $content = json_decode($content_text, true);
         
+        return $content;
+    }
+    
+    private function generate_with_groq($prompt) {
+        $api_key = get_option('aipg_groq_key');
+        
+        if (empty($api_key)) {
+            return new WP_Error('no_api_key', __('Chave API Groq não configurada', 'ai-post-generator'));
+        }
+        
+        $response = wp_remote_post('https://api.groq.com/openai/v1/chat/completions', array(
+            'headers' => array(
+                'Authorization' => 'Bearer ' . $api_key,
+                'Content-Type' => 'application/json'
+            ),
+            'body' => json_encode(array(
+                'model' => 'llama-3.3-70b-versatile',
+                'messages' => array(
+                    array('role' => 'system', 'content' => 'Você é um especialista em criar conteúdo de blog. Sempre retorne JSON válido.'),
+                    array('role' => 'user', 'content' => $prompt)
+                ),
+                'temperature' => 0.7,
+                'response_format' => array('type' => 'json_object')
+            )),
+            'timeout' => 60
+        ));
+        
+        if (is_wp_error($response)) {
+            return $response;
+        }
+        
+        $body = json_decode(wp_remote_retrieve_body($response), true);
+        
+        if (isset($body['error'])) {
+            return new WP_Error('api_error', $body['error']['message']);
+        }
+        
+        $content = json_decode($body['choices'][0]['message']['content'], true);
+        return $content;
+    }
+    
+    private function generate_with_huggingface($prompt) {
+        $api_key = get_option('aipg_huggingface_key');
+        
+        if (empty($api_key)) {
+            return new WP_Error('no_api_key', __('Token Hugging Face não configurado', 'ai-post-generator'));
+        }
+        
+        $response = wp_remote_post('https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1', array(
+            'headers' => array(
+                'Authorization' => 'Bearer ' . $api_key,
+                'Content-Type' => 'application/json'
+            ),
+            'body' => json_encode(array(
+                'inputs' => $prompt,
+                'parameters' => array(
+                    'max_new_tokens' => 2000,
+                    'temperature' => 0.7,
+                    'return_full_text' => false
+                )
+            )),
+            'timeout' => 90
+        ));
+        
+        if (is_wp_error($response)) {
+            return $response;
+        }
+        
+        $body = json_decode(wp_remote_retrieve_body($response), true);
+        
+        if (isset($body['error'])) {
+            return new WP_Error('api_error', $body['error']);
+        }
+        
+        // Extrai JSON do texto gerado
+        $generated_text = $body[0]['generated_text'];
+        preg_match('/\{.*\}/s', $generated_text, $matches);
+        
+        if (empty($matches)) {
+            // Fallback: cria estrutura básica
+            return array(
+                'title' => 'Post Gerado',
+                'content' => $generated_text,
+                'tags' => array(),
+                'seo' => array('title' => '', 'description' => '')
+            );
+        }
+        
+        $content = json_decode($matches[0], true);
+        return $content;
+    }
+    
+    private function generate_with_cohere($prompt) {
+        $api_key = get_option('aipg_cohere_key');
+        
+        if (empty($api_key)) {
+            return new WP_Error('no_api_key', __('Chave API Cohere não configurada', 'ai-post-generator'));
+        }
+        
+        $response = wp_remote_post('https://api.cohere.ai/v1/generate', array(
+            'headers' => array(
+                'Authorization' => 'Bearer ' . $api_key,
+                'Content-Type' => 'application/json'
+            ),
+            'body' => json_encode(array(
+                'model' => 'command-r-plus',
+                'prompt' => $prompt,
+                'max_tokens' => 2000,
+                'temperature' => 0.7
+            )),
+            'timeout' => 90
+        ));
+        
+        if (is_wp_error($response)) {
+            return $response;
+        }
+        
+        $body = json_decode(wp_remote_retrieve_body($response), true);
+        
+        if (isset($body['message'])) {
+            return new WP_Error('api_error', $body['message']);
+        }
+        
+        $generated_text = $body['generations'][0]['text'];
+        preg_match('/\{.*\}/s', $generated_text, $matches);
+        
+        if (empty($matches)) {
+            return array(
+                'title' => 'Post Gerado',
+                'content' => $generated_text,
+                'tags' => array(),
+                'seo' => array('title' => '', 'description' => '')
+            );
+        }
+        
+        $content = json_decode($matches[0], true);
+        return $content;
+    }
+    
+    private function generate_with_mistral($prompt) {
+        $api_key = get_option('aipg_mistral_key');
+        
+        if (empty($api_key)) {
+            return new WP_Error('no_api_key', __('Chave API Mistral não configurada', 'ai-post-generator'));
+        }
+        
+        $response = wp_remote_post('https://api.mistral.ai/v1/chat/completions', array(
+            'headers' => array(
+                'Authorization' => 'Bearer ' . $api_key,
+                'Content-Type' => 'application/json'
+            ),
+            'body' => json_encode(array(
+                'model' => 'mistral-small-latest',
+                'messages' => array(
+                    array('role' => 'system', 'content' => 'Você é um especialista em criar conteúdo. Retorne JSON válido.'),
+                    array('role' => 'user', 'content' => $prompt)
+                ),
+                'temperature' => 0.7,
+                'response_format' => array('type' => 'json_object')
+            )),
+            'timeout' => 90
+        ));
+        
+        if (is_wp_error($response)) {
+            return $response;
+        }
+        
+        $body = json_decode(wp_remote_retrieve_body($response), true);
+        
+        if (isset($body['error'])) {
+            return new WP_Error('api_error', $body['error']['message']);
+        }
+        
+        $content = json_decode($body['choices'][0]['message']['content'], true);
         return $content;
     }
     
