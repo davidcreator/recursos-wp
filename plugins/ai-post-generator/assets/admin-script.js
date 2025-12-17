@@ -1,329 +1,444 @@
-/* AI Post Generator - Editor Script */
+/* AI Post Generator Pro - Admin Script */
 
 (function($) {
     'use strict';
     
     $(document).ready(function() {
         
-        // Verifica se está no editor
-        if (!$('#aipg_generate_content').length) {
-            return;
-        }
-        
-        const $generateBtn = $('#aipg_generate_content');
-        const $improveBtn = $('#aipg_improve_content');
-        const $status = $('#aipg_editor_status');
-        const $topicField = $('#aipg_editor_topic');
-        const $lengthField = $('#aipg_editor_length');
-        const $toneField = $('#aipg_editor_tone');
-        const $imageCheckbox = $('#aipg_editor_image');
-        
-        // Detecta editor (Clássico ou Gutenberg)
-        const isGutenberg = typeof wp !== 'undefined' && wp.data && wp.data.select('core/editor');
-        
-        /**
-         * Gera conteúdo com IA
-         */
-        $generateBtn.on('click', function(e) {
-            e.preventDefault();
+        // Provider selector - show/hide API key fields
+        function updateProviderFields() {
+            const provider = $('#aipg_api_provider').val();
             
-            // Pega o título do post
-            let topic = $topicField.val().trim();
+            // Esconde todos os campos de API
+            $('.api-key-row').removeClass('active');
             
-            if (!topic) {
-                if (isGutenberg) {
-                    topic = wp.data.select('core/editor').getEditedPostAttribute('title');
-                } else {
-                    topic = $('#title').val();
-                }
-            }
+            // Mostra apenas o campo do provedor selecionado
+            $('.api-key-row[data-provider="' + provider + '"]').addClass('active');
             
-            if (!topic) {
-                showStatus('error', aipgEditor.strings.fill_topic);
-                return;
-            }
-            
-            // Desabilita botão
-            $generateBtn.prop('disabled', true);
-            $generateBtn.html('<span class="aipg-spinner"></span>' + aipgEditor.strings.generating);
-            
-            showStatus('loading', aipgEditor.strings.generating);
-            
-            // Prepara dados
-            const data = {
-                action: 'aipg_generate_content_only',
-                nonce: aipgEditor.nonce,
-                topic: topic,
-                length: $lengthField.val(),
-                tone: $toneField.val(),
-                language: 'pt-br'
+            // Atualiza descrição
+            const descriptions = {
+                'groq': '🚀 Groq oferece acesso GRATUITO ao Llama 3.3 70B (mais recente) com velocidade ultra-rápida (600+ tokens/seg)',
+                'huggingface': '🤗 Hugging Face tem uso GRATUITO e ILIMITADO para modelos open-source',
+                'cohere': '💎 Cohere oferece 1000 requisições GRÁTIS por mês - ótimo para começar',
+                'mistral': '⚡ Mistral AI dá 5€ de créditos gratuitos para novos usuários',
+                'openai': '🤖 OpenAI tem a melhor qualidade mas é pago (~$0.002 por post)',
+                'anthropic': '🧠 Claude oferece excelente qualidade mas é mais caro (~$0.015 por post)'
             };
             
-            // Faz requisição
+            $('#provider-description').text(descriptions[provider] || '');
+        }
+        
+        // Executa ao carregar a página
+        updateProviderFields();
+        
+        // Executa ao mudar o provedor
+        $('#aipg_api_provider').on('change', updateProviderFields);
+        
+        // Informações dos modelos Groq
+        function updateGroqModelInfo() {
+            const model = $('#aipg_groq_model').val();
+            const descriptions = {
+                'llama-3.3-70b-versatile': `
+                    <strong>🚀 Llama 3.3 70B Versatile</strong><br>
+                    • <strong>Lançamento:</strong> Dezembro 2024<br>
+                    • <strong>Velocidade:</strong> 600+ tokens/segundo<br>
+                    • <strong>Qualidade:</strong> ⭐⭐⭐⭐⭐ (Superior)<br>
+                    • <strong>Contexto:</strong> 8K tokens<br>
+                    • <strong>Melhor para:</strong> Qualquer tipo de conteúdo<br>
+                    • <strong>Destaque:</strong> Mais preciso e criativo que 3.1
+                `,
+                'llama-3.1-70b-versatile': `
+                    <strong>⚡ Llama 3.1 70B Versatile</strong><br>
+                    • <strong>Lançamento:</strong> Julho 2024<br>
+                    • <strong>Velocidade:</strong> 500+ tokens/segundo<br>
+                    • <strong>Qualidade:</strong> ⭐⭐⭐⭐ (Muito Boa)<br>
+                    • <strong>Contexto:</strong> 8K tokens<br>
+                    • <strong>Melhor para:</strong> Uso geral<br>
+                    • <strong>Destaque:</strong> Versão anterior estável
+                `,
+                'meta-llama/llama-4-scout-17b-16e-instruct': `
+                    <strong>🔬 Llama 4 Scout 17B</strong><br>
+                    • <strong>Status:</strong> Experimental / Preview<br>
+                    • <strong>Velocidade:</strong> 800+ tokens/segundo ⚡⚡⚡<br>
+                    • <strong>Qualidade:</strong> ⭐⭐⭐⭐ (Em Teste)<br>
+                    • <strong>Contexto:</strong> 4K tokens<br>
+                    • <strong>Melhor para:</strong> Conteúdo curto e rápido<br>
+                    • <strong>Destaque:</strong> MUITO RÁPIDO - Modelo menor<br>
+                    • <strong>Aviso:</strong> Pode ter inconsistências
+                `,
+                'mixtral-8x7b-32768': `
+                    <strong>🎯 Mixtral 8x7B</strong><br>
+                    • <strong>Lançamento:</strong> Dezembro 2023<br>
+                    • <strong>Velocidade:</strong> 400+ tokens/segundo<br>
+                    • <strong>Qualidade:</strong> ⭐⭐⭐⭐ (Excelente)<br>
+                    • <strong>Contexto:</strong> 32K tokens 🔥<br>
+                    • <strong>Melhor para:</strong> Textos muito longos<br>
+                    • <strong>Destaque:</strong> Maior contexto disponível
+                `
+            };
+            
+            $('#groq-model-description').html(descriptions[model] || '');
+        }
+        
+        // Atualiza ao carregar e ao mudar
+        if ($('#aipg_groq_model').length) {
+            updateGroqModelInfo();
+            $('#aipg_groq_model').on('change', updateGroqModelInfo);
+        }
+        
+        // Template selector
+        $('#aipg_template').on('change', function() {
+            const templateId = $(this).val();
+            if (templateId) {
+                loadTemplate(templateId);
+            }
+        });
+        
+        // Schedule checkbox toggle
+        $('#aipg_schedule').on('change', function() {
+            if ($(this).is(':checked')) {
+                $('#aipg_schedule_options').slideDown();
+                // Define data mínima como agora
+                const now = new Date();
+                now.setMinutes(now.getMinutes() + 10);
+                $('#aipg_schedule_date').attr('min', formatDateForInput(now));
+            } else {
+                $('#aipg_schedule_options').slideUp();
+            }
+        });
+        
+        // Form submission
+        $('#aipg-generate-form').on('submit', function(e) {
+            e.preventDefault();
+            
+            const $form = $(this);
+            const $submitBtn = $form.find('button[type="submit"]');
+            const $resultDiv = $('#aipg-result');
+            const $resultContent = $('#aipg-result-content');
+            
+            $('.aipg-success, .aipg-error').remove();
+            
+            $submitBtn.prop('disabled', true);
+            $submitBtn.html(aipgAjax.strings.generating + ' <span class="aipg-loading"></span>');
+            
+            const formData = {
+                action: 'aipg_generate_post',
+                nonce: aipgAjax.nonce,
+                topic: $('#aipg_topic').val(),
+                keywords: $('#aipg_keywords').val(),
+                tone: $('#aipg_tone').val(),
+                length: $('#aipg_length').val(),
+                language: $('#aipg_language').val(),
+                category: $('#aipg_category').val(),
+                generate_image: $('#aipg_generate_image').is(':checked') ? 1 : 0,
+                auto_tags: $('#aipg_auto_tags').is(':checked') ? 1 : 0,
+                seo_optimization: $('#aipg_seo').is(':checked') ? 1 : 0,
+                add_internal_links: $('#aipg_links').is(':checked') ? 1 : 0,
+                schedule_post: $('#aipg_schedule').is(':checked') ? 1 : 0,
+                schedule_date: $('#aipg_schedule_date').val()
+            };
+            
             $.ajax({
-                url: aipgEditor.ajax_url,
+                url: aipgAjax.ajax_url,
                 type: 'POST',
-                data: data,
+                data: formData,
                 timeout: 120000,
                 success: function(response) {
                     if (response.success) {
-                        // Insere conteúdo no editor
-                        insertContent(response.data.content);
+                        const successMsg = $('<div class="aipg-success">')
+                            .html(response.data.message + 
+                                (response.data.edit_url ? 
+                                '<div class="aipg-actions">' +
+                                '<a href="' + response.data.edit_url + '" class="button button-primary">Editar Post</a>' +
+                                '<a href="' + response.data.view_url + '" class="button" target="_blank">Visualizar</a>' +
+                                '</div>' : ''));
                         
-                        // Atualiza título se vazio
-                        if (isGutenberg) {
-                            const currentTitle = wp.data.select('core/editor').getEditedPostAttribute('title');
-                            if (!currentTitle) {
-                                wp.data.dispatch('core/editor').editPost({
-                                    title: response.data.title
-                                });
-                            }
-                        } else {
-                            const $titleField = $('#title');
-                            if (!$titleField.val()) {
-                                $titleField.val(response.data.title);
-                            }
+                        $form.before(successMsg);
+                        
+                        if (response.data.content) {
+                            $resultContent.html(
+                                '<h2>' + escapeHtml(response.data.title) + '</h2>' +
+                                response.data.content
+                            );
+                            $resultDiv.slideDown();
+                            
+                            $('html, body').animate({
+                                scrollTop: $resultDiv.offset().top - 100
+                            }, 500);
                         }
                         
-                        // Gera imagem se solicitado
-                        if ($imageCheckbox.is(':checked')) {
-                            generateFeaturedImage(topic);
+                        // Reset form se agendado
+                        if (formData.schedule_post) {
+                            $form[0].reset();
                         }
-                        
-                        showStatus('success', aipgEditor.strings.success);
-                        $improveBtn.show();
                         
                     } else {
-                        showStatus('error', response.data.message || aipgEditor.strings.error);
+                        showError(response.data.message || aipgAjax.strings.error);
                     }
                 },
                 error: function(xhr, status, error) {
-                    let errorMsg = aipgEditor.strings.error;
+                    let errorMsg = aipgAjax.strings.error;
                     
                     if (status === 'timeout') {
-                        errorMsg += ' Tempo limite excedido.';
+                        errorMsg += ' Tempo limite excedido. Tente novamente.';
                     } else if (xhr.responseJSON && xhr.responseJSON.data) {
                         errorMsg = xhr.responseJSON.data.message;
                     }
                     
-                    showStatus('error', errorMsg);
+                    showError(errorMsg);
                 },
                 complete: function() {
-                    // Reabilita botão
-                    $generateBtn.prop('disabled', false);
-                    $generateBtn.html('<span class="dashicons dashicons-edit"></span> Gerar Conteúdo');
+                    $submitBtn.prop('disabled', false);
+                    $submitBtn.text($submitBtn.data('original-text') || 'Gerar Post');
                 }
             });
+            
+            if (!$submitBtn.data('original-text')) {
+                $submitBtn.data('original-text', $submitBtn.text());
+            }
         });
         
-        /**
-         * Melhora conteúdo existente
-         */
-        $improveBtn.on('click', function(e) {
+        // Save template button
+        $('#aipg-save-template').on('click', function(e) {
             e.preventDefault();
             
-            let currentContent = '';
+            const templateName = prompt('Nome do template:');
             
-            if (isGutenberg) {
-                currentContent = wp.data.select('core/editor').getEditedPostAttribute('content');
-            } else {
-                if (typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor) {
-                    currentContent = tinyMCE.activeEditor.getContent();
-                } else {
-                    currentContent = $('#content').val();
-                }
-            }
-            
-            if (!currentContent) {
-                showStatus('error', 'Não há conteúdo para melhorar.');
+            if (!templateName) {
                 return;
             }
             
-            $improveBtn.prop('disabled', true);
-            showStatus('loading', 'Melhorando texto...');
+            const templateData = {
+                action: 'aipg_save_template',
+                nonce: aipgAjax.nonce,
+                template_name: templateName,
+                tone: $('#aipg_tone').val(),
+                length: $('#aipg_length').val(),
+                keywords: $('#aipg_keywords').val(),
+                category: $('#aipg_category').val(),
+                language: $('#aipg_language').val()
+            };
             
-            // Aqui você pode implementar lógica de melhoria
-            // Por enquanto, vamos apenas mostrar uma mensagem
-            setTimeout(function() {
-                showStatus('success', 'Use o botão "Gerar Conteúdo" novamente para criar uma nova versão.');
-                $improveBtn.prop('disabled', false);
-            }, 1000);
-        });
-        
-        /**
-         * Insere conteúdo no editor
-         */
-        function insertContent(content) {
-            if (isGutenberg) {
-                // Gutenberg
-                const blocks = wp.blocks.parse(content);
-                wp.data.dispatch('core/block-editor').insertBlocks(blocks);
-            } else {
-                // Editor Clássico
-                if (typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor) {
-                    tinyMCE.activeEditor.setContent(content);
-                } else {
-                    $('#content').val(content);
-                }
-            }
-        }
-        
-        /**
-         * Gera imagem destacada
-         */
-        function generateFeaturedImage(topic) {
             $.ajax({
-                url: aipgEditor.ajax_url,
+                url: aipgAjax.ajax_url,
                 type: 'POST',
-                data: {
-                    action: 'aipg_generate_image',
-                    nonce: aipgEditor.nonce,
-                    topic: topic,
-                    post_id: aipgEditor.post_id
-                },
+                data: templateData,
                 success: function(response) {
-                    if (response.success && response.data.image_id) {
-                        // Atualiza imagem destacada
-                        if (isGutenberg) {
-                            wp.data.dispatch('core/editor').editPost({
-                                featured_media: response.data.image_id
-                            });
-                        } else {
-                            // Recarrega meta box de imagem destacada
+                    if (response.success) {
+                        showSuccess('Template salvo com sucesso!');
+                        setTimeout(function() {
                             location.reload();
-                        }
+                        }, 1500);
+                    } else {
+                        showError(response.data.message);
                     }
                 }
             });
-        }
+        });
         
-        /**
-         * Mostra status
-         */
-        function showStatus(type, message) {
-            $status.removeClass('loading success error');
-            $status.addClass(type);
+        // Delete template
+        $(document).on('click', '.aipg-delete-template', function(e) {
+            e.preventDefault();
             
-            let icon = '';
-            if (type === 'loading') {
-                icon = '<span class="aipg-spinner"></span>';
-            } else if (type === 'success') {
-                icon = '<span class="dashicons dashicons-yes-alt"></span>';
-            } else if (type === 'error') {
-                icon = '<span class="dashicons dashicons-warning"></span>';
-            }
-            
-            $status.html(icon + message);
-            $status.show();
-            
-            // Auto-hide após 5 segundos (exceto loading)
-            if (type !== 'loading') {
-                setTimeout(function() {
-                    $status.fadeOut();
-                }, 5000);
-            }
-        }
-        
-        /**
-         * Carrega template
-         */
-        $('#aipg_editor_template').on('change', function() {
-            const templateId = $(this).val();
-            
-            if (!templateId) {
+            if (!confirm(aipgAjax.strings.confirm_delete)) {
                 return;
             }
             
+            const templateId = $(this).data('template-id');
+            const $card = $(this).closest('.aipg-template-card');
+            
             $.ajax({
-                url: aipgEditor.ajax_url,
+                url: aipgAjax.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'aipg_delete_template',
+                    nonce: aipgAjax.nonce,
+                    template_id: templateId
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $card.fadeOut(function() {
+                            $(this).remove();
+                        });
+                    } else {
+                        showError(response.data.message);
+                    }
+                }
+            });
+        });
+        
+        // Load template from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const templateParam = urlParams.get('template');
+        if (templateParam) {
+            $('#aipg_template').val(templateParam).trigger('change');
+        }
+        
+        // Helper functions
+        function loadTemplate(templateId) {
+            // Busca os dados do template via AJAX
+            $.ajax({
+                url: aipgAjax.ajax_url,
                 type: 'POST',
                 data: {
                     action: 'aipg_get_template',
-                    nonce: aipgEditor.nonce,
+                    nonce: aipgAjax.nonce,
                     template_id: templateId
                 },
                 success: function(response) {
                     if (response.success && response.data) {
                         const template = response.data;
-                        $toneField.val(template.tone);
-                        $lengthField.val(template.length);
-                        
-                        if (template.keywords) {
-                            $topicField.attr('placeholder', 'Palavras-chave: ' + template.keywords);
-                        }
-                        
-                        showStatus('success', 'Template carregado!');
+                        $('#aipg_tone').val(template.tone);
+                        $('#aipg_length').val(template.length);
+                        $('#aipg_keywords').val(template.keywords);
+                        $('#aipg_category').val(template.category);
+                        $('#aipg_language').val(template.language);
                     }
                 }
             });
-        });
+        }
         
-        /**
-         * Atalho de teclado: Ctrl/Cmd + Shift + G
-         */
-        $(document).on('keydown', function(e) {
-            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.keyCode === 71) {
-                e.preventDefault();
-                $generateBtn.click();
-            }
-        });
+        function showError(message) {
+            const errorDiv = $('<div class="aipg-error">').text(message);
+            $('#aipg-generate-form').before(errorDiv);
+            
+            $('html, body').animate({
+                scrollTop: errorDiv.offset().top - 100
+            }, 500);
+        }
         
-        /**
-         * Pré-visualização do tamanho
-         */
-        $lengthField.on('change', function() {
-            const lengths = {
-                'short': '300-500 palavras (~2-3 minutos de leitura)',
-                'medium': '500-800 palavras (~3-5 minutos de leitura)',
-                'long': '800-1200 palavras (~5-8 minutos de leitura)',
-                'verylong': '1200-2000 palavras (~8-12 minutos de leitura)'
+        function showSuccess(message) {
+            const successDiv = $('<div class="aipg-success">').text(message);
+            $('#aipg-generate-form').before(successDiv);
+            
+            $('html, body').animate({
+                scrollTop: successDiv.offset().top - 100
+            }, 500);
+        }
+        
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
             };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+        
+        function formatDateForInput(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
             
-            const desc = lengths[$(this).val()];
-            let $description = $(this).next('.description');
-            
-            if (!$description.length) {
-                $description = $('<p class="description"></p>');
-                $(this).after($description);
-            }
-            
-            $description.text(desc);
+            return `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
+        
+        // Auto-remove messages after 10 seconds
+        $(document).on('click', '.aipg-success, .aipg-error', function() {
+            $(this).fadeOut(function() {
+                $(this).remove();
+            });
         });
         
-        // Mostra descrição inicial
-        $lengthField.trigger('change');
+        setTimeout(function() {
+            $('.aipg-success, .aipg-error').fadeOut(function() {
+                $(this).remove();
+            });
+        }, 10000);
         
-        /**
-         * Tooltip de ajuda
-         */
-        $('[data-tooltip]').each(function() {
-            $(this).attr('title', $(this).data('tooltip'));
-        });
-        
-        /**
-         * Aviso de não salvar
-         */
-        let contentGenerated = false;
+        // Prevent leaving with unsaved content
+        let hasGeneratedContent = false;
         
         $(document).on('ajaxSuccess', function(event, xhr, settings) {
-            if (settings.data && settings.data.indexOf('aipg_generate_content_only') !== -1) {
-                contentGenerated = true;
+            if (settings.data && settings.data.indexOf('aipg_generate_post') !== -1) {
+                hasGeneratedContent = true;
             }
         });
         
-        // Reseta ao salvar
-        if (isGutenberg) {
-            wp.data.subscribe(function() {
-                const isSaving = wp.data.select('core/editor').isSavingPost();
-                if (isSaving) {
-                    contentGenerated = false;
-                }
-            });
-        } else {
-            $('#publish, #save-post').on('click', function() {
-                contentGenerated = false;
-            });
+        $(window).on('beforeunload', function(e) {
+            if (hasGeneratedContent && $('#aipg-result').is(':visible')) {
+                const message = 'Você tem conteúdo gerado não salvo. Tem certeza que deseja sair?';
+                e.returnValue = message;
+                return message;
+            }
+        });
+        
+        $(document).on('click', '.aipg-actions a', function() {
+            hasGeneratedContent = false;
+        });
+        
+        // Copy to clipboard functionality
+        $(document).on('click', '.aipg-copy-content', function(e) {
+            e.preventDefault();
+            
+            const content = $('#aipg-result-content').html();
+            const $temp = $('<textarea>');
+            $('body').append($temp);
+            $temp.val(content).select();
+            document.execCommand('copy');
+            $temp.remove();
+            
+            $(this).text('Copiado!').addClass('button-primary');
+            setTimeout(() => {
+                $(this).text('Copiar Conteúdo').removeClass('button-primary');
+            }, 2000);
+        });
+        
+        // Add copy button to result
+        if ($('#aipg-result-content').length) {
+            const $copyBtn = $('<button class="button aipg-copy-content" style="margin-top:10px;">Copiar Conteúdo</button>');
+            $('#aipg-result-content').after($copyBtn);
         }
+        
+        // Character counter for topic field
+        $('#aipg_topic').on('input', function() {
+            const length = $(this).val().length;
+            let $counter = $(this).next('.char-counter');
+            
+            if (!$counter.length) {
+                $counter = $('<span class="char-counter description"></span>');
+                $(this).after($counter);
+            }
+            
+            $counter.text(`${length} caracteres`);
+            
+            if (length > 200) {
+                $counter.css('color', '#dc3232');
+            } else {
+                $counter.css('color', '#646970');
+            }
+        });
+        
+        // Keyboard shortcuts
+        $(document).on('keydown', function(e) {
+            // Ctrl/Cmd + Enter para submeter form
+            if ((e.ctrlKey || e.metaKey) && e.keyCode === 13) {
+                if ($('#aipg-generate-form').is(':visible')) {
+                    $('#aipg-generate-form').submit();
+                }
+            }
+        });
+        
+        // Add tooltips
+        $('[data-tooltip]').each(function() {
+            const tooltip = $(this).data('tooltip');
+            $(this).attr('title', tooltip);
+        });
+        
+        // Smooth scroll for anchor links
+        $('a[href^="#"]').on('click', function(e) {
+            const target = $(this.hash);
+            if (target.length) {
+                e.preventDefault();
+                $('html, body').animate({
+                    scrollTop: target.offset().top - 100
+                }, 500);
+            }
+        });
         
     });
     

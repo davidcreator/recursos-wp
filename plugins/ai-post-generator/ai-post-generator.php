@@ -152,6 +152,7 @@ class AI_Post_Generator {
     
     public function register_settings() {
         register_setting('aipg_settings', 'aipg_api_provider');
+        register_setting('aipg_settings', 'aipg_groq_model');
         register_setting('aipg_settings', 'aipg_openai_key');
         register_setting('aipg_settings', 'aipg_anthropic_key');
         register_setting('aipg_settings', 'aipg_groq_key');
@@ -498,7 +499,7 @@ class AI_Post_Generator {
                             <select id="aipg_api_provider" name="aipg_api_provider" class="aipg-provider-select">
                                 <optgroup label="<?php _e('APIs Gratuitas Generosas', 'ai-post-generator'); ?>">
                                     <option value="groq" <?php selected(get_option('aipg_api_provider'), 'groq'); ?>>
-                                        🚀 Groq (GRATUITO - Llama 3.1 - Ultra Rápido)
+                                        🚀 Groq (GRATUITO - Llama 3.3 70B - Ultra Rápido)
                                     </option>
                                     <option value="huggingface" <?php selected(get_option('aipg_api_provider'), 'huggingface'); ?>>
                                         🤗 Hugging Face (GRATUITO - Vários modelos)
@@ -532,10 +533,34 @@ class AI_Post_Generator {
                                    value="<?php echo esc_attr(get_option('aipg_groq_key')); ?>" class="regular-text">
                             <p class="description">
                                 ✅ <strong>100% GRATUITO</strong> - Obtenha em: <a href="https://console.groq.com" target="_blank">console.groq.com</a><br>
-                                🚀 <strong>Ultra Rápido:</strong> 500+ tokens/segundo<br>
-                                📊 <strong>Limite:</strong> 14.400 requisições/dia GRÁTIS<br>
-                                🤖 <strong>Modelo:</strong> Llama 3.1 70B / Mixtral 8x7B
+                                🚀 <strong>Ultra Rápido:</strong> 600+ tokens/segundo<br>
+                                📊 <strong>Limite:</strong> 14.400 requisições/dia GRÁTIS
                             </p>
+                            
+                            <div style="margin-top: 15px; padding: 15px; background: #f9f9f9; border-left: 4px solid #2271b1; border-radius: 4px;">
+                                <label for="aipg_groq_model" style="font-weight: 600; display: block; margin-bottom: 10px;">
+                                    <?php _e('Modelo Groq:', 'ai-post-generator'); ?>
+                                </label>
+                                <select id="aipg_groq_model" name="aipg_groq_model" class="regular-text" style="max-width: 100%;">
+                                    <option value="llama-3.3-70b-versatile" <?php selected(get_option('aipg_groq_model', 'llama-3.3-70b-versatile'), 'llama-3.3-70b-versatile'); ?>>
+                                        🚀 Llama 3.3 70B Versatile (Recomendado) - Mais Recente
+                                    </option>
+                                    <option value="llama-3.1-70b-versatile" <?php selected(get_option('aipg_groq_model'), 'llama-3.1-70b-versatile'); ?>>
+                                        ⚡ Llama 3.1 70B Versatile - Versão Anterior
+                                    </option>
+                                    <option value="meta-llama/llama-4-scout-17b-16e-instruct" <?php selected(get_option('aipg_groq_model'), 'meta-llama/llama-4-scout-17b-16e-instruct'); ?>>
+                                        🔬 Llama 4 Scout 17B - Experimental (Mais Rápido)
+                                    </option>
+                                    <option value="mixtral-8x7b-32768" <?php selected(get_option('aipg_groq_model'), 'mixtral-8x7b-32768'); ?>>
+                                        🎯 Mixtral 8x7B - Contexto Longo (32K tokens)
+                                    </option>
+                                </select>
+                                
+                                <div id="groq-model-info" style="margin-top: 10px; padding: 10px; background: #fff; border-radius: 4px; font-size: 13px;">
+                                    <strong>ℹ️ Informações do Modelo:</strong>
+                                    <div id="groq-model-description"></div>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                     
@@ -1136,21 +1161,47 @@ class AI_Post_Generator {
             return new WP_Error('no_api_key', __('Chave API Groq não configurada', 'ai-post-generator'));
         }
         
+        // Obtém o modelo selecionado (padrão: Llama 3.3 70B)
+        $model = get_option('aipg_groq_model', 'llama-3.3-70b-versatile');
+        
+        // Configurações específicas por modelo
+        $model_configs = array(
+            'llama-3.3-70b-versatile' => array(
+                'max_tokens' => 8000,
+                'temperature' => 0.7,
+            ),
+            'llama-3.1-70b-versatile' => array(
+                'max_tokens' => 8000,
+                'temperature' => 0.7,
+            ),
+            'meta-llama/llama-4-scout-17b-16e-instruct' => array(
+                'max_tokens' => 4096,
+                'temperature' => 0.6, // Mais determinístico para modelo experimental
+            ),
+            'mixtral-8x7b-32768' => array(
+                'max_tokens' => 16000,
+                'temperature' => 0.7,
+            ),
+        );
+        
+        $config = isset($model_configs[$model]) ? $model_configs[$model] : $model_configs['llama-3.3-70b-versatile'];
+        
         $response = wp_remote_post('https://api.groq.com/openai/v1/chat/completions', array(
             'headers' => array(
                 'Authorization' => 'Bearer ' . $api_key,
                 'Content-Type' => 'application/json'
             ),
             'body' => json_encode(array(
-                'model' => 'llama-3.3-70b-versatile',
+                'model' => $model,
                 'messages' => array(
                     array('role' => 'system', 'content' => 'Você é um especialista em criar conteúdo de blog. Sempre retorne JSON válido.'),
                     array('role' => 'user', 'content' => $prompt)
                 ),
-                'temperature' => 0.7,
+                'temperature' => $config['temperature'],
+                'max_tokens' => $config['max_tokens'],
                 'response_format' => array('type' => 'json_object')
             )),
-            'timeout' => 60
+            'timeout' => 90
         ));
         
         if (is_wp_error($response)) {
