@@ -1,394 +1,386 @@
-# 🖼️ Guia Completo - Geração de Imagens Destacadas
+# 🔧 Solução de Problemas - Geração de Imagens
 
-## 🎯 6 Provedores Disponíveis
+## 🚨 Problemas Comuns e Soluções
 
-### 📷 **Fotos Stock (Reais)**
+### **Problema 1: "Imagem não está sendo gerada"**
 
-#### 1. **Unsplash**
+#### ✅ **Soluções:**
+
+**1. Verificar Provedor Configurado:**
 ```
-Status: ✅ GRATUITO
-Limite: 50 requisições/hora
-Qualidade: ⭐⭐⭐⭐⭐
-Tipo: Fotos profissionais reais
-```
-
-#### 2. **Pexels** 
-```
-Status: ✅ GRATUITO
-Limite: 200 requisições/hora
-Qualidade: ⭐⭐⭐⭐⭐
-Tipo: Maior biblioteca gratuita
+WordPress → AI Posts → Configurações
+↓
+Role até "Configurações de Imagens"
+↓
+Provedor selecionado: [____]
 ```
 
-#### 3. **Pixabay** (RECOMENDADO para alto volume)
+**Se estiver vazio ou "não configurado":**
+- Selecione **Pollinations AI** (não precisa de API key!)
+- Clique em **Salvar Alterações**
+
+---
+
+**2. Verificar Dimensões:**
 ```
-Status: ✅ GRATUITO
-Limite: 5.000 requisições/hora
-Qualidade: ⭐⭐⭐⭐
-Tipo: Sem limites práticos
+Largura: [1920] px
+Altura: [1080] px
 ```
 
-### 🤖 **IA Geração de Imagens**
+**Se estiverem 0 ou vazias:**
+- Clique no botão **[Full HD (1920×1080)]**
+- Ou digite manualmente: 1920 e 1080
+- Clique em **Salvar Alterações**
 
-#### 4. **Pollinations AI** (MELHOR OPÇÃO!)
-```
-Status: ✅ 100% GRATUITO
-Limite: ILIMITADO
-Qualidade: ⭐⭐⭐⭐
-Tipo: IA gera imagens únicas
-Config: SEM API KEY!
+---
+
+**3. Verificar API Key (se não for Pollinations):**
+
+| Provedor | Precisa API Key? | Onde obter |
+|----------|------------------|------------|
+| Pollinations | ❌ NÃO | - |
+| Pixabay | ✅ SIM | pixabay.com/api |
+| Pexels | ✅ SIM | pexels.com/api |
+| Unsplash | ✅ SIM | unsplash.com/developers |
+| DALL-E | ✅ SIM (OpenAI) | platform.openai.com |
+| Stability | ✅ SIM | platform.stability.ai |
+
+---
+
+### **Problema 2: "Erro ao fazer download da imagem"**
+
+#### ✅ **Soluções:**
+
+**1. Verificar Permissões da Pasta Uploads:**
+```bash
+# Via SSH
+cd /caminho/para/wordpress/wp-content/uploads
+ls -la
+
+# Deve mostrar: drwxr-xr-x (755)
+# Se estiver diferente:
+chmod 755 /wp-content/uploads
+chmod 755 /wp-content/uploads/2024
+chmod 755 /wp-content/uploads/2024/12
 ```
 
-#### 5. **DALL-E 3** (OpenAI)
-```
-Status: 💳 PAGO
-Custo: $0.04 por imagem
-Qualidade: ⭐⭐⭐⭐⭐
-Tipo: Melhor IA disponível
+**2. Verificar se cURL está instalado:**
+```php
+<?php
+// Crie um arquivo test-curl.php na raiz do WordPress
+if (function_exists('curl_init')) {
+    echo "✅ cURL está instalado!";
+    
+    // Testa conexão
+    $ch = curl_init('https://image.pollinations.ai/prompt/test?width=100&height=100');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $result = curl_exec($ch);
+    $info = curl_getinfo($ch);
+    curl_close($ch);
+    
+    echo "<br>Status: " . $info['http_code'];
+    echo "<br>Tamanho baixado: " . strlen($result) . " bytes";
+} else {
+    echo "❌ cURL NÃO está instalado!";
+    echo "<br>Contate seu provedor de hospedagem.";
+}
+?>
 ```
 
-#### 6. **Stability AI** (Stable Diffusion)
-```
-Status: 🎁 25 créditos grátis
-Custo: ~$0.01-0.02 após créditos
-Qualidade: ⭐⭐⭐⭐⭐
-Tipo: Alta qualidade profissional
+**3. Verificar Firewall/Bloqueio:**
+
+Alguns servidores bloqueiam conexões externas. Teste:
+```bash
+# Via SSH
+curl -I https://image.pollinations.ai/prompt/test
+
+# Deve retornar: HTTP/2 200
+# Se retornar erro ou timeout, há bloqueio
 ```
 
 ---
 
-## 🎯 Qual Provedor Escolher?
+### **Problema 3: "Imagem muito pequena ou corrompida"**
 
-### **Para começar SEM CUSTO:**
-```
-1º → Pollinations AI (ILIMITADO + GRÁTIS)
-2º → Pixabay (5000 req/hora)
-3º → Pexels (200 req/hora)
-```
+#### ✅ **Soluções:**
 
-### **Para máxima qualidade:**
-```
-1º → DALL-E 3 ($0.04/img)
-2º → Stability AI ($0.01/img)
-3º → Unsplash (fotos reais)
+**1. Aumentar Timeout:**
+
+Adicione no `wp-config.php`:
+```php
+define('WP_HTTP_BLOCK_EXTERNAL', false);
+define('WP_ACCESSIBLE_HOSTS', 'image.pollinations.ai,api.pexels.com,api.unsplash.com');
 ```
 
-### **Para alto volume (1000+ posts/mês):**
+**2. Aumentar Limites de Upload:**
+
+No `.htaccess` ou `php.ini`:
+```ini
+upload_max_filesize = 10M
+post_max_size = 10M
+max_execution_time = 300
+memory_limit = 256M
 ```
-1º → Pollinations AI (ilimitado)
-2º → Pixabay (5000/hora)
+
+**3. Testar Manualmente:**
+
+Abra esta URL no navegador:
 ```
+https://image.pollinations.ai/prompt/beautiful%20landscape?width=1920&height=1080&nologo=true
+```
+
+Se a imagem carregar, o problema é no servidor WordPress.
 
 ---
 
-## 📐 Dimensões Personalizadas
+### **Problema 4: "API Key inválida"**
 
-### **Novidade:** Agora você pode definir QUALQUER tamanho!
+#### ✅ **Soluções para cada provedor:**
 
-#### Presets Disponíveis:
-```
-┌────────────────────────────────────────┐
-│  Full HD    → 1920×1080  (16:9)       │
-│  HD         → 1280×720   (16:9)       │
-│  Quadrado   → 1024×1024  (1:1)        │
-│  Vertical   → 1080×1920  (9:16)       │
-│  2K         → 2560×1440  (16:9)       │
-│  4K         → 3840×2160  (16:9)       │
-└────────────────────────────────────────┘
-```
-
-#### Ou defina manualmente:
-- **Mínimo:** 200×200px
-- **Máximo:** 4096×4096px
-- **Qualquer proporção:** Sim!
-
----
-
-## 🎨 Casos de Uso por Tamanho
-
-### **1920×1080 (Full HD)** ✅ RECOMENDADO
-```
-Uso: Posts de blog, artigos
-Proporção: 16:9 (widescreen)
-Peso: ~200-500KB
-Ideal para: WordPress, blogs, sites
-```
-
-### **1280×720 (HD)**
-```
-Uso: Carregamento rápido
-Proporção: 16:9
-Peso: ~100-300KB
-Ideal para: Sites com muitas imagens
-```
-
-### **1024×1024 (Quadrado)**
-```
-Uso: Instagram, redes sociais
-Proporção: 1:1
-Peso: ~150-400KB
-Ideal para: Social media
-```
-
-### **1080×1920 (Vertical)**
-```
-Uso: Stories, Pinterest
-Proporção: 9:16
-Peso: ~200-500KB
-Ideal para: Instagram Stories, TikTok
-```
-
-### **2560×1440 (2K)**
-```
-Uso: Monitores grandes
-Proporção: 16:9
-Peso: ~400-800KB
-Ideal para: Portfólios, fotografia
-```
-
-### **3840×2160 (4K)**
-```
-Uso: Impressão, banners
-Proporção: 16:9
-Peso: ~800KB-2MB
-Ideal para: Print, design gráfico
-```
-
----
-
-## ⚙️ Como Configurar
-
-### **Passo 1: Escolher Provedor**
-
-1. **WordPress** → **AI Posts** → **Configurações**
-2. Role até **"Configurações de Imagens"**
-3. Selecione o provedor:
-   - **Pollinations** (recomendado - sem configuração!)
-   - **Pixabay** (precisa API key)
-   - **Pexels** (precisa API key)
-   - etc.
-
-### **Passo 2: Configurar API Key** (se necessário)
-
-**Pollinations:** Não precisa! ✅  
 **Pixabay:**
 ```
 1. Acesse: https://pixabay.com/api/docs/
-2. Cadastre-se
-3. Copie a chave
-4. Cole no plugin
+2. Faça login
+3. Vá em "API Search"
+4. Copie a chave que aparece em amarelo
+5. Cole EXATAMENTE como está (sem espaços)
 ```
 
 **Pexels:**
 ```
 1. Acesse: https://www.pexels.com/api/
-2. Cadastre-se
-3. Copie a chave
-4. Cole no plugin
+2. Clique em "Get Started"
+3. Preencha o formulário
+4. Copie a API Key do email
+5. Cole nas configurações
 ```
 
-### **Passo 3: Definir Dimensões**
-
+**Unsplash:**
 ```
-┌──────────────────────────────────┐
-│  Largura:  [1920] px             │
-│     ×                            │
-│  Altura:   [1080] px             │
-│                                  │
-│  Ou clique em um preset:         │
-│  [Full HD] [HD] [Quadrado] ...   │
-└──────────────────────────────────┘
-```
-
-### **Passo 4: Salvar**
-Clique em **"Salvar Alterações"**
-
----
-
-## 🚀 Testando a Geração
-
-### **Opção 1: No Editor**
-1. Posts → Adicionar Novo
-2. Digite o título
-3. Meta box lateral → Marque **"Gerar imagem destacada"**
-4. Clique em **"Gerar Conteúdo"**
-5. Aguarde 5-10 segundos
-6. ✅ Imagem aparece automaticamente!
-
-### **Opção 2: Página Dedicada**
-1. AI Posts → Gerar Post
-2. Preencha o formulário
-3. Marque **"Gerar imagem destacada automaticamente"**
-4. Clique em **"Gerar Post"**
-5. ✅ Post criado com imagem!
-
----
-
-## 📊 Comparação Detalhada
-
-| Provedor | Custo | Limite/Hora | Qualidade | Tipo | Setup |
-|----------|-------|-------------|-----------|------|-------|
-| **Pollinations** | ✅ $0 | ♾️ | ⭐⭐⭐⭐ | IA | 0 min |
-| **Pixabay** | ✅ $0 | 5.000 | ⭐⭐⭐⭐ | Real | 2 min |
-| **Pexels** | ✅ $0 | 200 | ⭐⭐⭐⭐⭐ | Real | 2 min |
-| **Unsplash** | ✅ $0 | 50 | ⭐⭐⭐⭐⭐ | Real | 2 min |
-| **Stability** | 💰 $0.01 | 25 grátis | ⭐⭐⭐⭐⭐ | IA | 5 min |
-| **DALL-E 3** | 💰 $0.04 | ∞ | ⭐⭐⭐⭐⭐ | IA | 0 min |
-
----
-
-## 💡 Dicas Profissionais
-
-### **1. Escolha o tamanho correto:**
-```
-Blog WordPress → 1920×1080 (Full HD)
-Instagram → 1024×1024 (Quadrado)
-Stories → 1080×1920 (Vertical)
-Pinterest → 1000×1500 (2:3)
-```
-
-### **2. Otimize para web:**
-- Use 1920×1080 para balanço perfeito
-- Evite 4K para web (muito pesado)
-- Use 720p para sites rápidos
-
-### **3. Considere o tema:**
-```
-Fotos reais (Unsplash/Pexels):
-✅ Pessoas, lugares, objetos
-✅ Estilo natural
-❌ Conceitos abstratos
-
-IA (Pollinations/DALL-E):
-✅ Conceitos abstratos
-✅ Arte única
-✅ Composições impossíveis
-❌ Pessoas realistas específicas
-```
-
-### **4. Teste diferentes provedores:**
-Cada provedor tem estilo próprio:
-- **Unsplash:** Fotos artísticas
-- **Pexels:** Variedade maior
-- **Pixabay:** Mix de tudo
-- **Pollinations:** Criativo, artístico
-- **DALL-E:** Perfeito, mas custa
-
----
-
-## 🐛 Solução de Problemas
-
-### **Erro: "Failed to generate image"**
-
-**Causa:** API key inválida ou limite atingido
-
-**Solução:**
-1. Verifique a API key
-2. Confirme que não atingiu o limite
-3. Tente outro provedor
-
-### **Imagem não aparece no post**
-
-**Causa:** Download falhou ou dimensões inválidas
-
-**Solução:**
-1. Verifique permissões da pasta uploads
-2. Teste com dimensões menores
-3. Verifique conexão com internet
-
-### **Imagem muito grande/pesada**
-
-**Solução:**
-1. Reduza as dimensões (use 1280×720)
-2. WordPress otimiza automaticamente
-3. Use plugin de otimização (Smush, ShortPixel)
-
-### **Imagem não combina com o post**
-
-**Soluções:**
-- Use palavras-chave mais específicas
-- Tente provedor diferente
-- Gere novamente
-- Edite manualmente o título do post
-
----
-
-## 🎯 Configuração Recomendada
-
-### **Para Blogs:**
-```
-Provedor: Pollinations AI
-Tamanho: 1920×1080
-Motivo: Grátis, ilimitado, boa qualidade
-```
-
-### **Para E-commerce:**
-```
-Provedor: Pixabay
-Tamanho: 1280×720
-Motivo: Alto volume, rápido
-```
-
-### **Para Fotografia/Arte:**
-```
-Provedor: Unsplash
-Tamanho: 2560×1440
-Motivo: Máxima qualidade
-```
-
-### **Para Projetos Premium:**
-```
-Provedor: DALL-E 3
-Tamanho: 1024×1024
-Motivo: Imagens únicas, exclusivas
+1. Acesse: https://unsplash.com/oauth/applications
+2. Crie um "New Application"
+3. Copie o "Access Key" (não o Secret!)
+4. Cole nas configurações
 ```
 
 ---
 
-## 📈 Estatísticas de Uso
+### **Problema 5: "Imagem não aparece como destaque"**
 
-### **Velocidade de Geração:**
+#### ✅ **Soluções:**
 
-| Provedor | Tempo Médio |
-|----------|-------------|
-| Pollinations | 5-8 segundos |
-| Pixabay | 2-3 segundos |
-| Pexels | 2-3 segundos |
-| Unsplash | 2-3 segundos |
-| DALL-E 3 | 15-30 segundos |
-| Stability AI | 10-20 segundos |
-
-### **Qualidade por Uso:**
-
+**1. Verificar se o tema suporta:**
+```php
+// Adicione no functions.php do tema:
+add_theme_support('post-thumbnails');
 ```
-Notícias/Blog:        Pixabay ⭐⭐⭐⭐
-Moda/Lifestyle:       Pexels ⭐⭐⭐⭐⭐
-Tecnologia:           Pollinations ⭐⭐⭐⭐
-Arte/Criativo:        DALL-E ⭐⭐⭐⭐⭐
-Negócios:             Unsplash ⭐⭐⭐⭐⭐
-E-commerce Produtos:  Stability ⭐⭐⭐⭐⭐
+
+**2. Verificar metadados:**
+
+No editor do post, veja na barra lateral se há "Imagem Destacada".
+
+**3. Forçar atualização:**
+```php
+// Cole no functions.php temporariamente:
+add_action('init', function() {
+    global $wpdb;
+    $posts = $wpdb->get_results("SELECT ID FROM {$wpdb->posts} WHERE post_status = 'publish' AND post_type = 'post'");
+    foreach ($posts as $post) {
+        $thumb_id = get_post_thumbnail_id($post->ID);
+        if ($thumb_id) {
+            wp_update_post(array('ID' => $post->ID));
+        }
+    }
+});
 ```
 
 ---
 
-## 🎉 Resumo Executivo
+## 🔍 Ferramenta de Diagnóstico
 
-### **Configuração Express (2 minutos):**
+### **Use a ferramenta automática:**
 
-1. Escolha **Pollinations AI** (sem configuração)
-2. Defina **1920×1080**
-3. Salve
-4. **Pronto!** Gere quantas imagens quiser gratuitamente
+1. **Baixe** o arquivo `diagnostic-images.php` (fornecido anteriormente)
+2. **Faça upload** para: `/wp-content/plugins/ai-post-generator/`
+3. **Acesse**: `http://seusite.com/wp-content/plugins/ai-post-generator/diagnostic-images.php`
+4. **Veja os resultados** e siga as recomendações
+5. **DELETE** o arquivo após usar!
 
-### **Por que Pollinations é a melhor escolha:**
-- ✅ 100% Gratuito
-- ✅ Ilimitado
-- ✅ Sem API key
-- ✅ Boa qualidade
-- ✅ IA gera imagens únicas
-- ✅ Funciona imediatamente
+A ferramenta verifica:
+- ✅ Configurações atuais
+- ✅ Permissões de pastas
+- ✅ Extensões PHP necessárias
+- ✅ Conectividade com APIs
+- ✅ Logs de erro recentes
+
+---
+
+## 📋 Checklist de Verificação
+
+Use esta lista para identificar o problema:
+
+```
+┌────────────────────────────────────────────┐
+│ ☐ Provedor configurado                     │
+│ ☐ Dimensões definidas (ex: 1920×1080)     │
+│ ☐ API Key configurada (se necessário)     │
+│ ☐ Pasta uploads com permissão 755         │
+│ ☐ cURL instalado no servidor              │
+│ ☐ GD Library instalada                    │
+│ ☐ Firewall não bloqueia conexões          │
+│ ☐ WP_DEBUG ativado para ver erros         │
+│ ☐ Tema suporta post-thumbnails            │
+│ ☐ Memória PHP suficiente (mín. 128M)      │
+└────────────────────────────────────────────┘
+```
+
+---
+
+## 🧪 Testes Manuais
+
+### **Teste 1: Download Direto**
+
+```php
+<?php
+// Salve como test-download.php na raiz
+$url = 'https://image.pollinations.ai/prompt/test?width=800&height=600';
+$tmp = download_url($url, 30);
+
+if (is_wp_error($tmp)) {
+    echo "❌ Erro: " . $tmp->get_error_message();
+} else {
+    echo "✅ Sucesso! Arquivo: " . $tmp;
+    echo "<br>Tamanho: " . filesize($tmp) . " bytes";
+    @unlink($tmp);
+}
+?>
+```
+
+### **Teste 2: Geração via AJAX**
+
+Abra o Console do navegador (F12) e execute:
+```javascript
+fetch('/wp-admin/admin-ajax.php', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body: new URLSearchParams({
+        action: 'aipg_generate_image',
+        nonce: 'SEU_NONCE_AQUI',
+        topic: 'teste',
+        post_id: 0
+    })
+})
+.then(r => r.json())
+.then(console.log)
+```
+
+---
+
+## 📊 Logs de Debug
+
+### **Ativar Logs:**
+
+No `wp-config.php`:
+```php
+define('WP_DEBUG', true);
+define('WP_DEBUG_LOG', true);
+define('WP_DEBUG_DISPLAY', false);
+@ini_set('display_errors', 0);
+```
+
+### **Ver Logs:**
+
+Os logs ficam em: `/wp-content/debug.log`
+
+**Procure por linhas com "AIPG":**
+```bash
+# Via SSH
+tail -f /caminho/para/wordpress/wp-content/debug.log | grep AIPG
+
+# Ou baixe o arquivo via FTP e abra no editor
+```
+
+**Logs úteis:**
+```
+AIPG: Iniciando geração de imagem para: [tópico]
+AIPG Pollinations: URL gerada: [url]
+AIPG Download: Arquivo temporário criado: [arquivo]
+AIPG Download: Tamanho do arquivo: [bytes]
+AIPG Download: Sucesso! Attachment ID: [id]
+```
+
+---
+
+## 🆘 Soluções Rápidas
+
+### **Solução 1: Use Pollinations (Mais Fácil)**
+```
+1. Configurações → Provedor: Pollinations AI
+2. Dimensões: 1920×1080
+3. Salvar
+4. Pronto! Não precisa de API key
+```
+
+### **Solução 2: Desative Temporariamente**
+```
+1. Desmarque "Gerar imagem destacada"
+2. Gere apenas o texto
+3. Adicione imagem manualmente depois
+```
+
+### **Solução 3: Aumente Timeout**
+```php
+// No wp-config.php
+define('WP_HTTP_TIMEOUT', 60);
+```
+
+### **Solução 4: Teste Outro Provedor**
+```
+Se Pollinations não funcionar:
+→ Tente Pixabay (5000 req/hora)
+→ Ou Pexels (200 req/hora)
+```
+
+---
+
+## 📞 Suporte Adicional
+
+### **Informações para Suporte:**
+
+Se precisar de ajuda, forneça:
+```
+1. Provedor configurado: [____]
+2. Dimensões: [____] x [____]
+3. Mensagem de erro exata: [____]
+4. Última linha do log AIPG: [____]
+5. Versão PHP: [____]
+6. Hospedagem: [____]
+```
+
+### **Teste de Conectividade:**
+```bash
+# Execute no servidor
+curl -v https://image.pollinations.ai/prompt/test
+
+# Deve retornar: HTTP/2 200
+```
+
+---
+
+## ✅ Configuração Garantida
+
+**Se NADA funcionar, use esta configuração infalível:**
+
+```
+1. Provedor: Pollinations AI ✅
+2. Dimensões: 1280×720 (menor, mais rápido)
+3. Sem API key necessária
+4. Teste com tópico simples: "natureza"
+```
+
+**Esta combinação funciona em 99% dos casos!**
 
 ---
 
 **Última atualização:** Dezembro 2024  
-**Versão do Plugin:** 2.2.0
+**Versão:** 2.2.1

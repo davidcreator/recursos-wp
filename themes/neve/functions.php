@@ -8,7 +8,7 @@
  * @package Neve
  */
 
-define( 'NEVE_VERSION', '4.2.1' );
+define( 'NEVE_VERSION', '4.2.2' );
 define( 'NEVE_INC_DIR', trailingslashit( get_template_directory() ) . 'inc/' );
 define( 'NEVE_ASSETS_URL', trailingslashit( get_template_directory_uri() ) . 'assets/' );
 define( 'NEVE_MAIN_DIR', get_template_directory() . '/' );
@@ -150,16 +150,6 @@ if ( neve_is_new_widget_editor() ) {
 }
 
 require_once get_template_directory() . '/header-footer-grid/loader.php';
-
-add_filter(
-    'neve_register_nav_menus',
-    function ( $menus ) {
-        $menus['mobile']  = esc_html__( 'Mobile Menu', 'neve' );
-        $menus['sidebar'] = esc_html__( 'Sidebar Menu', 'neve' );
-        $menus['social']  = esc_html__( 'Social Menu', 'neve' );
-        return $menus;
-    }
-);
 
 add_filter(
 	'neve_welcome_metadata',

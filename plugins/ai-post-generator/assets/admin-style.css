@@ -499,3 +499,30 @@ h2.title:first-of-type {
     visibility: visible;
     opacity: 1;
 }
+
+/* Estilos para geração de imagens */
+.aipg-image-preview-wrapper {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 4px;
+}
+
+.aipg-image-container {
+    margin: 15px 0;
+}
+
+.aipg-image-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.aipg-loading-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
+    color: #646970;
+}

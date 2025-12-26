@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Jetpack &#8211; WP Security, Backup, Speed, &amp; Growth - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-12-12 14:51:26+0000\n"
+"PO-Revision-Date: 2025-12-17 16:54:11+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -3403,7 +3403,7 @@ msgstr "Assistente de IA"
 
 #: modules/sharedaddy/sharing.php:438
 msgid "You are using a block-based theme. We recommend that you disable the legacy sharing features below and add a sharing button block to your theme’s template instead."
-msgstr "Você está usando um tema baseado em bloco. Recomendamos que você desative a antiga funcionalidade de compartilhamento acima e adicione um bloco de botão de compartilhamento ao modelo do seu tema. <a>Entenda como.</a>"
+msgstr "Você está usando um tema baseado em bloco. Recomendamos desativar as antigas funcionalidades de compartilhamento acima e adicionar um bloco de botão de compartilhamento ao modelo do seu tema."
 
 #: jetpack_vendor/automattic/jetpack-my-jetpack/src/products/class-jetpack-ai.php:169
 msgid "Generate featured images"
