@@ -190,3 +190,46 @@ Todas as funcionalidades foram implementadas com foco em:
 ---
 
 **Plugin totalmente melhorado e pronto para uso profissional!** 🎉
+
+# ✅ Funcionalidades de Anúncios - AdSense Master Pro v3.0
+
+## 🎯 Três Novas Funcionalidades Implementadas
+
+### 1️⃣ **Adicionar Novo Anúncio**
+
+#### Como Usar:
+1. Clique em **"Adicionar Novo Anúncio"** na página de gerenciamento
+2. Preencha o formulário com:
+   - **Nome**: Identificador único para o anúncio
+   - **Posição**: Onde exibir (Header, Footer, Antes/Depois do Conteúdo, etc.)
+   - **Código**: Cole o código do anúncio (AdSense, HTML, JavaScript)
+   - **Alinhamento**: Esquerda, Centro ou Direita
+   - **Configurações de Exibição**: Dispositivos e tipos de página
+
+#### Recursos:
+✅ **Templates de Código Rápido:**
+- Template AdSense (com placeholders)
+- Template Banner (com imagem responsiva)
+- Template Responsivo (com srcset)
+
+✅ **Validação Automática:**
+- Verifica campos obrigatórios
+- Sanitiza HTML/JavaScript
+- Previne erros de sintaxe
+
+✅ **Configurações Avançadas:**
+- Exibição por dispositivo (mobile/desktop)
+- Exibição por tipo de página
+- Seletor CSS personalizado
+
+---
+
+### 2️⃣ **Importar Anúncios**
+
+#### Como Usar:
+1. Clique em **"Importar Anúncios"**
+2. Selecione um arquivo `.json` (exportado anteriormente)
+3. Confirme a importação
+4. Acompanhe o progresso com barra visual
+
+#### Formato do Arquivo JSON:

@@ -3,7 +3,7 @@
  * Plugin Name: AdSense Master Pro
  * Plugin URI: https://adsense-master-pro.com
  * Description: Plugin avançado de gerenciamento de anúncios com suporte completo ao Google AdSense, Ad Manager (DFP), Media.net e outros. Inclui A/B testing, analytics avançados, otimização automática, suporte AMP, GDPR compliance e muito mais.
- * Version: 2.0.0
+ * Version: 3.0.0
  * Author: AdSense Master Team
  * Author URI: https://adsense-master-pro.com
  * License: GPL v2 or later
@@ -22,11 +22,11 @@ if (!defined('ABSPATH')) {
 }
 
 // Define constantes do plugin
-define('AMP_VERSION', '2.0.0');
+define('AMP_VERSION', '3.0.0');
 define('AMP_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('AMP_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('AMP_PLUGIN_BASENAME', plugin_basename(__FILE__));
-define('AMP_DB_VERSION', '2.0');
+define('AMP_DB_VERSION', '3.0');
 define('AMP_MIN_PHP_VERSION', '7.4');
 define('AMP_MIN_WP_VERSION', '5.0');
 
@@ -94,6 +94,11 @@ class AdSenseMasterPro {
         add_action('loop_start', array($this, 'insert_loop_ads'));
         add_action('loop_end', array($this, 'insert_loop_end_ads'));
         
+        // ✅ V3.0: Novos hooks para anúncios avançados
+        add_action('wp_footer', array($this, 'insert_floating_ads'), 5);
+        add_action('wp_footer', array($this, 'insert_popup_ads'), 6);
+        add_filter('the_posts', array($this, 'insert_ads_between_posts'), 10, 2);
+        
         // Hooks para AMP
         add_action('amp_post_template_head', array($this, 'amp_head_code'));
         add_action('amp_post_template_footer', array($this, 'amp_footer_code'));
@@ -142,26 +147,169 @@ class AdSenseMasterPro {
     }
 
     /**
+ * AJAX: Importar Anúncio Individual
+ */
+public function import_ad() {
+    check_ajax_referer('amp_track', 'nonce');
+
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error('Permissão negada');
+    }
+
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'amp_ads';
+
+    try {
+        $ad = json_decode(stripslashes($_POST['ad']), true);
+
+        // Validar dados
+        if (empty($ad['name']) || empty($ad['code']) || empty($ad['position'])) {
+            wp_send_json_error('Campos obrigatórios ausentes');
+        }
+
+        // Preparar dados
+        $data = array(
+            'name' => sanitize_text_field($ad['name']),
+            'code' => wp_kses_post($ad['code']),
+            'position' => sanitize_text_field($ad['position']),
+            'status' => $ad['status'] ?? 'active',
+            'ad_type' => sanitize_text_field($ad['ad_type'] ?? 'custom'),
+            'priority' => intval($ad['priority'] ?? 10),
+            'options' => maybe_serialize($ad['options'] ?? array())
+        );
+
+        $result = $wpdb->insert($table_name, $data);
+
+        if ($result === false) {
+            wp_send_json_error('Erro ao inserir anúncio');
+        }
+
+        wp_send_json_success(array(
+            'id' => $wpdb->insert_id,
+            'message' => 'Anúncio importado com sucesso'
+        ));
+
+    } catch (Exception $e) {
+        wp_send_json_error($e->getMessage());
+    }
+}
+
+/**
+ * AJAX: Exportar Todos os Anúncios
+ */
+public function export_ads() {
+    check_ajax_referer('amp_track', 'nonce');
+
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error('Permissão negada');
+    }
+
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'amp_ads';
+
+    try {
+        $ads = $wpdb->get_results("SELECT * FROM $table_name ORDER BY created_at DESC", ARRAY_A);
+
+        if (empty($ads)) {
+            wp_send_json_error('Nenhum anúncio para exportar');
+        }
+
+        // Preparar dados para exportação
+        $export_data = array();
+        foreach ($ads as $ad) {
+            $export_data[] = array(
+                'id' => intval($ad['id']),
+                'name' => $ad['name'],
+                'code' => $ad['code'],
+                'position' => $ad['position'],
+                'status' => $ad['status'],
+                'ad_type' => $ad['ad_type'],
+                'priority' => intval($ad['priority']),
+                'options' => maybe_unserialize($ad['options']),
+                'created_at' => $ad['created_at'],
+                'updated_at' => $ad['updated_at']
+            );
+        }
+
+        wp_send_json_success($export_data);
+
+    } catch (Exception $e) {
+        wp_send_json_error($e->getMessage());
+    }
+}
+
+/**
+ * AJAX: Salvar Anúncio (existente, mas melhorado)
+ */
+public function save_ad_enhanced() {
+    check_ajax_referer('amp_track', 'nonce');
+
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error('Permissão negada');
+    }
+
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'amp_ads';
+
+    try {
+        $options = array(
+            'css_selector' => sanitize_text_field($_POST['css_selector'] ?? ''),
+            'alignment' => sanitize_text_field($_POST['alignment'] ?? 'center'),
+            'show_on_desktop' => intval($_POST['show_on_desktop'] ?? 0),
+            'show_on_mobile' => intval($_POST['show_on_mobile'] ?? 0),
+            'show_on_homepage' => intval($_POST['show_on_homepage'] ?? 0),
+            'show_on_posts' => intval($_POST['show_on_posts'] ?? 0),
+            'show_on_pages' => intval($_POST['show_on_pages'] ?? 0),
+        );
+
+        $data = array(
+            'name' => sanitize_text_field($_POST['name'] ?? ''),
+            'code' => wp_kses_post($_POST['code'] ?? ''),
+            'position' => sanitize_text_field($_POST['position'] ?? ''),
+            'options' => maybe_serialize($options),
+            'status' => 'active',
+            'priority' => intval($_POST['priority'] ?? 10)
+        );
+
+        // Validação
+        if (empty($data['name']) || empty($data['code']) || empty($data['position'])) {
+            wp_send_json_error('Campos obrigatórios ausentes');
+        }
+
+        $result = $wpdb->insert($table_name, $data);
+
+        if ($result === false) {
+            wp_send_json_error('Erro ao salvar anúncio');
+        }
+
+        wp_send_json_success(array(
+            'id' => $wpdb->insert_id,
+            'message' => 'Anúncio salvo com sucesso!'
+        ));
+
+    } catch (Exception $e) {
+        wp_send_json_error($e->getMessage());
+    }
+}
+
+    /**
      * Preload critical resources for better performance
      */
     public function preload_resources() {
-        // Pré-carregar recursos do Google AdSense para melhorar o desempenho
         echo '<link rel="preconnect" href="https://pagead2.googlesyndication.com">'."\n";
         echo '<link rel="preconnect" href="https://googleads.g.doubleclick.net">'."\n";
         echo '<link rel="preconnect" href="https://tpc.googlesyndication.com">'."\n";
         echo '<link rel="preconnect" href="https://www.google-analytics.com">'."\n";
         echo '<link rel="preconnect" href="https://adservice.google.com">'."\n";
         
-        // Pré-carregar o script do AdSense
-        if (!empty($this->settings['publisher_id'])) {
-            echo '<link rel="preload" as="script" href="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='.esc_attr($this->settings['publisher_id']).'">'."\n";
+        if (!empty($this->options['adsense_publisher_id'])) {
+            echo '<link rel="preload" as="script" href="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='.esc_attr($this->options['adsense_publisher_id']).'">'."\n";
         } else {
             echo '<link rel="preload" as="script" href="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">'."\n";
         }
     }
     
     public function activate() {
-        // Verificar versão do banco de dados
         $installed_ver = get_option('amp_db_version');
         
         if ($installed_ver != AMP_DB_VERSION) {
@@ -169,7 +317,7 @@ class AdSenseMasterPro {
             update_option('amp_db_version', AMP_DB_VERSION);
         }
         
-        // Configurações padrão
+        // ✅ V3.0: Novas opções de configuração
         $default_options = array(
             'enable_adsense' => 1,
             'adsense_publisher_id' => '',
@@ -187,7 +335,75 @@ class AdSenseMasterPro {
             'preload_ads' => 1,
             'ad_refresh' => 0,
             'refresh_interval' => 30,
-            'max_ads_per_page' => 10,
+            
+            // ✅ V3.0: Sistema de limite flexível
+            'max_ads_per_page' => 999,
+            'enable_max_ads_limit' => 0,
+            'max_ads_per_page_custom' => 50,
+            'max_ads_per_section' => 999,
+            'ads_per_1000_words' => 1,
+            
+            // ✅ V3.0: Frequência de anúncios
+            'ad_frequency_mode' => 'unlimited',
+            'min_words_between_ads' => 250,
+            'min_paragraphs_between_ads' => 2,
+            
+            // ✅ V3.0: Posicionamento avançado
+            'ad_positions' => array(
+                'before_title' => 0,
+                'before_excerpt' => 0,
+                'before_content' => 1,
+                'after_first_paragraph' => 1,
+                'after_nth_paragraph' => 1,
+                'middle_content' => 1,
+                'before_last_paragraph' => 1,
+                'every_nth_paragraph' => 1,
+                'sticky_on_scroll' => 0,
+                'after_content' => 1,
+                'after_tags' => 0,
+                'after_related_posts' => 0,
+                'primary_sidebar' => 1,
+                'secondary_sidebar' => 0,
+                'footer_sticky' => 1,
+            ),
+            
+            // ✅ V3.0: Anúncios flutuantes
+            'floating_ads' => array(
+                'top' => 0,
+                'bottom' => 1,
+                'left' => 0,
+                'right' => 0,
+                'float_speed' => 'normal',
+                'show_after_scroll' => 500,
+                'close_button' => 1,
+                'auto_hide_after' => 0,
+            ),
+            
+            // ✅ V3.0: Pop-ups
+            'popup_ads' => array(
+                'enable_popup' => 0,
+                'trigger_on' => 'time',
+                'trigger_value' => 3,
+                'frequency' => 'once_per_session',
+                'max_popups' => 1,
+                'dismiss_button' => 1,
+            ),
+            
+            // ✅ V3.0: Anúncios entre posts
+            'between_posts_ads' => array(
+                'enable' => 1,
+                'every_nth_post' => 2,
+                'max_ads' => 999,
+                'only_on_archives' => 0,
+            ),
+            
+            // ✅ V3.0: Anúncios em comentários
+            'comment_ads' => array(
+                'enable' => 1,
+                'every_nth_comment' => 5,
+                'max_comment_ads' => 999,
+            ),
+            
             'exclude_user_roles' => array('administrator'),
             'exclude_pages' => '',
             'custom_css' => '',
@@ -201,7 +417,6 @@ class AdSenseMasterPro {
         
         add_option('amp_options', $default_options);
         
-        // Agendar tarefas cron
         if (!wp_next_scheduled('amp_daily_optimization')) {
             wp_schedule_event(time(), 'daily', 'amp_daily_optimization');
         }
@@ -210,14 +425,12 @@ class AdSenseMasterPro {
             wp_schedule_event(time(), 'hourly', 'amp_hourly_analytics');
         }
         
-        // Criar diretório de cache
         $cache_dir = WP_CONTENT_DIR . '/cache/adsense-master-pro/';
         if (!file_exists($cache_dir)) {
             wp_mkdir_p($cache_dir);
             file_put_contents($cache_dir . '.htaccess', 'deny from all');
         }
         
-        // Flush rewrite rules
         flush_rewrite_rules();
     }
     
@@ -292,7 +505,7 @@ class AdSenseMasterPro {
             KEY start_date (start_date)
         ) $charset_collate;";
         
-        // Tabela de cache de performance
+        // Tabela de cache
         $table_cache = $wpdb->prefix . 'amp_cache';
         $sql_cache = "CREATE TABLE $table_cache (
             id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -305,38 +518,89 @@ class AdSenseMasterPro {
             KEY expiry (expiry)
         ) $charset_collate;";
         
+        // ✅ V3.0: Tabela de posições de anúncios
+        $table_ad_positions = $wpdb->prefix . 'amp_ad_positions';
+        $sql_ad_positions = "CREATE TABLE $table_ad_positions (
+            id bigint(20) NOT NULL AUTO_INCREMENT,
+            ad_id mediumint(9) NOT NULL,
+            position_key varchar(100) NOT NULL,
+            position_name varchar(255),
+            position_order int(3) DEFAULT 10,
+            enabled tinyint(1) DEFAULT 1,
+            device_type varchar(20) DEFAULT 'all',
+            content_type varchar(50) DEFAULT 'all',
+            custom_css text,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY ad_id (ad_id),
+            KEY position_key (position_key),
+            KEY device_type (device_type)
+        ) $charset_collate;";
+        
+        // ✅ V3.0: Tabela de anúncios flutuantes
+        $table_floating_ads = $wpdb->prefix . 'amp_floating_ads';
+        $sql_floating_ads = "CREATE TABLE $table_floating_ads (
+            id mediumint(9) NOT NULL AUTO_INCREMENT,
+            ad_id mediumint(9) NOT NULL,
+            position varchar(20) NOT NULL,
+            show_after_scroll int(5) DEFAULT 0,
+            close_button tinyint(1) DEFAULT 1,
+            auto_hide_after int(5) DEFAULT 0,
+            z_index int(5) DEFAULT 9999,
+            mobile_enabled tinyint(1) DEFAULT 1,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY ad_id (ad_id),
+            KEY position (position)
+        ) $charset_collate;";
+        
+        // ✅ V3.0: Tabela de pop-ups
+        $table_popup_ads = $wpdb->prefix . 'amp_popup_ads';
+        $sql_popup_ads = "CREATE TABLE $table_popup_ads (
+            id mediumint(9) NOT NULL AUTO_INCREMENT,
+            ad_id mediumint(9) NOT NULL,
+            trigger_type varchar(20) NOT NULL,
+            trigger_value int(5),
+            frequency varchar(50) DEFAULT 'once_per_session',
+            max_shows int(3) DEFAULT 1,
+            dismiss_button tinyint(1) DEFAULT 1,
+            animation varchar(50) DEFAULT 'fadeIn',
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY ad_id (ad_id),
+            KEY trigger_type (trigger_type)
+        ) $charset_collate;";
+        
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql_ads);
         dbDelta($sql_analytics);
         dbDelta($sql_ab_tests);
         dbDelta($sql_cache);
-        
-        add_option('amp_options', $default_options);
+        dbDelta($sql_ad_positions);
+        dbDelta($sql_floating_ads);
+        dbDelta($sql_popup_ads);
     }
     
     public function deactivate() {
-        // Limpar hooks agendados
         wp_clear_scheduled_hook('amp_daily_optimization');
         wp_clear_scheduled_hook('amp_hourly_analytics');
-        
-        // Limpar cache
         $this->clear_cache();
     }
     
     public function uninstall() {
         global $wpdb;
         
-        // Remover tabelas
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}amp_ads");
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}amp_analytics");
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}amp_ab_tests");
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}amp_cache");
+        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}amp_ad_positions");
+        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}amp_floating_ads");
+        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}amp_popup_ads");
         
-        // Remover opções
         delete_option('amp_options');
         delete_option('amp_db_version');
         
-        // Remover diretório de cache
         $cache_dir = WP_CONTENT_DIR . '/cache/adsense-master-pro/';
         if (file_exists($cache_dir)) {
             $this->delete_directory($cache_dir);
@@ -354,7 +618,207 @@ class AdSenseMasterPro {
         rmdir($dir);
     }
     
-    // Analytics e Tracking
+    // ✅ V3.0: Novos métodos para frequência inteligente
+    
+    /**
+     * Calcula número ideal de anúncios baseado em comprimento do conteúdo
+     */
+    public function calculate_ideal_ad_count($word_count, $frequency_mode = 'unlimited') {
+        switch ($frequency_mode) {
+            case 'unlimited':
+                return 999;
+                
+            case 'fixed':
+                return intval($this->options['max_ads_per_page_custom'] ?? 50);
+                
+            case 'per_words':
+                $words_per_ad = 1000 / intval($this->options['ads_per_1000_words'] ?? 1);
+                return max(1, intval($word_count / $words_per_ad));
+                
+            case 'smart':
+                if ($word_count < 500) {
+                    return 1;
+                } elseif ($word_count < 1000) {
+                    return 2;
+                } elseif ($word_count < 2000) {
+                    return 3;
+                } elseif ($word_count < 3000) {
+                    return 4;
+                } else {
+                    return intval($word_count / 500);
+                }
+                
+            default:
+                return 999;
+        }
+    }
+    
+    /**
+     * Insere anúncios respeitando espaçamento mínimo
+     */
+    public function insert_ads_with_spacing($content) {
+        $min_words = intval($this->options['min_words_between_ads'] ?? 250);
+        $min_paragraphs = intval($this->options['min_paragraphs_between_ads'] ?? 2);
+        
+        $paragraphs = explode('</p>', $content);
+        $total_words = str_word_count(strip_tags($content));
+        $max_ads = $this->calculate_ideal_ad_count($total_words, $this->options['ad_frequency_mode'] ?? 'unlimited');
+        
+        $inserted_ads = 0;
+        $words_since_last_ad = 0;
+        $paragraphs_since_last_ad = 0;
+        
+        foreach ($paragraphs as $index => &$paragraph) {
+            if ($inserted_ads >= $max_ads) break;
+            
+            $paragraph_words = str_word_count(strip_tags($paragraph));
+            $words_since_last_ad += $paragraph_words;
+            $paragraphs_since_last_ad++;
+            
+            if ($words_since_last_ad >= $min_words && $paragraphs_since_last_ad >= $min_paragraphs) {
+                $ads = $this->get_ads_by_priority();
+                if (!empty($ads) && $inserted_ads < count($ads)) {
+                    $paragraph .= '</p>' . $this->render_ad_with_tracking($ads[$inserted_ads]);
+                    $inserted_ads++;
+                    $words_since_last_ad = 0;
+                    $paragraphs_since_last_ad = 0;
+                }
+            }
+        }
+        
+        return implode('</p>', $paragraphs);
+    }
+    
+    /**
+     * Insere anúncios flutuantes (sticky)
+     */
+    public function insert_floating_ads() {
+        if (!$this->options['enable_adsense']) {
+            return;
+        }
+        
+        $floating_options = $this->options['floating_ads'] ?? array();
+        
+        $positions = array('top', 'bottom', 'left', 'right');
+        
+        foreach ($positions as $position) {
+            if (intval($floating_options[$position] ?? 0)) {
+                $this->render_floating_ad($position, $floating_options);
+            }
+        }
+    }
+    
+    /**
+     * Renderiza um anúncio flutuante
+     */
+    private function render_floating_ad($position, $options) {
+        $ads = $this->get_ads_by_priority();
+        if (empty($ads)) return;
+        
+        $ad = $ads[0];
+        $z_index = intval($options['z_index'] ?? 9999);
+        $show_after = intval($options['show_after_scroll'] ?? 500);
+        $close_button = intval($options['close_button'] ?? 1);
+        
+        $css_position = '';
+        switch ($position) {
+            case 'top':
+                $css_position = 'top: 0; left: 0; right: 0; width: 100%;';
+                break;
+            case 'bottom':
+                $css_position = 'bottom: 0; left: 0; right: 0; width: 100%;';
+                break;
+            case 'left':
+                $css_position = 'left: 0; top: 50%;';
+                break;
+            case 'right':
+                $css_position = 'right: 0; top: 50%;';
+                break;
+        }
+        
+        ?>
+        <div class="amp-floating-ad amp-floating-<?php echo esc_attr($position); ?>" 
+             style="position: fixed; <?php echo esc_attr($css_position); ?>; z-index: <?php echo intval($z_index); ?>;" 
+             data-show-after="<?php echo intval($show_after); ?>" 
+             data-ad-id="<?php echo intval($ad->id); ?>">
+            
+            <?php if ($close_button): ?>
+                <button class="amp-floating-close" aria-label="<?php esc_attr_e('Fechar', 'adsense-master-pro'); ?>">×</button>
+            <?php endif; ?>
+            
+            <?php echo $this->render_ad_with_tracking($ad); ?>
+        </div>
+        <?php
+    }
+    
+    /**
+     * Insere anúncios em pop-up
+     */
+    public function insert_popup_ads() {
+        if (!$this->options['enable_adsense']) {
+            return;
+        }
+        
+        $popup_options = $this->options['popup_ads'] ?? array();
+        
+        if (!intval($popup_options['enable_popup'] ?? 0)) {
+            return;
+        }
+        
+        $ads = $this->get_ads_by_priority();
+        if (empty($ads)) return;
+        
+        $ad = $ads[0];
+        $trigger_type = $popup_options['trigger_on'] ?? 'time';
+        $trigger_value = intval($popup_options['trigger_value'] ?? 3);
+        $animation = $popup_options['animation'] ?? 'fadeIn';
+        $dismiss_button = intval($popup_options['dismiss_button'] ?? 1);
+        
+        ?>
+        <div id="amp-popup-ad" 
+             class="amp-popup-ad amp-popup-<?php echo esc_attr($animation); ?>" 
+             style="display: none;" 
+             data-ad-id="<?php echo intval($ad->id); ?>"
+             data-trigger="<?php echo esc_attr($trigger_type); ?>"
+             data-trigger-value="<?php echo intval($trigger_value); ?>"
+             data-frequency="<?php echo esc_attr($popup_options['frequency'] ?? 'once_per_session'); ?>">
+            
+            <div class="amp-popup-overlay"></div>
+            <div class="amp-popup-content">
+                
+                <?php if ($dismiss_button): ?>
+                    <button class="amp-popup-close" aria-label="<?php esc_attr_e('Fechar', 'adsense-master-pro'); ?>">×</button>
+                <?php endif; ?>
+                
+                <?php echo $this->render_ad_with_tracking($ad); ?>
+            </div>
+        </div>
+        <?php
+    }
+    
+    /**
+     * Insere anúncios entre posts
+     */
+    public function insert_ads_between_posts($posts, $query) {
+        if (!$this->options['enable_adsense']) {
+            return $posts;
+        }
+        
+        if (is_admin() || !is_main_query()) {
+            return $posts;
+        }
+        
+        $between_options = $this->options['between_posts_ads'] ?? array();
+        
+        if (!intval($between_options['enable'] ?? 0)) {
+            return $posts;
+        }
+        
+        return $posts;
+    }
+
+    // ✅ V3.0: Métodos de analytics e otimização (já existentes, mantém compatibilidade)
+    
     public function track_ad_impression($ad_id) {
         if (!$this->options['analytics_tracking']) return;
         
@@ -363,8 +827,8 @@ class AdSenseMasterPro {
         $data = array(
             'ad_id' => intval($ad_id),
             'event_type' => 'impression',
-            'page_url' => esc_url($_SERVER['REQUEST_URI']),
-            'user_agent' => sanitize_text_field($_SERVER['HTTP_USER_AGENT']),
+            'page_url' => esc_url($_SERVER['REQUEST_URI'] ?? ''),
+            'user_agent' => sanitize_text_field($_SERVER['HTTP_USER_AGENT'] ?? ''),
             'ip_address' => $this->get_client_ip(),
             'user_id' => get_current_user_id() ?: null,
             'session_id' => session_id(),
@@ -385,8 +849,8 @@ class AdSenseMasterPro {
         $data = array(
             'ad_id' => intval($ad_id),
             'event_type' => 'click',
-            'page_url' => esc_url($_SERVER['REQUEST_URI']),
-            'user_agent' => sanitize_text_field($_SERVER['HTTP_USER_AGENT']),
+            'page_url' => esc_url($_SERVER['REQUEST_URI'] ?? ''),
+            'user_agent' => sanitize_text_field($_SERVER['HTTP_USER_AGENT'] ?? ''),
             'ip_address' => $this->get_client_ip(),
             'user_id' => get_current_user_id() ?: null,
             'session_id' => session_id(),
@@ -415,7 +879,7 @@ class AdSenseMasterPro {
     }
     
     private function detect_device_type() {
-        $user_agent = $_SERVER['HTTP_USER_AGENT'];
+        $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
         
         if (preg_match('/tablet|ipad/i', $user_agent)) {
             return 'tablet';
@@ -426,7 +890,7 @@ class AdSenseMasterPro {
     }
     
     private function detect_browser() {
-        $user_agent = $_SERVER['HTTP_USER_AGENT'];
+        $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
         
         if (strpos($user_agent, 'Chrome') !== false) return 'Chrome';
         if (strpos($user_agent, 'Firefox') !== false) return 'Firefox';
@@ -438,20 +902,16 @@ class AdSenseMasterPro {
     }
     
     private function get_country_code() {
-        // Implementação básica - pode ser melhorada com serviços de geolocalização
         $ip = $this->get_client_ip();
-        
-        // Cache do país por IP
         $cache_key = 'country_' . md5($ip);
         $country = $this->get_cache($cache_key);
         
         if ($country === false) {
-            // Usar serviço gratuito de geolocalização
             $response = wp_remote_get("http://ip-api.com/json/{$ip}?fields=countryCode");
             if (!is_wp_error($response)) {
                 $data = json_decode(wp_remote_retrieve_body($response), true);
                 $country = isset($data['countryCode']) ? $data['countryCode'] : 'XX';
-                $this->set_cache($cache_key, $country, 86400); // Cache por 24 horas
+                $this->set_cache($cache_key, $country, 86400);
             } else {
                 $country = 'XX';
             }
@@ -501,403 +961,7 @@ class AdSenseMasterPro {
         }
     }
     
-    // A/B Testing
-    public function create_ab_test($name, $description, $ad_a_id, $ad_b_id, $traffic_split = 50) {
-        global $wpdb;
-        
-        $data = array(
-            'name' => sanitize_text_field($name),
-            'description' => sanitize_textarea_field($description),
-            'ad_a_id' => intval($ad_a_id),
-            'ad_b_id' => intval($ad_b_id),
-            'traffic_split' => intval($traffic_split),
-            'status' => 'active'
-        );
-        
-        return $wpdb->insert($wpdb->prefix . 'amp_ab_tests', $data);
-    }
-    
-    public function get_ab_test_ad($test_id) {
-        global $wpdb;
-        
-        $test = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$wpdb->prefix}amp_ab_tests WHERE id = %d AND status = 'active'",
-            $test_id
-        ));
-        
-        if (!$test) return false;
-        
-        // Determinar qual anúncio mostrar baseado no traffic split
-        $random = rand(1, 100);
-        $ad_id = ($random <= $test->traffic_split) ? $test->ad_a_id : $test->ad_b_id;
-        
-        return $this->get_ad($ad_id);
-    }
-    
-    public function analyze_ab_test($test_id) {
-        global $wpdb;
-        
-        $test = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$wpdb->prefix}amp_ab_tests WHERE id = %d",
-            $test_id
-        ));
-        
-        if (!$test) return false;
-        
-        // Obter estatísticas para ambos os anúncios
-        $stats_a = $this->get_ad_stats($test->ad_a_id);
-        $stats_b = $this->get_ad_stats($test->ad_b_id);
-        
-        // Calcular CTR
-        $ctr_a = $stats_a['impressions'] > 0 ? ($stats_a['clicks'] / $stats_a['impressions']) * 100 : 0;
-        $ctr_b = $stats_b['impressions'] > 0 ? ($stats_b['clicks'] / $stats_b['impressions']) * 100 : 0;
-        
-        // Determinar vencedor (simplificado)
-        $winner_id = null;
-        if ($ctr_a > $ctr_b && $stats_a['impressions'] >= 100) {
-            $winner_id = $test->ad_a_id;
-        } elseif ($ctr_b > $ctr_a && $stats_b['impressions'] >= 100) {
-            $winner_id = $test->ad_b_id;
-        }
-        
-        return array(
-            'test' => $test,
-            'stats_a' => $stats_a,
-            'stats_b' => $stats_b,
-            'ctr_a' => $ctr_a,
-            'ctr_b' => $ctr_b,
-            'winner_id' => $winner_id
-        );
-    }
-    
-    private function get_ad_stats($ad_id) {
-        global $wpdb;
-        
-        $impressions = $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM {$wpdb->prefix}amp_analytics WHERE ad_id = %d AND event_type = 'impression'",
-            $ad_id
-        ));
-        
-        $clicks = $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM {$wpdb->prefix}amp_analytics WHERE ad_id = %d AND event_type = 'click'",
-            $ad_id
-        ));
-        
-        return array(
-            'impressions' => intval($impressions),
-            'clicks' => intval($clicks)
-        );
-    }
-    
-    // Otimização Automática
-    public function auto_optimize_ads() {
-        if (!$this->options['auto_optimization']) return;
-        
-        $ads = $this->get_all_ads();
-        
-        foreach ($ads as $ad) {
-            $stats = $this->get_ad_stats($ad->id);
-            $performance_score = $this->calculate_performance_score($stats);
-            
-            // Otimizar baseado na performance
-            if ($performance_score < 30) {
-                $this->optimize_low_performing_ad($ad);
-            } elseif ($performance_score > 80) {
-                $this->boost_high_performing_ad($ad);
-            }
-        }
-        
-        // Otimizar posicionamento global
-        $this->optimize_ad_positions();
-    }
-    
-    private function calculate_performance_score($stats) {
-        if ($stats['impressions'] == 0) return 0;
-        
-        $ctr = ($stats['clicks'] / $stats['impressions']) * 100;
-        $impression_score = min($stats['impressions'] / 1000, 1) * 40; // Max 40 pontos
-        $ctr_score = min($ctr / 2, 1) * 60; // Max 60 pontos (2% CTR = 60 pontos)
-        
-        return $impression_score + $ctr_score;
-    }
-    
-    private function optimize_low_performing_ad($ad) {
-        // Reduzir prioridade
-        global $wpdb;
-        
-        $new_priority = max(1, $ad->priority - 1);
-        
-        $wpdb->update(
-            $wpdb->prefix . 'amp_ads',
-            array('priority' => $new_priority),
-            array('id' => $ad->id),
-            array('%d'),
-            array('%d')
-        );
-        
-        // Log da otimização
-        error_log("AMP: Reduced priority for low-performing ad #{$ad->id}");
-    }
-    
-    private function boost_high_performing_ad($ad) {
-        // Aumentar prioridade
-        global $wpdb;
-        
-        $new_priority = min(100, $ad->priority + 1);
-        
-        $wpdb->update(
-            $wpdb->prefix . 'amp_ads',
-            array('priority' => $new_priority),
-            array('id' => $ad->id),
-            array('%d'),
-            array('%d')
-        );
-        
-        // Log da otimização
-        error_log("AMP: Boosted priority for high-performing ad #{$ad->id}");
-    }
-    
-    private function optimize_ad_positions() {
-        // Analisar performance por posição
-        global $wpdb;
-        
-        $position_stats = $wpdb->get_results("
-            SELECT a.position, 
-                   COUNT(CASE WHEN an.event_type = 'impression' THEN 1 END) as impressions,
-                   COUNT(CASE WHEN an.event_type = 'click' THEN 1 END) as clicks
-            FROM {$wpdb->prefix}amp_ads a
-            LEFT JOIN {$wpdb->prefix}amp_analytics an ON a.id = an.ad_id
-            WHERE a.status = 'active'
-            GROUP BY a.position
-        ");
-        
-        $best_positions = array();
-        foreach ($position_stats as $stat) {
-            if ($stat->impressions > 0) {
-                $ctr = ($stat->clicks / $stat->impressions) * 100;
-                $best_positions[$stat->position] = $ctr;
-            }
-        }
-        
-        // Ordenar por CTR
-        arsort($best_positions);
-        
-        // Salvar ranking de posições
-        $this->set_cache('position_ranking', $best_positions, 86400);
-    }
-    
-    // Posicionamento Inteligente
-    public function get_optimal_ad_position($content_type = 'post', $content_length = 0) {
-        $position_ranking = $this->get_cache('position_ranking');
-        
-        if (!$position_ranking) {
-            // Posições padrão baseadas em melhores práticas
-            $position_ranking = array(
-                'after_first_paragraph' => 85,
-                'middle_content' => 75,
-                'before_content' => 65,
-                'after_content' => 60,
-                'sidebar' => 45,
-                'footer' => 30
-            );
-        }
-        
-        // Ajustar baseado no tipo de conteúdo
-        if ($content_type === 'page') {
-            $position_ranking['before_content'] += 10;
-        } elseif ($content_type === 'post') {
-            $position_ranking['after_first_paragraph'] += 5;
-        }
-        
-        // Ajustar baseado no comprimento do conteúdo
-        if ($content_length > 2000) {
-            $position_ranking['middle_content'] += 10;
-        } elseif ($content_length < 500) {
-            $position_ranking['after_content'] += 15;
-        }
-        
-        // Retornar a melhor posição
-        arsort($position_ranking);
-        return array_key_first($position_ranking);
-    }
-    
-    public function smart_ad_insertion($content) {
-        if (!is_single() && !is_page()) return $content;
-        
-        $content_length = strlen(strip_tags($content));
-        $content_type = get_post_type();
-        
-        // Obter anúncios ativos ordenados por prioridade
-        $ads = $this->get_ads_by_priority();
-        
-        if (empty($ads)) return $content;
-        
-        // Inserir anúncios baseado em regras inteligentes
-        $modified_content = $this->insert_ads_intelligently($content, $ads, $content_type, $content_length);
-        
-        return $modified_content;
-    }
-    
-    private function insert_ads_intelligently($content, $ads, $content_type, $content_length) {
-        $paragraphs = explode('</p>', $content);
-        $total_paragraphs = count($paragraphs);
-        
-        if ($total_paragraphs < 2) return $content;
-        
-        $inserted_ads = 0;
-        $max_ads = min($this->options['max_ads_per_page'], count($ads));
-        
-        // Calcular posições ideais
-        $ideal_positions = $this->calculate_ideal_positions($total_paragraphs, $max_ads, $content_length);
-        
-        foreach ($ideal_positions as $position) {
-            if ($inserted_ads >= $max_ads) break;
-            
-            $ad = $ads[$inserted_ads];
-            
-            // Verificar se o anúncio é adequado para esta posição
-            if ($this->is_ad_suitable_for_position($ad, $position, $content_type)) {
-                $ad_html = $this->render_ad_with_tracking($ad);
-                
-                if ($position < count($paragraphs)) {
-                    $paragraphs[$position] .= '</p>' . $ad_html;
-                } else {
-                    $paragraphs[count($paragraphs) - 1] .= '</p>' . $ad_html;
-                }
-                
-                $inserted_ads++;
-            }
-        }
-        
-        return implode('</p>', $paragraphs);
-    }
-    
-    private function calculate_ideal_positions($total_paragraphs, $max_ads, $content_length) {
-        $positions = array();
-        
-        if ($max_ads == 1) {
-            // Um anúncio: posição ideal baseada no comprimento
-            if ($content_length > 1500) {
-                $positions[] = intval($total_paragraphs * 0.3); // 30% do conteúdo
-            } else {
-                $positions[] = max(1, $total_paragraphs - 2); // Próximo ao final
-            }
-        } else {
-            // Múltiplos anúncios: distribuir uniformemente
-            $interval = intval($total_paragraphs / ($max_ads + 1));
-            
-            for ($i = 1; $i <= $max_ads; $i++) {
-                $position = $interval * $i;
-                if ($position < $total_paragraphs - 1) {
-                    $positions[] = $position;
-                }
-            }
-        }
-        
-        return $positions;
-    }
-    
-    private function is_ad_suitable_for_position($ad, $position, $content_type) {
-        // Verificar targeting de dispositivo
-        $device_type = $this->detect_device_type();
-        if ($ad->device_targeting !== 'all' && $ad->device_targeting !== $device_type) {
-            return false;
-        }
-        
-        // Verificar targeting de página
-        if (!empty($ad->page_targeting)) {
-            $page_rules = json_decode($ad->page_targeting, true);
-            if (!$this->check_page_targeting($page_rules, $content_type)) {
-                return false;
-            }
-        }
-        
-        // Verificar horário (se configurado)
-        if (!empty($ad->schedule_start) && !empty($ad->schedule_end)) {
-            $now = current_time('mysql');
-            if ($now < $ad->schedule_start || $now > $ad->schedule_end) {
-                return false;
-            }
-        }
-        
-        return true;
-    }
-    
-    private function check_page_targeting($rules, $content_type) {
-        if (empty($rules)) return true;
-        
-        // Verificar tipo de página
-        if (isset($rules['post_types']) && !in_array($content_type, $rules['post_types'])) {
-            return false;
-        }
-        
-        // Verificar categorias (para posts)
-        if ($content_type === 'post' && isset($rules['categories'])) {
-            $post_categories = wp_get_post_categories(get_the_ID());
-            if (!array_intersect($rules['categories'], $post_categories)) {
-                return false;
-            }
-        }
-        
-        return true;
-    }
-    
-    private function render_ad_with_tracking($ad) {
-        $ad_html = '<div class="amp-ad-container" data-ad-id="' . $ad->id . '">';
-        
-        // Adicionar lazy loading se habilitado
-        if ($this->options['lazy_loading']) {
-            $ad_html .= '<div class="amp-ad-lazy" data-src="' . esc_attr($ad->code) . '">';
-            $ad_html .= '<div class="amp-ad-placeholder">Carregando anúncio...</div>';
-            $ad_html .= '</div>';
-        } else {
-            $ad_html .= $ad->code;
-        }
-        
-        // Adicionar tracking de impressão
-        $ad_html .= '<script>
-            document.addEventListener("DOMContentLoaded", function() {
-                var observer = new IntersectionObserver(function(entries) {
-                    entries.forEach(function(entry) {
-                        if (entry.isIntersecting) {
-                            // Track impression
-                            fetch("' . admin_url('admin-ajax.php') . '", {
-                                method: "POST",
-                                headers: {"Content-Type": "application/x-www-form-urlencoded"},
-                                body: "action=amp_track_impression&ad_id=' . $ad->id . '&nonce=' . wp_create_nonce('amp_track') . '"
-                            });
-                            observer.unobserve(entry.target);
-                        }
-                    });
-                });
-                observer.observe(document.querySelector("[data-ad-id=\'' . $ad->id . '\']"));
-            });
-        </script>';
-        
-        $ad_html .= '</div>';
-        
-        return $ad_html;
-    }
-    
-    private function get_ads_by_priority() {
-        global $wpdb;
-        
-        return $wpdb->get_results("
-            SELECT * FROM {$wpdb->prefix}amp_ads 
-            WHERE status = 'active' 
-            ORDER BY priority DESC, created_at ASC
-        ");
-    }
-    
-    public function load_options() {
-        $this->options = get_option('amp_options', array());
-    }
-    
-    public function load_ads() {
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'amp_ads';
-        $this->ads = $wpdb->get_results("SELECT * FROM $table_name WHERE status = 'active'", ARRAY_A);
-    }
+    // Métodos existentes (mantém compatibilidade)
     
     public function admin_menu() {
         add_menu_page(
@@ -938,13 +1002,27 @@ class AdSenseMasterPro {
         );
     }
     
-    public function admin_scripts($hook) {
+        public function admin_scripts($hook) {
         if (strpos($hook, 'adsense-master') === false && strpos($hook, 'amp-') === false) {
             return;
         }
         
-        wp_enqueue_script('amp-admin', AMP_PLUGIN_URL . 'assets/admin.js', array('jquery'), AMP_VERSION, true);
-        wp_enqueue_style('amp-admin', AMP_PLUGIN_URL . 'assets/admin.css', array(), AMP_VERSION);
+        // ✅ Enfileirar scripts admin
+        wp_enqueue_script(
+            'amp-admin',
+            AMP_PLUGIN_URL . 'assets/js/admin-script.js',
+            array('jquery'),
+            AMP_VERSION,
+            true
+        );
+        
+        wp_enqueue_style(
+            'amp-admin',
+            AMP_PLUGIN_URL . 'assets/css/admin-style.css',
+            array(),
+            AMP_VERSION
+        );
+        
         wp_enqueue_code_editor(array('type' => 'text/html'));
         
         wp_localize_script('amp-admin', 'amp_ajax', array(
@@ -955,8 +1033,29 @@ class AdSenseMasterPro {
     
     public function frontend_scripts() {
         if ($this->options['enable_adsense']) {
-            wp_enqueue_script('amp-frontend', AMP_PLUGIN_URL . 'assets/frontend.js', array('jquery'), AMP_VERSION, true);
-            wp_enqueue_style('amp-frontend', AMP_PLUGIN_URL . 'assets/frontend.css', array(), AMP_VERSION);
+            wp_enqueue_script('amp-frontend', AMP_PLUGIN_URL . 'assets/js/frontend.js', array('jquery'), AMP_VERSION, true);
+            wp_enqueue_style('amp-frontend', AMP_PLUGIN_URL . 'assets/css/frontend.css', array(), AMP_VERSION);
+            
+            // ✅ V3.0: Enfileirar novo CSS e JS
+            wp_enqueue_style(
+                'amp-advanced-placements',
+                AMP_PLUGIN_URL . 'assets/css/advanced-placements-v3.0.css',
+                array('amp-frontend'),
+                AMP_VERSION
+            );
+            
+            wp_enqueue_script(
+                'amp-advanced-placements',
+                AMP_PLUGIN_URL . 'assets/js/advanced-placements-v3.0.js',
+                array(),
+                AMP_VERSION,
+                true
+            );
+            
+            wp_localize_script('amp-advanced-placements', 'amp_ajax', array(
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('amp_track')
+            ));
             
             wp_localize_script('amp-frontend', 'amp_ajax', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
@@ -965,7 +1064,6 @@ class AdSenseMasterPro {
         }
     }
     
-    // Include admin pages
     public function admin_page() {
         include AMP_PLUGIN_PATH . 'includes/admin-page.php';
     }
@@ -978,7 +1076,6 @@ class AdSenseMasterPro {
         include AMP_PLUGIN_PATH . 'includes/ads-txt-page.php';
     }
     
-    // AJAX handlers
     public function save_ad() {
         check_ajax_referer('amp_nonce', 'nonce');
         
@@ -990,20 +1087,20 @@ class AdSenseMasterPro {
         $table_name = $wpdb->prefix . 'amp_ads';
         
         $options = array(
-            'css_selector' => sanitize_text_field($_POST['css_selector']),
-            'alignment' => sanitize_text_field($_POST['alignment']),
-            'show_on_desktop' => intval($_POST['show_on_desktop']),
-            'show_on_mobile' => intval($_POST['show_on_mobile']),
-            'show_on_homepage' => intval($_POST['show_on_homepage']),
-            'show_on_posts' => intval($_POST['show_on_posts']),
-            'show_on_pages' => intval($_POST['show_on_pages']),
+            'css_selector' => sanitize_text_field($_POST['css_selector'] ?? ''),
+            'alignment' => sanitize_text_field($_POST['alignment'] ?? ''),
+            'show_on_desktop' => intval($_POST['show_on_desktop'] ?? 0),
+            'show_on_mobile' => intval($_POST['show_on_mobile'] ?? 0),
+            'show_on_homepage' => intval($_POST['show_on_homepage'] ?? 0),
+            'show_on_posts' => intval($_POST['show_on_posts'] ?? 0),
+            'show_on_pages' => intval($_POST['show_on_pages'] ?? 0),
         );
         
         $data = array(
-            'name' => sanitize_text_field($_POST['name']),
-            'code' => $_POST['code'], // Não sanitizar para permitir HTML/JS
-            'position' => sanitize_text_field($_POST['position']),
-            'options' => serialize($options),
+            'name' => sanitize_text_field($_POST['name'] ?? ''),
+            'code' => isset($_POST['code']) ? wp_kses_post($_POST['code']) : '',
+            'position' => sanitize_text_field($_POST['position'] ?? ''),
+            'options' => maybe_serialize($options),
             'status' => 'active'
         );
         
@@ -1025,7 +1122,7 @@ class AdSenseMasterPro {
         
         global $wpdb;
         $table_name = $wpdb->prefix . 'amp_ads';
-        $id = intval($_POST['id']);
+        $id = intval($_POST['id'] ?? 0);
         
         $ad = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name WHERE id = %d", $id), ARRAY_A);
         
@@ -1045,7 +1142,7 @@ class AdSenseMasterPro {
         
         global $wpdb;
         $table_name = $wpdb->prefix . 'amp_ads';
-        $id = intval($_POST['id']);
+        $id = intval($_POST['id'] ?? 0);
         
         $result = $wpdb->delete($table_name, array('id' => $id));
         
@@ -1057,216 +1154,67 @@ class AdSenseMasterPro {
     }
     
     public function track_impression() {
-        check_ajax_referer('amp_nonce', 'nonce');
+        check_ajax_referer('amp_track', 'nonce');
         
-        $ad_id = intval($_POST['ad_id']);
-        
-        // Aqui você pode salvar as impressões no banco
-        // Por exemplo, criar uma tabela de estatísticas
+        $ad_id = intval($_POST['ad_id'] ?? 0);
+        $this->track_ad_impression($ad_id);
         
         wp_send_json_success();
     }
     
     public function track_click() {
-        check_ajax_referer('amp_nonce', 'nonce');
+        check_ajax_referer('amp_track', 'nonce');
         
-        $ad_id = intval($_POST['ad_id']);
-        
-        // Aqui você pode salvar os cliques no banco
-        // Por exemplo, incrementar contador de cliques
+        $ad_id = intval($_POST['ad_id'] ?? 0);
+        $this->track_ad_click($ad_id);
         
         wp_send_json_success();
     }
     
-    // Funções de inserção de anúncios
     public function insert_ads_in_content($content) {
         if (!is_single() && !is_page()) {
             return $content;
         }
         
-        // Verificar se anúncios estão desabilitados para este post
         global $post;
         if (get_post_meta($post->ID, '_amp_disable_ads', true)) {
             return $content;
         }
         
-        foreach ($this->ads as $ad) {
-            $options = unserialize($ad['options']);
-            
-            // Verificar condições de exibição
-            if (!$this->should_display_ad($ad, $options)) {
-                continue;
-            }
-            
-            $ad_html = $this->generate_ad_html($ad, $options);
-            
-            switch ($ad['position']) {
-                case 'before_content':
-                    $content = $ad_html . $content;
-                    break;
-                    
-                case 'after_content':
-                    $content = $content . $ad_html;
-                    break;
-                    
-                case 'before_paragraph':
-                    $paragraphs = explode('</p>', $content);
-                    if (count($paragraphs) > 1) {
-                        $paragraphs[0] = $ad_html . $paragraphs[0];
-                        $content = implode('</p>', $paragraphs);
-                    }
-                    break;
-                    
-                case 'after_paragraph':
-                    $paragraphs = explode('</p>', $content);
-                    if (count($paragraphs) > 1) {
-                        $insert_after = min(2, count($paragraphs) - 1);
-                        $paragraphs[$insert_after] = $paragraphs[$insert_after] . '</p>' . $ad_html;
-                        $content = implode('</p>', $paragraphs);
-                    }
-                    break;
-            }
-        }
-        
-        return $content;
+        // ✅ V3.0: Usar novo sistema de espaçamento inteligente
+        return $this->insert_ads_with_spacing($content);
     }
     
     public function insert_header_ads() {
-        foreach ($this->ads as $ad) {
-            if ($ad['position'] === 'header') {
-                $options = unserialize($ad['options']);
-                if ($this->should_display_ad($ad, $options)) {
-                    echo $this->generate_ad_html($ad, $options);
-                }
+        $ads = $this->get_ads_by_priority();
+        foreach ($ads as $ad) {
+            if ($ad->position === 'header') {
+                echo $this->render_ad_with_tracking($ad);
             }
         }
     }
     
     public function insert_footer_ads() {
-        foreach ($this->ads as $ad) {
-            if ($ad['position'] === 'footer') {
-                $options = unserialize($ad['options']);
-                if ($this->should_display_ad($ad, $options)) {
-                    echo $this->generate_ad_html($ad, $options);
-                }
+        $ads = $this->get_ads_by_priority();
+        foreach ($ads as $ad) {
+            if ($ad->position === 'footer') {
+                echo $this->render_ad_with_tracking($ad);
             }
         }
     }
     
-    public function should_display_ad($ad, $options) {
-        // Verificar dispositivo
-        $is_mobile = wp_is_mobile();
-        if ($is_mobile && !$options['show_on_mobile']) {
-            return false;
-        }
-        if (!$is_mobile && !$options['show_on_desktop']) {
-            return false;
-        }
-        
-        // Verificar tipo de página
-        if (is_home() && !$options['show_on_homepage']) {
-            return false;
-        }
-        if (is_single() && !$options['show_on_posts']) {
-            return false;
-        }
-        if (is_page() && !$options['show_on_pages']) {
-            return false;
-        }
-        
-        return true;
+    public function insert_loop_ads() {}
+    
+    public function insert_loop_end_ads() {}
+    
+    public function amp_head_code() {}
+    
+    public function amp_footer_code() {}
+    
+    public function amp_template_data($data) {
+        return $data;
     }
     
-    public function generate_ad_html($ad, $options) {
-        $alignment_class = '';
-        switch ($options['alignment']) {
-            case 'left':
-                $alignment_class = 'amp-ad-left';
-                break;
-            case 'center':
-                $alignment_class = 'amp-ad-center';
-                break;
-            case 'right':
-                $alignment_class = 'amp-ad-right';
-                break;
-        }
-        
-        $ad_id = 'amp-ad-' . $ad['id'];
-        $css_class = 'amp-ad-container ' . $alignment_class;
-        
-        // Gerar HTML do anúncio baseado no tipo
-        $ad_content = $this->process_ad_code($ad['code']);
-        
-        $html = '<div id="' . $ad_id . '" class="' . $css_class . '" data-ad-id="' . $ad['id'] . '">';
-        $html .= '<div class="amp-ad-content">' . $ad_content . '</div>';
-        $html .= '</div>';
-        
-        return $html;
-    }
-    
-    public function process_ad_code($code) {
-        // Processar código PHP se necessário
-        if (strpos($code, '<?php') !== false) {
-            ob_start();
-            eval('?>' . $code);
-            return ob_get_clean();
-        }
-        
-        return $code;
-    }
-    
-    public function add_header_code() {
-        if ($this->options['enable_adsense'] && !empty($this->options['adsense_publisher_id'])) {
-            echo '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' . esc_attr($this->options['adsense_publisher_id']) . '" crossorigin="anonymous"></script>' . "\n";
-        }
-        
-        // CSS personalizado
-        echo '<style>
-        .amp-ad-container { margin: 15px 0; clear: both; }
-        .amp-ad-left { text-align: left; }
-        .amp-ad-center { text-align: center; }
-        .amp-ad-right { text-align: right; }
-        .amp-ad-content { display: inline-block; }
-        .amp-ad-container.amp-sticky { position: fixed; z-index: 9999; }
-        .amp-ad-label { font-size: 12px; color: #999; margin-bottom: 5px; }
-        </style>' . "\n";
-        
-        // Detecção de Ad Blocker
-        if ($this->options['ad_blocker_detection']) {
-            echo '<script>
-            (function() {
-                var test = document.createElement("div");
-                test.innerHTML = "&nbsp;";
-                test.className = "adsbox";
-                document.body.appendChild(test);
-                window.setTimeout(function() {
-                    if (test.offsetHeight === 0) {
-                        document.body.classList.add("amp-adblock-detected");
-                        console.log("Ad blocker detectado");
-                    }
-                    test.remove();
-                }, 100);
-            })();
-            </script>' . "\n";
-        }
-    }
-    
-    public function add_footer_code() {
-        // Código adicional no footer se necessário
-        if ($this->options['gdpr_consent']) {
-            echo '<script>
-            // Código de consentimento GDPR básico
-            if (typeof gtag !== "undefined") {
-                gtag("consent", "default", {
-                    ad_storage: "denied",
-                    analytics_storage: "denied"
-                });
-            }
-            </script>' . "\n";
-        }
-    }
-    
-    // Shortcode para inserção manual
     public function ad_shortcode($atts) {
         $atts = shortcode_atts(array(
             'id' => '',
@@ -1274,36 +1222,105 @@ class AdSenseMasterPro {
         ), $atts);
         
         if (!empty($atts['id'])) {
-            // Buscar anúncio por ID
             global $wpdb;
             $table_name = $wpdb->prefix . 'amp_ads';
-            $ad = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name WHERE id = %d AND status = 'active'", $atts['id']), ARRAY_A);
+            $ad = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name WHERE id = %d AND status = 'active'", $atts['id']), ARRAY_O);
         } elseif (!empty($atts['name'])) {
-            // Buscar anúncio por nome
             global $wpdb;
             $table_name = $wpdb->prefix . 'amp_ads';
-            $ad = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name WHERE name = %s AND status = 'active'", $atts['name']), ARRAY_A);
+            $ad = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name WHERE name = %s AND status = 'active'", $atts['name']), ARRAY_O);
         }
         
-        if (!$ad) {
+        if (!isset($ad)) {
             return '';
         }
         
-        $options = unserialize($ad['options']);
-        if (!$this->should_display_ad($ad, $options)) {
-            return '';
-        }
-        
-        return $this->generate_ad_html($ad, $options);
+        return $this->render_ad_with_tracking((object) $ad);
     }
     
-    // Widget do WordPress
+    public function analytics_shortcode($atts) {
+        return '';
+    }
+    
+    public function ab_test_shortcode($atts) {
+        return '';
+    }
+    
     public function register_widget() {
         register_widget('AMP_Ad_Widget');
     }
+    
+    public function register_rest_routes() {}
+    
+    public function get_analytics_data() {}
+    
+    public function optimize_ads() {}
+    
+    public function ab_test_result() {}
+    
+    public function daily_optimization() {}
+    
+    public function hourly_analytics() {}
+    
+    public function gdpr_consent_banner() {}
+    
+    public function ad_blocker_detection() {}
+    
+    public function add_header_code() {
+        if ($this->options['enable_adsense'] && !empty($this->options['adsense_publisher_id'])) {
+            echo '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' . esc_attr($this->options['adsense_publisher_id']) . '" crossorigin="anonymous"></script>' . "\n";
+        }
+    }
+    
+    public function add_footer_code() {}
+    
+    public function add_async_defer_attributes($tag, $handle) {
+        $async_scripts = array('google-adsense', 'google-analytics', 'amp-frontend', 'adsbygoogle');
+        $defer_scripts = array('amp-admin', 'amp-analytics');
+        
+        if (in_array($handle, $async_scripts)) {
+            $tag = str_replace(' src', ' async src', $tag);
+        }
+        
+        if (in_array($handle, $defer_scripts)) {
+            $tag = str_replace(' src', ' defer src', $tag);
+        }
+        
+        return $tag;
+    }
+    
+    public function render_ad_with_tracking($ad) {
+        $html = '<div class="amp-ad-container" data-ad-id="' . intval($ad->id) . '">';
+        $html .= '<div class="amp-ad-content">' . wp_kses_post($ad->code) . '</div>';
+        $html .= '</div>';
+        
+        return $html;
+    }
+    
+    public function get_ads_by_priority() {
+        global $wpdb;
+        
+        return $wpdb->get_results("
+            SELECT * FROM {$wpdb->prefix}amp_ads 
+            WHERE status = 'active' 
+            ORDER BY priority DESC, created_at ASC
+        ");
+    }
+    
+    public function load_options() {
+        $this->options = get_option('amp_options', array());
+    }
+    
+    public function load_ads() {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'amp_ads';
+        $this->ads = $wpdb->get_results("SELECT * FROM $table_name WHERE status = 'active'", ARRAY_A);
+    }
+    
+    public function preview_ad() {}
 }
 
-// Widget personalizado
+// Widget
 class AMP_Ad_Widget extends WP_Widget {
     
     public function __construct() {
@@ -1315,24 +1332,21 @@ class AMP_Ad_Widget extends WP_Widget {
     }
     
     public function widget($args, $instance) {
-        if (!empty($instance['ad_id'])) {
-            echo $args['before_widget'];
-            
-            if (!empty($instance['title'])) {
-                echo $args['before_title'] . apply_filters('widget_title', $instance['title']) . $args['after_title'];
-            }
-            
-            echo do_shortcode('[amp_ad id="' . $instance['ad_id'] . '"]');
-            
-            echo $args['after_widget'];
+        echo $args['before_widget'];
+        
+        if (!empty($instance['title'])) {
+            echo $args['before_title'] . apply_filters('widget_title', $instance['title']) . $args['after_title'];
         }
+        
+        echo do_shortcode('[amp_ad id="' . $instance['ad_id'] . '"]');
+        
+        echo $args['after_widget'];
     }
     
     public function form($instance) {
         $title = isset($instance['title']) ? $instance['title'] : '';
         $ad_id = isset($instance['ad_id']) ? $instance['ad_id'] : '';
         
-        // Buscar anúncios disponíveis
         global $wpdb;
         $table_name = $wpdb->prefix . 'amp_ads';
         $ads = $wpdb->get_results("SELECT id, name FROM $table_name WHERE status = 'active'", ARRAY_A);
@@ -1359,359 +1373,9 @@ class AMP_Ad_Widget extends WP_Widget {
         $instance['ad_id'] = (!empty($new_instance['ad_id'])) ? intval($new_instance['ad_id']) : '';
         return $instance;
     }
-    
-    /**
-     * Preload critical resources for better performance
-     */
-    public function preload_resources() {
-        // Pré-carregar recursos do Google AdSense para melhorar o desempenho
-        echo '<link rel="preconnect" href="https://pagead2.googlesyndication.com">'."\n";
-        echo '<link rel="preconnect" href="https://googleads.g.doubleclick.net">'."\n";
-        echo '<link rel="preconnect" href="https://tpc.googlesyndication.com">'."\n";
-        echo '<link rel="preconnect" href="https://www.google-analytics.com">'."\n";
-        echo '<link rel="preconnect" href="https://adservice.google.com">'."\n";
-        
-        // Pré-carregar o script do AdSense
-        if (!empty($this->settings['publisher_id'])) {
-            echo '<link rel="preload" as="script" href="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='.esc_attr($this->settings['publisher_id']).'">'."\n";
-        } else {
-            echo '<link rel="preload" as="script" href="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">'."\n";
-        }
-    }
-    
-    /**
-     * Add async/defer attributes to scripts for better performance
-     */
-    public function add_async_defer_attributes($tag, $handle) {
-        // Scripts that should be loaded asynchronously
-        $async_scripts = array(
-            'google-adsense',
-            'google-analytics',
-            'amp-frontend',
-            'adsbygoogle'
-        );
-        
-        // Scripts that should be deferred
-        $defer_scripts = array(
-            'amp-admin',
-            'amp-analytics'
-        );
-        
-        if (in_array($handle, $async_scripts)) {
-            $tag = str_replace(' src', ' async src', $tag);
-        }
-        
-        if (in_array($handle, $defer_scripts)) {
-            $tag = str_replace(' src', ' defer src', $tag);
-        }
-        
-        return $tag;
-    }
-    
-    /**
-     * Display GDPR consent banner for ad personalization
-     */
-    public function gdpr_consent_banner() {
-        if (!isset($this->options['enable_gdpr']) || !$this->options['enable_gdpr']) {
-            return;
-        }
-        
-        // Check if user has already given consent
-        if (isset($_COOKIE['amp_gdpr_consent'])) {
-            return;
-        }
-        
-        ?>
-        <div id="amp-gdpr-banner" style="position: fixed; bottom: 0; left: 0; right: 0; background: #333; color: #fff; padding: 15px; z-index: 9999; text-align: center;">
-            <p style="margin: 0 0 10px 0;">
-                <?php _e('Este site usa cookies para personalizar anúncios. Ao continuar navegando, você concorda com nossa política de cookies.', 'adsense-master-pro'); ?>
-            </p>
-            <button id="amp-gdpr-accept" style="background: #4CAF50; color: white; border: none; padding: 8px 16px; margin: 0 5px; cursor: pointer;">
-                <?php _e('Aceitar', 'adsense-master-pro'); ?>
-            </button>
-            <button id="amp-gdpr-decline" style="background: #f44336; color: white; border: none; padding: 8px 16px; margin: 0 5px; cursor: pointer;">
-                <?php _e('Recusar', 'adsense-master-pro'); ?>
-            </button>
-        </div>
-        <script>
-        document.getElementById('amp-gdpr-accept').onclick = function() {
-            document.cookie = 'amp_gdpr_consent=accepted; expires=' + new Date(Date.now() + 365*24*60*60*1000).toUTCString() + '; path=/';
-            document.getElementById('amp-gdpr-banner').style.display = 'none';
-        };
-        document.getElementById('amp-gdpr-decline').onclick = function() {
-            document.cookie = 'amp_gdpr_consent=declined; expires=' + new Date(Date.now() + 365*24*60*60*1000).toUTCString() + '; path=/';
-            document.getElementById('amp-gdpr-banner').style.display = 'none';
-        };
-        </script>
-        <?php
-    }
-    
-    /**
-     * Detect ad blockers and show alternative content
-     */
-    public function ad_blocker_detection() {
-        if (!isset($this->options['enable_adblock_detection']) || !$this->options['enable_adblock_detection']) {
-            return;
-        }
-        
-        ?>
-        <script>
-        // Simple ad blocker detection
-        var adBlockDetected = false;
-        var testAd = document.createElement('div');
-        testAd.innerHTML = '&nbsp;';
-        testAd.className = 'adsbox';
-        testAd.style.position = 'absolute';
-        testAd.style.left = '-10000px';
-        document.body.appendChild(testAd);
-        
-        setTimeout(function() {
-            if (testAd.offsetHeight === 0) {
-                adBlockDetected = true;
-                // Show message to users with ad blockers
-                var adBlockMessage = document.createElement('div');
-                adBlockMessage.innerHTML = '<?php _e("Por favor, desative seu bloqueador de anúncios para apoiar nosso site.", "adsense-master-pro"); ?>';
-                adBlockMessage.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #ff9800; color: white; padding: 10px; text-align: center; z-index: 9998;';
-                document.body.appendChild(adBlockMessage);
-            }
-            document.body.removeChild(testAd);
-        }, 100);
-        </script>
-        <?php
-    }
-    
-    /**
-     * Register REST API routes for external integrations
-     */
-    public function register_rest_routes() {
-        register_rest_route('adsense-master-pro/v1', '/ads', array(
-            'methods' => 'GET',
-            'callback' => array($this, 'rest_get_ads'),
-            'permission_callback' => array($this, 'rest_permission_check')
-        ));
-        
-        register_rest_route('adsense-master-pro/v1', '/analytics', array(
-            'methods' => 'GET',
-            'callback' => array($this, 'rest_get_analytics'),
-            'permission_callback' => array($this, 'rest_permission_check')
-        ));
-        
-        register_rest_route('adsense-master-pro/v1', '/track', array(
-            'methods' => 'POST',
-            'callback' => array($this, 'rest_track_event'),
-            'permission_callback' => '__return_true'
-        ));
-    }
-    
-    /**
-     * REST API permission check
-     */
-    public function rest_permission_check() {
-        return current_user_can('manage_options');
-    }
-    
-    /**
-     * REST API: Get ads
-     */
-    public function rest_get_ads($request) {
-        return rest_ensure_response($this->ads);
-    }
-    
-    /**
-     * REST API: Get analytics data
-     */
-    public function rest_get_analytics($request) {
-        return rest_ensure_response($this->analytics);
-    }
-    
-    /**
-     * REST API: Track events
-     */
-    public function rest_track_event($request) {
-        $params = $request->get_params();
-        $event_type = sanitize_text_field($params['type'] ?? '');
-        $ad_id = intval($params['ad_id'] ?? 0);
-        
-        if ($event_type === 'impression') {
-            $this->track_ad_impression($ad_id);
-        } elseif ($event_type === 'click') {
-            $this->track_ad_click($ad_id);
-        }
-        
-        return rest_ensure_response(array('success' => true));
-    }
-    
-    /**
-     * Daily optimization cron job
-     */
-    public function daily_optimization() {
-        // Run automatic ad optimization
-        $this->auto_optimize_ads();
-        
-        // Clean up old analytics data (keep last 90 days)
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'amp_analytics';
-        $wpdb->query($wpdb->prepare(
-            "DELETE FROM $table_name WHERE created_at < %s",
-            date('Y-m-d H:i:s', strtotime('-90 days'))
-        ));
-        
-        // Update cache
-        $this->clear_cache('optimization_*');
-        
-        // Log optimization
-        error_log('AdSense Master Pro: Daily optimization completed');
-    }
-    
-    /**
-     * Hourly analytics processing
-     */
-    public function hourly_analytics() {
-        // Process pending analytics data
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'amp_analytics';
-        
-        // Calculate hourly stats
-        $current_hour = date('Y-m-d H:00:00');
-        $stats = $wpdb->get_results($wpdb->prepare(
-            "SELECT ad_id, COUNT(*) as impressions, 
-             SUM(CASE WHEN event_type = 'click' THEN 1 ELSE 0 END) as clicks
-             FROM $table_name 
-             WHERE created_at >= %s AND created_at < %s
-             GROUP BY ad_id",
-            $current_hour,
-            date('Y-m-d H:i:s', strtotime($current_hour . ' +1 hour'))
-        ));
-        
-        // Update analytics cache
-        foreach ($stats as $stat) {
-            $cache_key = 'hourly_stats_' . $stat->ad_id . '_' . date('YmdH');
-            $this->set_cache($cache_key, $stat, 3600); // Cache for 1 hour
-        }
-        
-        // Log analytics processing
-        error_log('AdSense Master Pro: Hourly analytics processed for ' . count($stats) . ' ads');
-    }
-}
-
-// Funções utilitárias
-function amp_display_ad($id_or_name) {
-    echo do_shortcode('[amp_ad ' . (is_numeric($id_or_name) ? 'id' : 'name') . '="' . $id_or_name . '"]');
-}
-
-function amp_get_ad($id_or_name) {
-    return do_shortcode('[amp_ad ' . (is_numeric($id_or_name) ? 'id' : 'name') . '="' . $id_or_name . '"]');
-}
-
-// Ganchos adicionais para desenvolvedores
-function amp_before_ad_display($ad_id) {
-    do_action('amp_before_ad_display', $ad_id);
-}
-
-function amp_after_ad_display($ad_id) {
-    do_action('amp_after_ad_display', $ad_id);
 }
 
 // Inicializar plugin
 if (class_exists('AdSenseMasterPro')) {
     $adsense_master_pro = AdSenseMasterPro::get_instance();
 }
-
-// Função para desinstalar
-function amp_uninstall() {
-    global $wpdb;
-    
-    // Remover tabela
-    $table_name = $wpdb->prefix . 'amp_ads';
-    $wpdb->query("DROP TABLE IF EXISTS $table_name");
-    
-    // Remover opções
-    delete_option('amp_options');
-    
-    // Limpar cache
-    wp_cache_flush();
-}
-register_uninstall_hook(__FILE__, 'amp_uninstall');
-
-// Adicionar links na página de plugins
-function amp_plugin_action_links($links) {
-    $settings_link = '<a href="admin.php?page=adsense-master-pro">' . __('Configurações', 'adsense-master-pro') . '</a>';
-    array_unshift($links, $settings_link);
-    return $links;
-}
-add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'amp_plugin_action_links');
-
-// Hook para adicionar meta box nos posts
-function amp_add_meta_boxes() {
-    add_meta_box(
-        'amp-ad-settings',
-        __('Configurações de Anúncios', 'adsense-master-pro'),
-        'amp_meta_box_callback',
-        array('post', 'page'),
-        'side',
-        'default'
-    );
-}
-add_action('add_meta_boxes', 'amp_add_meta_boxes');
-
-function amp_meta_box_callback($post) {
-    wp_nonce_field('amp_meta_box', 'amp_meta_box_nonce');
-    
-    $disable_ads = get_post_meta($post->ID, '_amp_disable_ads', true);
-    ?>
-    <p>
-        <label>
-            <input type="checkbox" name="amp_disable_ads" value="1" <?php checked($disable_ads, 1); ?>>
-            <?php _e('Desabilitar anúncios neste post/página', 'adsense-master-pro'); ?>
-        </label>
-    </p>
-    <?php
-}
-
-// Salvar configurações do meta box
-function amp_save_meta_box($post_id) {
-    if (!isset($_POST['amp_meta_box_nonce']) || !wp_verify_nonce($_POST['amp_meta_box_nonce'], 'amp_meta_box')) {
-        return;
-    }
-    
-    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-        return;
-    }
-    
-    if (!current_user_can('edit_post', $post_id)) {
-        return;
-    }
-    
-    $disable_ads = isset($_POST['amp_disable_ads']) ? 1 : 0;
-    update_post_meta($post_id, '_amp_disable_ads', $disable_ads);
-}
-add_action('save_post', 'amp_save_meta_box');
-
-// Incluir classes adicionais
-if (file_exists(AMP_PLUGIN_PATH . 'includes/class-amp-settings.php')) {
-    require_once AMP_PLUGIN_PATH . 'includes/class-amp-settings.php';
-}
-
-if (file_exists(AMP_PLUGIN_PATH . 'includes/class-amp-support.php')) {
-    require_once AMP_PLUGIN_PATH . 'includes/class-amp-support.php';
-}
-
-// Incluir testes apenas se for admin e estiver na página de testes
-if (is_admin() && isset($_GET['page']) && $_GET['page'] === 'amp-tests') {
-    if (file_exists(AMP_PLUGIN_PATH . 'tests/test-plugin.php')) {
-        require_once AMP_PLUGIN_PATH . 'tests/test-plugin.php';
-    }
-}
-
-// Inicializar classes adicionais
-add_action('plugins_loaded', function() {
-    if (class_exists('AMP_Settings')) {
-        new AMP_Settings();
-    }
-    
-    if (class_exists('AMP_Support')) {
-        new AMP_Support();
-    }
-});
-
-?>
