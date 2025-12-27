@@ -8,12 +8,13 @@
  * @version 2.1.0
  */
 
-if (!defined('ABSPATH')) {
+if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
 class AIPG_Content_Generator {
-    
+    use AIPG_Logging;
+
     /**
      * Mapeamento de tamanhos
      */
@@ -32,7 +33,49 @@ class AIPG_Content_Generator {
         'en' => 'inglês',
         'es' => 'espanhol'
     );
-    
+
+    /**
+     * Construtor
+     */
+    public function __construct() {
+        $this->init_logger();
+    }
+
+    /**
+     * Construtor
+     */
+    public function __construct() {
+        $this->init_logger();
+    }
+
+    /**
+     * Construtor
+     */
+    public function __construct() {
+        $this->init_logger();
+    }
+
+    /**
+     * Construtor
+     */
+    public function __construct() {
+        $this->init_logger();
+    }
+
+    /**
+     * Construtor
+     */
+    public function __construct() {
+        $this->init_logger();
+    }
+
+    /**
+     * Construtor
+     */
+    public function __construct() {
+        $this->init_logger();
+    }
+        
     /**
      * Gera conteúdo baseado nos dados fornecidos
      * 
