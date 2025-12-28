@@ -41,33 +41,15 @@ spl_autoload_register(function ($class) {
     }
 });
 
-// Carrega classes principais (Logger primeiro!)
-require_once AIPG_INCLUDES_DIR . 'class-aipg-logger.php';
-require_once AIPG_INCLUDES_DIR . 'class-aipg-logging-traits.php';
+// Carrega classes principais
 require_once AIPG_INCLUDES_DIR . 'class-ai-post-generator.php';
 require_once AIPG_INCLUDES_DIR . 'class-content-generator.php';
 require_once AIPG_INCLUDES_DIR . 'class-image-generator.php';
 
 /**
- * Função helper para obter instância do logger
- * 
- * @return AIPG_Logger Instância singleton do logger
- */
-function aipg_logger() {
-    return AIPG_Logger::get_instance();
-}
-
-/**
  * Inicializa o plugin
  */
 function aipg_init() {
-    // Log de inicialização
-    aipg_logger()->info('Plugin AI Post Generator inicializado', array(
-        'version' => AIPG_VERSION,
-        'php_version' => phpversion(),
-        'wp_version' => get_bloginfo('version'),
-    ));
-    
     return AI_Post_Generator::get_instance();
 }
 add_action('plugins_loaded', 'aipg_init');
@@ -114,12 +96,6 @@ function aipg_activate() {
     foreach ($defaults as $key => $value) {
         add_option($key, $value);
     }
-    
-    // Log de ativação
-    aipg_logger()->notice('Plugin ativado', array(
-        'user_id' => get_current_user_id(),
-        'timestamp' => current_time('mysql'),
-    ));
 }
 
 /**
@@ -128,40 +104,4 @@ function aipg_activate() {
 register_deactivation_hook(__FILE__, 'aipg_deactivate');
 function aipg_deactivate() {
     wp_clear_scheduled_hook('aipg_scheduled_post');
-    
-    // Log de desativação
-    aipg_logger()->notice('Plugin desativado', array(
-        'user_id' => get_current_user_id(),
-        'timestamp' => current_time('mysql'),
-    ));
 }
-
-/**
- * Hook de shutdown para limpeza e logging
- */
-add_action('shutdown', function() {
-    // Limpa logs antigos uma vez por semana
-    $last_cleanup = get_transient('aipg_log_cleanup_done');
-    if (false === $last_cleanup) {
-        aipg_logger()->cleanup_old_logs();
-        set_transient('aipg_log_cleanup_done', 1, WEEK_IN_SECONDS);
-    }
-});
-
-/**
- * Hook para tratamento de erros não capturados
- */
-register_shutdown_function(function() {
-    $error = error_get_last();
-    
-    if ($error && in_array($error['type'], array(E_ERROR, E_PARSE, E_COMPILE_ERROR))) {
-        aipg_logger()->emergency(
-            'Erro fatal detectado: ' . $error['message'],
-            array(
-                'file' => $error['file'],
-                'line' => $error['line'],
-                'type' => $error['type'],
-            )
-        );
-    }
-});

@@ -1,0 +1,345 @@
+[2025-12-27 19:15:32] [INFO] Plugin AI Post Generator inicializado (ai-post-generator.php:65 in info) | {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:15:33] [EMERGENCY] Erro fatal detectado: Uncaught Error: Class "AIPG_Validator" not found in E:\wamp64\www\wordpress\wp-content\plugins\ai-post-generator\includes\class-content-generator.php:51
+Stack trace:
+#0 E:\wamp64\www\wordpress\wp-content\plugins\ai-post-generator\includes\class-ai-post-generator.php(41): AIPG_Content_Generator->__construct()
+#1 E:\wamp64\www\wordpress\wp-content\plugins\ai-post-generator\includes\class-ai-post-generator.php(33): AI_Post_Generator->load_dependencies()
+#2 E:\wamp64\www\wordpress\wp-content\plugins\ai-post-generator\includes\class-ai-post-generator.php(24): AI_Post_Generator->__construct()
+#3 E:\wamp64\www\wordpress\wp-content\plugins\ai-post-generator\ai-post-generator.php(71): AI_Post_Generator::get_instance()
+#4 E:\wamp64\www\wordpress\wp-includes\class-wp-hook.php(341): aipg_init('')
+#5 E:\wamp64\www\wordpress\wp-includes\class-wp-hook.php(365): WP_Hook->apply_filters(NULL, Array)
+#6 E:\wamp64\www\wordpress\wp-includes\plugin.php(522): WP_Hook->do_action(Array)
+#7 E:\wamp64\www\wordpress\wp-settings.php(593): do_action('plugins_loaded')
+#8 E:\wamp64\www\wordpress\wp-config.php(102): require_once('E:\\wamp64\\www\\w...')
+#9 E:\wamp64\www\wordpress\wp-load.php(50): require_once('E:\\wamp64\\www\\w...')
+#10 E:\wamp64\www\wordpress\wp-blog-header.php(13): require_once('E:\\wamp64\\www\\w...')
+#11 E:\wamp64\www\wordpress\index.php(17): require('E:\\wamp64\\www\\w...')
+#12 {main}
+  thrown (ai-post-generator.php:158 in emergency) | {"file":"E:\\wamp64\\www\\wordpress\\wp-content\\plugins\\ai-post-generator\\includes\\class-content-generator.php","line":51,"type":1}
+[2025-12-27 16:39:08] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 16:39:12] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 16:39:13] [EMERGENCY] Erro fatal detectado: Uncaught TypeError: Cannot access offset of type string on string in E:\wamp64\www\wordpress\wp-content\plugins\adsense-master-pro\adsense-master-pro.php:803
+Stack trace:
+#0 E:\wamp64\www\wordpress\wp-includes\class-wp-hook.php(341): AdSenseMasterPro->insert_ads_between_posts(Array, Object(WP_Query))
+#1 E:\wamp64\www\wordpress\wp-includes\plugin.php(256): WP_Hook->apply_filters(Array, Array)
+#2 E:\wamp64\www\wordpress\wp-includes\class-wp-query.php(3629): apply_filters_ref_array('the_posts', Array)
+#3 E:\wamp64\www\wordpress\wp-includes\class-wp-query.php(3958): WP_Query->get_posts()
+#4 E:\wamp64\www\wordpress\wp-includes\class-wp.php(704): WP_Query->query(Array)
+#5 E:\wamp64\www\wordpress\wp-includes\class-wp.php(824): WP->query_posts()
+#6 E:\wamp64\www\wordpress\wp-includes\functions.php(1343): WP->main('')
+#7 E:\wamp64\www\wordpress\wp-blog-header.php(16): wp()
+#8 E:\wamp64\www\wordpress\index.php(17): require('E:\\wamp64\\www\\w...')
+#9 {main}
+  thrown {"file":"E:\\wamp64\\www\\wordpress\\wp-content\\plugins\\adsense-master-pro\\adsense-master-pro.php","line":803,"type":1}
+[2025-12-27 16:39:39] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 16:39:39] [EMERGENCY] Erro fatal detectado: Uncaught TypeError: Cannot access offset of type string on string in E:\wamp64\www\wordpress\wp-content\plugins\adsense-master-pro\adsense-master-pro.php:803
+Stack trace:
+#0 E:\wamp64\www\wordpress\wp-includes\class-wp-hook.php(341): AdSenseMasterPro->insert_ads_between_posts(Array, Object(WP_Query))
+#1 E:\wamp64\www\wordpress\wp-includes\plugin.php(256): WP_Hook->apply_filters(Array, Array)
+#2 E:\wamp64\www\wordpress\wp-includes\class-wp-query.php(3629): apply_filters_ref_array('the_posts', Array)
+#3 E:\wamp64\www\wordpress\wp-includes\class-wp-query.php(3958): WP_Query->get_posts()
+#4 E:\wamp64\www\wordpress\wp-includes\class-wp.php(704): WP_Query->query(Array)
+#5 E:\wamp64\www\wordpress\wp-includes\class-wp.php(824): WP->query_posts()
+#6 E:\wamp64\www\wordpress\wp-includes\functions.php(1343): WP->main('')
+#7 E:\wamp64\www\wordpress\wp-blog-header.php(16): wp()
+#8 E:\wamp64\www\wordpress\index.php(17): require('E:\\wamp64\\www\\w...')
+#9 {main}
+  thrown {"file":"E:\\wamp64\\www\\wordpress\\wp-content\\plugins\\adsense-master-pro\\adsense-master-pro.php","line":803,"type":1}
+[2025-12-27 16:39:39] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 16:39:39] [EMERGENCY] Erro fatal detectado: Uncaught TypeError: Cannot access offset of type string on string in E:\wamp64\www\wordpress\wp-content\plugins\adsense-master-pro\adsense-master-pro.php:803
+Stack trace:
+#0 E:\wamp64\www\wordpress\wp-includes\class-wp-hook.php(341): AdSenseMasterPro->insert_ads_between_posts(Array, Object(WP_Query))
+#1 E:\wamp64\www\wordpress\wp-includes\plugin.php(256): WP_Hook->apply_filters(Array, Array)
+#2 E:\wamp64\www\wordpress\wp-includes\class-wp-query.php(3629): apply_filters_ref_array('the_posts', Array)
+#3 E:\wamp64\www\wordpress\wp-includes\class-wp-query.php(3958): WP_Query->get_posts()
+#4 E:\wamp64\www\wordpress\wp-includes\class-wp.php(704): WP_Query->query(Array)
+#5 E:\wamp64\www\wordpress\wp-includes\class-wp.php(824): WP->query_posts()
+#6 E:\wamp64\www\wordpress\wp-includes\functions.php(1343): WP->main('')
+#7 E:\wamp64\www\wordpress\wp-blog-header.php(16): wp()
+#8 E:\wamp64\www\wordpress\index.php(17): require('E:\\wamp64\\www\\w...')
+#9 {main}
+  thrown {"file":"E:\\wamp64\\www\\wordpress\\wp-content\\plugins\\adsense-master-pro\\adsense-master-pro.php","line":803,"type":1}
+[2025-12-27 16:39:39] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 16:39:39] [EMERGENCY] Erro fatal detectado: Uncaught TypeError: Cannot access offset of type string on string in E:\wamp64\www\wordpress\wp-content\plugins\adsense-master-pro\adsense-master-pro.php:803
+Stack trace:
+#0 E:\wamp64\www\wordpress\wp-includes\class-wp-hook.php(341): AdSenseMasterPro->insert_ads_between_posts(Array, Object(WP_Query))
+#1 E:\wamp64\www\wordpress\wp-includes\plugin.php(256): WP_Hook->apply_filters(Array, Array)
+#2 E:\wamp64\www\wordpress\wp-includes\class-wp-query.php(3629): apply_filters_ref_array('the_posts', Array)
+#3 E:\wamp64\www\wordpress\wp-includes\class-wp-query.php(3958): WP_Query->get_posts()
+#4 E:\wamp64\www\wordpress\wp-includes\class-wp.php(704): WP_Query->query(Array)
+#5 E:\wamp64\www\wordpress\wp-includes\class-wp.php(824): WP->query_posts()
+#6 E:\wamp64\www\wordpress\wp-includes\functions.php(1343): WP->main('')
+#7 E:\wamp64\www\wordpress\wp-blog-header.php(16): wp()
+#8 E:\wamp64\www\wordpress\index.php(17): require('E:\\wamp64\\www\\w...')
+#9 {main}
+  thrown {"file":"E:\\wamp64\\www\\wordpress\\wp-content\\plugins\\adsense-master-pro\\adsense-master-pro.php","line":803,"type":1}
+[2025-12-27 16:39:39] [EMERGENCY] Erro fatal detectado: Uncaught TypeError: Cannot access offset of type string on string in E:\wamp64\www\wordpress\wp-content\plugins\adsense-master-pro\adsense-master-pro.php:803
+Stack trace:
+#0 E:\wamp64\www\wordpress\wp-includes\class-wp-hook.php(341): AdSenseMasterPro->insert_ads_between_posts(Array, Object(WP_Query))
+#1 E:\wamp64\www\wordpress\wp-includes\plugin.php(256): WP_Hook->apply_filters(Array, Array)
+#2 E:\wamp64\www\wordpress\wp-includes\class-wp-query.php(3629): apply_filters_ref_array('the_posts', Array)
+#3 E:\wamp64\www\wordpress\wp-includes\class-wp-query.php(3958): WP_Query->get_posts()
+#4 E:\wamp64\www\wordpress\wp-includes\nav-menu.php(1060): WP_Query->query(Array)
+#5 E:\wamp64\www\wordpress\wp-includes\nav-menu.php(1101): wp_get_associated_nav_menu_items(143, 'post_type')
+#6 E:\wamp64\www\wordpress\wp-includes\class-wp-hook.php(343): _wp_delete_post_menu_item(143)
+#7 E:\wamp64\www\wordpress\wp-includes\class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#8 E:\wamp64\www\wordpress\wp-includes\plugin.php(522): WP_Hook->do_action(Array)
+#9 E:\wamp64\www\wordpress\wp-includes\post.php(3907): do_action('delete_post', 143, Object(WP_Post))
+#10 E:\wamp64\www\wordpress\wp-includes\post.php(8158): wp_delete_post(143, true)
+#11 E:\wamp64\www\wordpress\wp-includes\class-wp-hook.php(341): wp_delete_auto_drafts()
+#12 E:\wamp64\www\wordpress\wp-includes\class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#13 E:\wamp64\www\wordpress\wp-includes\plugin.php(570): WP_Hook->do_action(Array)
+#14 E:\wamp64\www\wordpress\wp-cron.php(191): do_action_ref_array('wp_scheduled_au...', Array)
+#15 {main}
+  thrown {"file":"E:\\wamp64\\www\\wordpress\\wp-content\\plugins\\adsense-master-pro\\adsense-master-pro.php","line":803,"type":1}
+[2025-12-27 16:40:53] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 16:40:53] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 16:40:53] [EMERGENCY] Erro fatal detectado: Uncaught TypeError: Cannot access offset of type string on string in E:\wamp64\www\wordpress\wp-content\plugins\adsense-master-pro\adsense-master-pro.php:803
+Stack trace:
+#0 E:\wamp64\www\wordpress\wp-includes\class-wp-hook.php(341): AdSenseMasterPro->insert_ads_between_posts(Array, Object(WP_Query))
+#1 E:\wamp64\www\wordpress\wp-includes\plugin.php(256): WP_Hook->apply_filters(Array, Array)
+#2 E:\wamp64\www\wordpress\wp-includes\class-wp-query.php(3629): apply_filters_ref_array('the_posts', Array)
+#3 E:\wamp64\www\wordpress\wp-includes\class-wp-query.php(3958): WP_Query->get_posts()
+#4 E:\wamp64\www\wordpress\wp-includes\class-wp.php(704): WP_Query->query(Array)
+#5 E:\wamp64\www\wordpress\wp-includes\class-wp.php(824): WP->query_posts()
+#6 E:\wamp64\www\wordpress\wp-includes\functions.php(1343): WP->main('')
+#7 E:\wamp64\www\wordpress\wp-blog-header.php(16): wp()
+#8 E:\wamp64\www\wordpress\index.php(17): require('E:\\wamp64\\www\\w...')
+#9 {main}
+  thrown {"file":"E:\\wamp64\\www\\wordpress\\wp-content\\plugins\\adsense-master-pro\\adsense-master-pro.php","line":803,"type":1}
+[2025-12-27 16:40:54] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 16:40:54] [EMERGENCY] Erro fatal detectado: Uncaught TypeError: Cannot access offset of type string on string in E:\wamp64\www\wordpress\wp-content\plugins\adsense-master-pro\adsense-master-pro.php:803
+Stack trace:
+#0 E:\wamp64\www\wordpress\wp-includes\class-wp-hook.php(341): AdSenseMasterPro->insert_ads_between_posts(Array, Object(WP_Query))
+#1 E:\wamp64\www\wordpress\wp-includes\plugin.php(256): WP_Hook->apply_filters(Array, Array)
+#2 E:\wamp64\www\wordpress\wp-includes\class-wp-query.php(3629): apply_filters_ref_array('the_posts', Array)
+#3 E:\wamp64\www\wordpress\wp-includes\class-wp-query.php(3958): WP_Query->get_posts()
+#4 E:\wamp64\www\wordpress\wp-includes\class-wp.php(704): WP_Query->query(Array)
+#5 E:\wamp64\www\wordpress\wp-includes\class-wp.php(824): WP->query_posts()
+#6 E:\wamp64\www\wordpress\wp-includes\functions.php(1343): WP->main('')
+#7 E:\wamp64\www\wordpress\wp-blog-header.php(16): wp()
+#8 E:\wamp64\www\wordpress\index.php(17): require('E:\\wamp64\\www\\w...')
+#9 {main}
+  thrown {"file":"E:\\wamp64\\www\\wordpress\\wp-content\\plugins\\adsense-master-pro\\adsense-master-pro.php","line":803,"type":1}
+[2025-12-27 16:41:15] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 16:41:15] [EMERGENCY] Erro fatal detectado: Uncaught TypeError: Cannot access offset of type string on string in E:\wamp64\www\wordpress\wp-content\plugins\adsense-master-pro\adsense-master-pro.php:803
+Stack trace:
+#0 E:\wamp64\www\wordpress\wp-includes\class-wp-hook.php(341): AdSenseMasterPro->insert_ads_between_posts(Array, Object(WP_Query))
+#1 E:\wamp64\www\wordpress\wp-includes\plugin.php(256): WP_Hook->apply_filters(Array, Array)
+#2 E:\wamp64\www\wordpress\wp-includes\class-wp-query.php(3629): apply_filters_ref_array('the_posts', Array)
+#3 E:\wamp64\www\wordpress\wp-includes\class-wp-query.php(3958): WP_Query->get_posts()
+#4 E:\wamp64\www\wordpress\wp-includes\class-wp.php(704): WP_Query->query(Array)
+#5 E:\wamp64\www\wordpress\wp-includes\class-wp.php(824): WP->query_posts()
+#6 E:\wamp64\www\wordpress\wp-includes\functions.php(1343): WP->main('')
+#7 E:\wamp64\www\wordpress\wp-blog-header.php(16): wp()
+#8 E:\wamp64\www\wordpress\index.php(17): require('E:\\wamp64\\www\\w...')
+#9 {main}
+  thrown {"file":"E:\\wamp64\\www\\wordpress\\wp-content\\plugins\\adsense-master-pro\\adsense-master-pro.php","line":803,"type":1}
+[2025-12-27 16:41:16] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 16:41:16] [EMERGENCY] Erro fatal detectado: Uncaught TypeError: Cannot access offset of type string on string in E:\wamp64\www\wordpress\wp-content\plugins\adsense-master-pro\adsense-master-pro.php:803
+Stack trace:
+#0 E:\wamp64\www\wordpress\wp-includes\class-wp-hook.php(341): AdSenseMasterPro->insert_ads_between_posts(Array, Object(WP_Query))
+#1 E:\wamp64\www\wordpress\wp-includes\plugin.php(256): WP_Hook->apply_filters(Array, Array)
+#2 E:\wamp64\www\wordpress\wp-includes\class-wp-query.php(3629): apply_filters_ref_array('the_posts', Array)
+#3 E:\wamp64\www\wordpress\wp-includes\class-wp-query.php(3958): WP_Query->get_posts()
+#4 E:\wamp64\www\wordpress\wp-includes\class-wp.php(704): WP_Query->query(Array)
+#5 E:\wamp64\www\wordpress\wp-includes\class-wp.php(824): WP->query_posts()
+#6 E:\wamp64\www\wordpress\wp-includes\functions.php(1343): WP->main('')
+#7 E:\wamp64\www\wordpress\wp-blog-header.php(16): wp()
+#8 E:\wamp64\www\wordpress\index.php(17): require('E:\\wamp64\\www\\w...')
+#9 {main}
+  thrown {"file":"E:\\wamp64\\www\\wordpress\\wp-content\\plugins\\adsense-master-pro\\adsense-master-pro.php","line":803,"type":1}
+[2025-12-27 16:42:35] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 16:42:40] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 16:42:52] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 16:43:04] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 16:43:11] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:01:42] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:01:43] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:01:45] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:01:50] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:01:50] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:01:51] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:01:56] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:02:11] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:02:36] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:02:45] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:02:49] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:03:01] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:03:02] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:03:51] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:05:51] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:07:52] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:09:53] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:11:54] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:35:31] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:35:31] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:35:32] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:35:38] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:36:33] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:38:28] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:38:29] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:38:37] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:39:30] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:41:31] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:43:32] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:45:33] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:47:34] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:55:59] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:55:59] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:56:00] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:57:00] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:58:01] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:59:54] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 17:59:56] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:00:06] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:00:10] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:00:17] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:00:17] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:03:04] [EMERGENCY] Erro fatal detectado: Uncaught Error: Using $this when not in object context in E:\wamp64\www\wordpress\wp-content\plugins\ai-post-generator\ai-post-generator.php:172
+Stack trace:
+#0 E:\wamp64\www\wordpress\wp-settings.php(560): include_once()
+#1 E:\wamp64\www\wordpress\wp-config.php(102): require_once('E:\\wamp64\\www\\w...')
+#2 E:\wamp64\www\wordpress\wp-load.php(50): require_once('E:\\wamp64\\www\\w...')
+#3 E:\wamp64\www\wordpress\wp-admin\admin.php(35): require_once('E:\\wamp64\\www\\w...')
+#4 E:\wamp64\www\wordpress\wp-admin\update-core.php(10): require_once('E:\\wamp64\\www\\w...')
+#5 {main}
+  thrown {"file":"E:\\wamp64\\www\\wordpress\\wp-content\\plugins\\ai-post-generator\\ai-post-generator.php","line":172,"type":1}
+[2025-12-27 18:04:19] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:04:31] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:04:53] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:04:59] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:05:02] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:06:02] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:06:34] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:06:38] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:07:38] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:08:38] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:09:39] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:10:39] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:11:40] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:11:41] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:12:02] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:12:05] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:15:26] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:15:29] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:15:30] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:15:32] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:15:42] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:16:42] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:17:43] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:19:44] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:21:45] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:23:46] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:25:47] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:45:48] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:45:49] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:45:50] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:46:21] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:47:16] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:52:54] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:52:54] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:52:56] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:52:57] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:52:58] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:53:28] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:53:59] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:54:01] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:54:03] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:54:04] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:54:20] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:55:05] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:57:06] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 18:59:07] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:01:08] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:03:09] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:05:40] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:06:41] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:08:42] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:10:43] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:12:44] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:13:05] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:14:06] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:15:06] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:17:06] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:17:17] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:18:05] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:18:05] [EMERGENCY] Erro fatal detectado: syntax error, unexpected token "<", expecting ")" {"file":"E:\\wamp64\\www\\wordpress\\wp-content\\plugins\\ai-post-generator\\includes\\pages\\image-manager-page.php","line":162,"type":4}
+[2025-12-27 19:18:17] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:19:18] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:20:18] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:21:19] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:21:33] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:21:33] [EMERGENCY] Erro fatal detectado: Cannot declare class AI_Post_Generator, because the name is already in use {"file":"E:\\wamp64\\www\\wordpress\\wp-content\\plugins\\ai-post-generator\\includes\\pages\\image-manager-page.php","line":13,"type":64}
+[2025-12-27 19:22:32] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:22:32] [EMERGENCY] Erro fatal detectado: Cannot declare class AI_Post_Generator, because the name is already in use {"file":"E:\\wamp64\\www\\wordpress\\wp-content\\plugins\\ai-post-generator\\includes\\pages\\image-manager-page.php","line":13,"type":64}
+[2025-12-27 19:23:45] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:23:45] [EMERGENCY] Erro fatal detectado: Cannot declare class AI_Post_Generator, because the name is already in use {"file":"E:\\wamp64\\www\\wordpress\\wp-content\\plugins\\ai-post-generator\\includes\\pages\\image-manager-page.php","line":13,"type":64}
+[2025-12-27 19:23:48] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:23:48] [EMERGENCY] Erro fatal detectado: Cannot declare class AI_Post_Generator, because the name is already in use {"file":"E:\\wamp64\\www\\wordpress\\wp-content\\plugins\\ai-post-generator\\includes\\pages\\image-manager-page.php","line":13,"type":64}
+[2025-12-27 19:23:57] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:23:57] [EMERGENCY] Erro fatal detectado: Cannot declare class AI_Post_Generator, because the name is already in use {"file":"E:\\wamp64\\www\\wordpress\\wp-content\\plugins\\ai-post-generator\\includes\\pages\\image-manager-page.php","line":13,"type":64}
+[2025-12-27 19:24:27] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:25:28] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:27:28] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:29:29] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:31:30] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:31:30] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:33:31] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:35:32] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:37:33] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:39:34] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:41:35] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:43:36] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:45:37] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:47:38] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:49:39] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:51:40] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:51:40] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:53:41] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:55:42] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:57:43] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 19:59:44] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:01:45] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:03:46] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:05:47] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:07:48] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:09:49] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:11:50] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:13:51] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:15:52] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:17:53] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:19:54] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:21:55] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:23:04] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:23:05] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:23:23] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:23:29] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:24:29] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:25:29] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:26:29] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:27:29] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:28:29] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:29:29] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:30:29] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:30:29] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:31:29] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:32:30] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:33:31] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:34:32] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:35:33] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:37:34] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:39:35] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:40:35] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:40:35] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:40:39] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:40:50] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:40:52] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:41:27] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:41:27] [INFO] Iniciando geração de conteúdo {"provider":"groq","topic":"crie um artigo sobre IAs","language":"pt-br"}
+[2025-12-27 20:41:27] [ERROR] Chave API não configurada {"provider":"groq"}
+[2025-12-27 20:41:35] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:42:36] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:43:36] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:45:36] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:46:37] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
+[2025-12-27 20:47:18] [INFO] Plugin AI Post Generator inicializado {"version":"2.2.0","php_version":"8.3.14","wp_version":"6.9"}
