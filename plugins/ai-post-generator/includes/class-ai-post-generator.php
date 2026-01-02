@@ -173,7 +173,7 @@ class AI_Post_Generator {
             'aipg_unsplash_key', 'aipg_image_provider', 'aipg_pexels_key', 'aipg_pixabay_key',
             'aipg_stability_key', 'aipg_image_width', 'aipg_image_height', 'aipg_default_category',
             'aipg_post_status', 'aipg_default_author', 'aipg_auto_tags', 'aipg_seo_optimization',
-            'aipg_auto_featured_image', 'aipg_add_internal_links'
+            'aipg_auto_featured_image', 'aipg_add_internal_links', 'aipg_disable_ssl_verify'
         );
         
         foreach ($settings as $setting) {

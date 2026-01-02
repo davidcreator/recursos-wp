@@ -178,7 +178,7 @@ $stability_key = get_option('aipg_stability_key');
         <table class="form-table">
             <tbody>
                 <!-- Groq -->
-                <tr class="api-key-row" data-provider="groq" style="display: none;">
+                <tr class="api-key-row" data-provider="groq">
                     <th scope="row">
                         <label for="aipg_groq_key">
                             <?php echo esc_html__('Chave API Groq', 'ai-post-generator'); ?>
@@ -202,7 +202,7 @@ $stability_key = get_option('aipg_stability_key');
                 </tr>
 
                 <!-- Modelo Groq -->
-                <tr class="api-key-row" data-provider="groq" style="display: none;">
+                <tr class="api-key-row" data-provider="groq">
                     <th scope="row">
                         <label for="aipg_groq_model">
                             <?php echo esc_html__('Modelo Groq', 'ai-post-generator'); ?>
@@ -221,7 +221,7 @@ $stability_key = get_option('aipg_stability_key');
                 </tr>
 
                 <!-- OpenAI -->
-                <tr class="api-key-row" data-provider="openai" style="display: none;">
+                <tr class="api-key-row" data-provider="openai">
                     <th scope="row">
                         <label for="aipg_openai_key">
                             <?php echo esc_html__('Chave API OpenAI', 'ai-post-generator'); ?>
@@ -245,7 +245,7 @@ $stability_key = get_option('aipg_stability_key');
                 </tr>
 
                 <!-- Anthropic -->
-                <tr class="api-key-row" data-provider="anthropic" style="display: none;">
+                <tr class="api-key-row" data-provider="anthropic">
                     <th scope="row">
                         <label for="aipg_anthropic_key">
                             <?php echo esc_html__('Chave API Anthropic', 'ai-post-generator'); ?>
@@ -269,7 +269,7 @@ $stability_key = get_option('aipg_stability_key');
                 </tr>
 
                 <!-- Hugging Face -->
-                <tr class="api-key-row" data-provider="huggingface" style="display: none;">
+                <tr class="api-key-row" data-provider="huggingface">
                     <th scope="row">
                         <label for="aipg_huggingface_key">
                             <?php echo esc_html__('Token Hugging Face', 'ai-post-generator'); ?>
@@ -293,7 +293,7 @@ $stability_key = get_option('aipg_stability_key');
                 </tr>
 
                 <!-- Cohere -->
-                <tr class="api-key-row" data-provider="cohere" style="display: none;">
+                <tr class="api-key-row" data-provider="cohere">
                     <th scope="row">
                         <label for="aipg_cohere_key">
                             <?php echo esc_html__('Chave API Cohere', 'ai-post-generator'); ?>
@@ -317,7 +317,7 @@ $stability_key = get_option('aipg_stability_key');
                 </tr>
 
                 <!-- Mistral -->
-                <tr class="api-key-row" data-provider="mistral" style="display: none;">
+                <tr class="api-key-row" data-provider="mistral">
                     <th scope="row">
                         <label for="aipg_mistral_key">
                             <?php echo esc_html__('Chave API Mistral', 'ai-post-generator'); ?>
@@ -515,12 +515,15 @@ $stability_key = get_option('aipg_stability_key');
                     <td>
                         <p class="description">
                             <?php echo esc_html__('Usa a mesma chave OpenAI configurada acima. Custo: $0.04/imagem', 'ai-post-generator'); ?>
+                            <br>
+                            <?php echo esc_html__('Obtenha em:', 'ai-post-generator'); ?>
+                            <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">https://platform.openai.com/api-keys</a>
                         </p>
                     </td>
                 </tr>
 
                 <!-- Stability AI -->
-                <tr class="image-api-key-row" data-provider="stability" style="display: none;">
+                <tr class="image-api-key-row" data-provider="stability">
                     <th scope="row">
                         <label for="aipg_stability_key">
                             <?php echo esc_html__('Chave API Stability AI', 'ai-post-generator'); ?>
@@ -541,6 +544,56 @@ $stability_key = get_option('aipg_stability_key');
                             </a> - 
                             ✅ <?php echo esc_html__('25 créditos grátis | Qualidade: Excelente', 'ai-post-generator'); ?>
                         </p>
+                        <p>
+                            <button type="button" class="button aipg-test-provider" data-provider="stability">
+                                <?php echo esc_html__('Testar Provedor', 'ai-post-generator'); ?>
+                            </button>
+                        </p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="form-table">
+            <tbody>
+                <tr class="image-api-key-row" data-provider="unsplash">
+                    <th scope="row"><?php echo esc_html__('Testar Unsplash', 'ai-post-generator'); ?></th>
+                    <td>
+                        <button type="button" class="button aipg-test-provider" data-provider="unsplash">
+                            <?php echo esc_html__('Testar Provedor', 'ai-post-generator'); ?>
+                        </button>
+                    </td>
+                </tr>
+                <tr class="image-api-key-row" data-provider="pexels">
+                    <th scope="row"><?php echo esc_html__('Testar Pexels', 'ai-post-generator'); ?></th>
+                    <td>
+                        <button type="button" class="button aipg-test-provider" data-provider="pexels">
+                            <?php echo esc_html__('Testar Provedor', 'ai-post-generator'); ?>
+                        </button>
+                    </td>
+                </tr>
+                <tr class="image-api-key-row" data-provider="pixabay">
+                    <th scope="row"><?php echo esc_html__('Testar Pixabay', 'ai-post-generator'); ?></th>
+                    <td>
+                        <button type="button" class="button aipg-test-provider" data-provider="pixabay">
+                            <?php echo esc_html__('Testar Provedor', 'ai-post-generator'); ?>
+                        </button>
+                    </td>
+                </tr>
+                <tr class="image-api-key-row" data-provider="dall-e">
+                    <th scope="row"><?php echo esc_html__('Testar DALL-E', 'ai-post-generator'); ?></th>
+                    <td>
+                        <button type="button" class="button aipg-test-provider" data-provider="dall-e">
+                            <?php echo esc_html__('Testar Provedor', 'ai-post-generator'); ?>
+                        </button>
+                    </td>
+                </tr>
+                <tr class="image-api-key-row" data-provider="pollinations">
+                    <th scope="row"><?php echo esc_html__('Testar Pollinations', 'ai-post-generator'); ?></th>
+                    <td>
+                        <button type="button" class="button aipg-test-provider" data-provider="pollinations">
+                            <?php echo esc_html__('Testar Provedor', 'ai-post-generator'); ?>
+                        </button>
                     </td>
                 </tr>
             </tbody>
@@ -668,6 +721,31 @@ $stability_key = get_option('aipg_stability_key');
                                 <?php echo esc_html__('Adicionar links internos', 'ai-post-generator'); ?>
                             </label>
                         </fieldset>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2><?php echo esc_html__('🌐 Configurações de Rede', 'ai-post-generator'); ?></h2>
+        <table class="form-table">
+            <tbody>
+                <tr>
+                    <th scope="row">
+                        <label for="aipg_disable_ssl_verify">
+                            <?php echo esc_html__('Desativar verificação SSL (teste)', 'ai-post-generator'); ?>
+                        </label>
+                    </th>
+                    <td>
+                        <input 
+                            type="checkbox" 
+                            id="aipg_disable_ssl_verify" 
+                            name="aipg_disable_ssl_verify" 
+                            value="1"
+                            <?php checked(get_option('aipg_disable_ssl_verify'), '1'); ?>
+                        />
+                        <p class="description">
+                            <?php echo esc_html__('Use apenas para diagnosticar problemas de SSL. Recomenda-se manter desativado.', 'ai-post-generator'); ?>
+                        </p>
                     </td>
                 </tr>
             </tbody>

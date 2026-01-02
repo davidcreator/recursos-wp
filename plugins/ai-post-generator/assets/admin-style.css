@@ -226,11 +226,6 @@ h2.title:first-of-type {
 
 .api-key-row,
 .image-api-key-row {
-    display: none;
-}
-
-.api-key-row.active,
-.image-api-key-row.active {
     display: table-row;
 }
 

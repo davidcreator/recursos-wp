@@ -1317,7 +1317,320 @@ public function save_ad_enhanced() {
         $this->ads = $wpdb->get_results("SELECT * FROM $table_name WHERE status = 'active'", ARRAY_A);
     }
     
-    public function preview_ad() {}
+    /**
+     * Calcula número ideal de anúncios baseado em comprimento do conteúdo
+     * 
+     * @param int $word_count Número de palavras
+     * @param string $frequency_mode Modo de frequência (unlimited|fixed|per_words|smart)
+     * @return int Número ideal de anúncios
+     */
+    public function calculate_ideal_ad_count($word_count, $frequency_mode = 'unlimited') {
+        
+        switch ($frequency_mode) {
+            case 'unlimited':
+                return 999;  // Sem limite
+                
+            case 'fixed':
+                return intval($this->options['max_ads_per_page_custom'] ?? 50);
+                
+            case 'per_words':
+                // 1 anúncio a cada X palavras
+                $words_per_ad = 1000 / intval($this->options['ads_per_1000_words'] ?? 1);
+                return max(1, intval($word_count / $words_per_ad));
+                
+            case 'smart':
+                // Algoritmo inteligente
+                if ($word_count < 500) {
+                    return 1;
+                } elseif ($word_count < 1000) {
+                    return 2;
+                } elseif ($word_count < 2000) {
+                    return 3;
+                } elseif ($word_count < 3000) {
+                    return 4;
+                } else {
+                    return intval($word_count / 500);  // 1 a cada 500 palavras
+                }
+                
+            default:
+                return 999;
+        }
+    }
+    
+    /**
+     * Insere anúncios respeitando distância mínima entre eles
+     * 
+     * @param string $content Conteúdo do post
+     * @return string Conteúdo com anúncios inseridos
+     */
+    public function insert_ads_with_spacing($content) {
+        $min_words = intval($this->options['min_words_between_ads'] ?? 250);
+        $min_paragraphs = intval($this->options['min_paragraphs_between_ads'] ?? 2);
+        
+        $paragraphs = explode('</p>', $content);
+        $total_words = str_word_count(strip_tags($content));
+        $max_ads = $this->calculate_ideal_ad_count($total_words, $this->options['ad_frequency_mode'] ?? 'unlimited');
+        
+        $inserted_ads = 0;
+        $words_since_last_ad = 0;
+        $paragraphs_since_last_ad = 0;
+        
+        foreach ($paragraphs as $index => &$paragraph) {
+            if ($inserted_ads >= $max_ads) break;
+            
+            $paragraph_words = str_word_count(strip_tags($paragraph));
+            $words_since_last_ad += $paragraph_words;
+            $paragraphs_since_last_ad++;
+            
+            // Verificar espaçamento mínimo
+            if ($words_since_last_ad >= $min_words && $paragraphs_since_last_ad >= $min_paragraphs) {
+                $paragraph .= '</p>' . $this->get_next_ad_html();
+                $inserted_ads++;
+                $words_since_last_ad = 0;
+                $paragraphs_since_last_ad = 0;
+            }
+        }
+        
+        return implode('</p>', $paragraphs);
+    }
+    
+    /**
+     * Insere anúncios flutuantes (sticky)
+     * 
+     * @return string HTML dos anúncios flutuantes
+     */
+    public function insert_floating_ads() {
+        $floating_options = $this->options['floating_ads'] ?? array();
+        
+        if (!intval($floating_options['enable'] ?? 0) && empty($floating_options['top']) && empty($floating_options['bottom']) && empty($floating_options['left']) && empty($floating_options['right'])) {
+            // Se enable não existe ou é 0, checar se algum individual está ativo
+            // Ajuste para compatibilidade com array antigo vs novo
+             // Se nada estiver ativo, retorna
+             // Mas como o default enable pode não estar setado, vamos confiar nas posições
+        }
+
+        $html = '';
+        $positions = array('top', 'bottom', 'left', 'right');
+        
+        foreach ($positions as $position) {
+            if (intval($floating_options[$position] ?? 0)) {
+                $html .= $this->render_floating_ad($position, $floating_options);
+            }
+        }
+        
+        if (!empty($html)) {
+            echo $html;
+        }
+    }
+    
+    /**
+     * Renderiza um anúncio flutuante
+     * 
+     * @param string $position Posição (top|bottom|left|right)
+     * @param array $options Opções
+     * @return string HTML
+     */
+    private function render_floating_ad($position, $options) {
+        $ad = $this->get_next_ad_html();
+        if (empty($ad)) return '';
+
+        $z_index = intval($options['z_index'] ?? 9999);
+        $show_after = intval($options['show_after_scroll'] ?? 500);
+        $close_button = intval($options['close_button'] ?? 1);
+        
+        $css_position = '';
+        switch ($position) {
+            case 'top':
+                $css_position = 'top: 0; left: 0; right: 0; width: 100%;';
+                break;
+            case 'bottom':
+                $css_position = 'bottom: 0; left: 0; right: 0; width: 100%;';
+                break;
+            case 'left':
+                $css_position = 'left: 0; top: 50%;';
+                break;
+            case 'right':
+                $css_position = 'right: 0; top: 50%;';
+                break;
+        }
+        
+        $html = '<div class="amp-floating-ad amp-floating-' . $position . '" style="position: fixed; ' . $css_position . '; z-index: ' . $z_index . ';" data-show-after="' . $show_after . '">';
+        
+        if ($close_button) {
+            $html .= '<button class="amp-floating-close" aria-label="Fechar">×</button>';
+        }
+        
+        $html .= $ad;
+        $html .= '</div>';
+        
+        return $html;
+    }
+    
+    /**
+     * Insere anúncios em pop-up
+     * 
+     * @return string HTML do pop-up
+     */
+    public function insert_popup_ads() {
+        $popup_options = $this->options['popup_ads'] ?? array();
+        
+        if (!intval($popup_options['enable_popup'] ?? 0)) {
+            return;
+        }
+        
+        $trigger_type = $popup_options['trigger_on'] ?? 'time';
+        $trigger_value = intval($popup_options['trigger_value'] ?? 3);
+        $animation = $popup_options['animation'] ?? 'fadeIn';
+        
+        $ad = $this->get_next_ad_html();
+        if (empty($ad)) return;
+        
+        $html = '<div id="amp-popup-ad" class="amp-popup-ad amp-popup-' . $animation . '" style="display: none;">';
+        $html .= '<div class="amp-popup-overlay"></div>';
+        $html .= '<div class="amp-popup-content">';
+        
+        if (intval($popup_options['dismiss_button'] ?? 1)) {
+            $html .= '<button class="amp-popup-close" aria-label="Fechar">×</button>';
+        }
+        
+        $html .= $ad;
+        $html .= '</div></div>';
+        
+        // Script para trigger
+        $html .= '<script>
+        (function() {
+            var trigger = "' . $trigger_type . '";
+            var value = ' . $trigger_value . ';
+            
+            if (trigger === "time") {
+                setTimeout(function() {
+                    document.getElementById("amp-popup-ad").style.display = "block";
+                }, value * 1000);
+            } else if (trigger === "scroll") {
+                window.addEventListener("scroll", function() {
+                    if (window.pageYOffset > value && document.getElementById("amp-popup-ad").style.display === "none") {
+                        document.getElementById("amp-popup-ad").style.display = "block";
+                    }
+                });
+            }
+            
+            var closeBtn = document.querySelector(".amp-popup-close");
+            if(closeBtn) {
+                closeBtn.addEventListener("click", function() {
+                    document.getElementById("amp-popup-ad").style.display = "none";
+                });
+            }
+        })();
+        </script>';
+        
+        echo $html;
+    }
+    
+    /**
+     * Insere anúncios entre posts (em listas/archives)
+     * 
+     * @param string $content
+     * @return string
+     */
+    public function insert_ads_between_posts($content) {
+        if (!is_archive() && !is_home() && !is_search()) {
+            return $content;
+        }
+        
+        $between_options = $this->options['between_posts_ads'] ?? array();
+        
+        if (!intval($between_options['enable'] ?? 0)) {
+            return $content;
+        }
+        
+        static $post_counter = 0;
+        $post_counter++;
+        
+        $every_nth = intval($between_options['every_nth_post'] ?? 2);
+        
+        if ($post_counter % $every_nth === 0) {
+             $ad = $this->get_next_ad_html();
+             if (!empty($ad)) {
+                 $content .= '<div class="amp-ad-between-posts">' . $ad . '</div>';
+             }
+        }
+        
+        return $content;
+    }
+    
+    /**
+     * Insere anúncios em comentários
+     * 
+     * @param string $content Conteúdo dos comentários
+     * @return string
+     */
+    public function insert_comment_ads($content) {
+        $comment_options = $this->options['comment_ads'] ?? array();
+        
+        if (!intval($comment_options['enable'] ?? 0)) {
+            return $content;
+        }
+        
+        // Lógica simplificada para comentários
+        return $content;
+    }
+    
+    /**
+     * Obtém próximo anúncio HTML
+     * 
+     * @return string HTML do anúncio
+     */
+    private function get_next_ad_html() {
+        $ads = $this->get_ads_by_priority();
+        
+        if (empty($ads)) {
+            return '';
+        }
+        
+        // Simples rotação ou pegar o primeiro de maior prioridade
+        // Idealmente implementaria um round-robin ou seleção baseada em peso
+        $ad = $ads[0]; 
+        
+        // Se houver mais de um, pode-se randomizar entre os top priority
+        if (count($ads) > 1) {
+             $ad = $ads[array_rand($ads)];
+        }
+        
+        return $this->render_ad_with_tracking($ad);
+    }
+    
+    /**
+     * Obtém estatísticas de posicionamento de anúncios
+     * 
+     * @return array Estatísticas
+     */
+    public function get_position_statistics() {
+        global $wpdb;
+        
+        $table_positions = $wpdb->prefix . 'amp_ad_positions';
+        // Verificar se a tabela existe antes de consultar
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table_positions'") != $table_positions) {
+            return array();
+        }
+
+        $stats = $wpdb->get_results("
+            SELECT 
+                position_key,
+                COUNT(*) as total_ads,
+                AVG(CTR) as avg_ctr,
+                SUM(impressions) as total_impressions,
+                SUM(clicks) as total_clicks
+            FROM {$wpdb->prefix}amp_ad_positions ap
+            LEFT JOIN {$wpdb->prefix}amp_analytics aa ON ap.ad_id = aa.ad_id
+            GROUP BY position_key
+            ORDER BY total_clicks DESC
+        ");
+        
+        return $stats ?: array();
+    }
+    
+    public function preview_ad() {
+}
 }
 
 // Widget

@@ -43,6 +43,28 @@ class AIPG_Image_Generator {
     }
     
     /**
+     * Gera imagem usando provedor específico (ignora configuração salva)
+     */
+    private function generate_with_provider($provider, $topic, $post_id = 0) {
+        switch ($provider) {
+            case 'unsplash':
+                return $this->generate_unsplash($topic, $post_id);
+            case 'pexels':
+                return $this->generate_pexels($topic, $post_id);
+            case 'pixabay':
+                return $this->generate_pixabay($topic, $post_id);
+            case 'pollinations':
+                return $this->generate_pollinations($topic, $post_id);
+            case 'dall-e':
+                return $this->generate_dalle($topic, $post_id);
+            case 'stability':
+                return $this->generate_stability($topic, $post_id);
+            default:
+                return new WP_Error('no_provider', __('Provedor de imagem inválido para teste', 'ai-post-generator'));
+        }
+    }
+    
+    /**
      * AJAX: Gera imagem
      */
     public function ajax_generate_image() {
@@ -180,7 +202,12 @@ class AIPG_Image_Generator {
         check_ajax_referer('aipg_generate_post', 'nonce');
         
         $provider = sanitize_text_field($_POST['provider']);
-        $result = $this->generate('mountain landscape', 0);
+        
+        if (empty($provider)) {
+            wp_send_json_error(array('message' => __('Provedor não informado', 'ai-post-generator')));
+        }
+        
+        $result = $this->generate_with_provider($provider, 'mountain landscape', 0);
         
         if (is_wp_error($result)) {
             wp_send_json_error(array('message' => $result->get_error_message()));
@@ -318,22 +345,12 @@ class AIPG_Image_Generator {
         $enhanced_prompt = $this->enhance_prompt($topic);
         
         $image_url = sprintf(
-            'https://image.pollinations.ai/prompt/%s?width=%d&height=%d&nologo=true&enhance=true',
+            'https://image.pollinations.ai/prompt/%s?width=%d&height=%d&nologo=true&enhance=true&_ts=%d',
             urlencode($enhanced_prompt),
             $width,
-            $height
+            $height,
+            time()
         );
-        
-        $check_response = wp_remote_head($image_url, array('timeout' => 60));
-        
-        if (is_wp_error($check_response)) {
-            return $check_response;
-        }
-        
-        $response_code = wp_remote_retrieve_response_code($check_response);
-        if ($response_code !== 200) {
-            return new WP_Error('generation_failed', __('Falha ao gerar imagem', 'ai-post-generator'));
-        }
         
         return $this->download_and_attach($image_url, $topic, $post_id, array(
             'caption' => __('Imagem gerada por IA (Pollinations)', 'ai-post-generator')
@@ -444,7 +461,7 @@ class AIPG_Image_Generator {
     /**
      * Download e anexa imagem
      */
-    private function download_and_attach($image_url, $topic, $post_id, $meta = array()) {
+    private function download_and_attach($image_url, $topic, $post_id, $meta = array(), $ext = 'jpg') {
         require_once(ABSPATH . 'wp-admin/includes/media.php');
         require_once(ABSPATH . 'wp-admin/includes/file.php');
         require_once(ABSPATH . 'wp-admin/includes/image.php');
@@ -455,8 +472,89 @@ class AIPG_Image_Generator {
             return $tmp;
         }
         
+        // Verifica se o arquivo baixado possui conteúdo; se estiver vazio, tenta fallback com stream
+        $filesize = @filesize($tmp);
+        if ($filesize === false || $filesize <= 0) {
+            @unlink($tmp);
+            $tmp_stream = wp_tempnam($image_url);
+            if (!$tmp_stream) {
+                return new WP_Error('temp_file', __('Falha ao criar arquivo temporário', 'ai-post-generator'));
+            }
+            // Usa URL com cache-buster para serviços que podem demorar a gerar (ex.: Pollinations)
+            $dl_url = $image_url;
+            $host = parse_url($image_url, PHP_URL_HOST);
+            if (is_string($host) && stripos($host, 'pollinations.ai') !== false && strpos($image_url, '_ts=') === false) {
+                $dl_url .= (strpos($image_url, '?') !== false ? '&' : '?') . '_ts=' . time();
+            }
+            $response = wp_remote_get($dl_url, array(
+                'timeout' => 90,
+                'redirection' => 5,
+                'sslverify' => ! (bool) get_option('aipg_disable_ssl_verify', false),
+                'stream' => true,
+                'filename' => $tmp_stream,
+                'headers' => array(
+                    'Accept' => 'image/*',
+                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AIPG'
+                )
+            ));
+            if (is_wp_error($response)) {
+                @unlink($tmp_stream);
+                return $response;
+            }
+            $code = wp_remote_retrieve_response_code($response);
+            if ($code !== 200) {
+                @unlink($tmp_stream);
+                return new WP_Error('download_failed', sprintf(__('Falha ao baixar imagem (HTTP %d)', 'ai-post-generator'), $code));
+            }
+            $stream_size = @filesize($tmp_stream);
+            if ($stream_size === false || $stream_size <= 0) {
+                @unlink($tmp_stream);
+                $tmp_buf = wp_tempnam($image_url);
+                if (!$tmp_buf) {
+                    return new WP_Error('temp_file', __('Falha ao criar arquivo temporário', 'ai-post-generator'));
+                }
+                $resp2 = wp_remote_get($dl_url, array(
+                    'timeout' => 90,
+                    'redirection' => 5,
+                    'sslverify' => ! (bool) get_option('aipg_disable_ssl_verify', false),
+                    'headers' => array(
+                        'Accept' => 'image/*',
+                        'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AIPG'
+                    )
+                ));
+                if (is_wp_error($resp2)) {
+                    @unlink($tmp_buf);
+                    return $resp2;
+                }
+                $code2 = wp_remote_retrieve_response_code($resp2);
+                if ($code2 !== 200) {
+                    @unlink($tmp_buf);
+                    return new WP_Error('download_failed', sprintf(__('Falha ao baixar imagem (HTTP %d)', 'ai-post-generator'), $code2));
+                }
+                $ctype = wp_remote_retrieve_header($resp2, 'content-type');
+                $body = wp_remote_retrieve_body($resp2);
+                if (!is_string($body) || strlen($body) < 64 || (is_string($ctype) && strpos($ctype, 'image') === false)) {
+                    @unlink($tmp_buf);
+                    return new WP_Error('empty_file', __('O arquivo retornado está vazio. Verifique configurações do servidor (upload_max_filesize/post_max_size) e bloqueios de saída.', 'ai-post-generator'));
+                }
+                if (file_put_contents($tmp_buf, $body) === false) {
+                    @unlink($tmp_buf);
+                    return new WP_Error('save_failed', __('Falha ao salvar imagem', 'ai-post-generator'));
+                }
+                $tmp = $tmp_buf;
+            } else {
+                $tmp = $tmp_stream;
+            }
+        }
+        
+        $safe_ext = in_array($ext, array('jpg','jpeg','png','webp')) ? $ext : 'jpg';
+        if ($safe_ext === 'jpeg') { $safe_ext = 'jpg'; }
+        $sniff = $this->sniff_extension_from_file($tmp);
+        if ($sniff) {
+            $safe_ext = $sniff;
+        }
         $file_array = array(
-            'name' => sanitize_file_name($topic) . '-' . time() . '.jpg',
+            'name' => sanitize_file_name($topic) . '-' . time() . '.' . $safe_ext,
             'tmp_name' => $tmp
         );
         
@@ -522,6 +620,24 @@ class AIPG_Image_Generator {
         update_post_meta($attach_id, '_aipg_image_provider', get_option('aipg_image_provider'));
         
         return $attach_id;
+    }
+    
+    /**
+     * Detecta extensão a partir dos primeiros bytes do arquivo
+     */
+    private function sniff_extension_from_file($filepath) {
+        $fp = @fopen($filepath, 'rb');
+        if (!$fp) return null;
+        $bytes = @fread($fp, 12);
+        @fclose($fp);
+        if (!is_string($bytes) || strlen($bytes) < 4) return null;
+        // JPEG
+        if (ord($bytes[0]) === 0xFF && ord($bytes[1]) === 0xD8) return 'jpg';
+        // PNG
+        if (substr($bytes, 0, 8) === "\x89PNG\r\n\x1a\n") return 'png';
+        // WEBP (RIFF....WEBP)
+        if (substr($bytes, 0, 4) === "RIFF" && substr($bytes, 8, 4) === "WEBP") return 'webp';
+        return null;
     }
     
     /**

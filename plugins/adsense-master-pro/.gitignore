@@ -1,0 +1,22 @@
+# Arquivos de sistema e IDE
+.DS_Store
+.vscode/
+.idea/
+*.log
+
+# Arquivos de backup e temporários
+*.old
+*.bak
+*.tmp
+
+# Scripts de manutenção e correção pontual
+fix_*.php
+clear_*.php
+adsense-master-pro-improviments-v3.0.php
+
+# Dependências (se houver composer/npm no futuro)
+vendor/
+node_modules/
+
+# Arquivos de tradução compilados (opcional, mas comum)
+*.mo

@@ -158,6 +158,77 @@
             updateImagePreview(); // Mostra ao carregar
         }
         
+        // Testar provedor de imagem
+        $(document).on('click', '.aipg-test-provider', function(e) {
+            e.preventDefault();
+            const $btn = $(this);
+            const provider = $btn.data('provider');
+            if (!provider) {
+                alert('Provedor inválido.');
+                return;
+            }
+            const originalText = $btn.text();
+            $btn.prop('disabled', true).text('Testando...');
+            $.ajax({
+                url: aipgAjax.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'aipg_test_image_provider',
+                    nonce: aipgAjax.nonce,
+                    provider: provider
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.data.message || 'Provedor testado com sucesso.');
+                    } else {
+                        alert(response.data.message || 'Falha ao testar provedor.');
+                    }
+                },
+                error: function() {
+                    alert('Erro ao comunicar com o servidor.');
+                },
+                complete: function() {
+                    $btn.prop('disabled', false).text(originalText);
+                }
+            });
+        });
+        
+        // Geração rápida de imagem na página de imagens
+        $('#aipg-btn-generate-image').on('click', function(e) {
+            e.preventDefault();
+            const topic = $('#aipg-generate-image-topic').val().trim();
+            if (!topic) {
+                alert('Informe o tópico da imagem');
+                return;
+            }
+            const $btn = $(this);
+            $btn.prop('disabled', true).text(aipgAjax.strings.generating_image);
+            $.ajax({
+                url: aipgAjax.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'aipg_generate_image',
+                    nonce: aipgAjax.nonce,
+                    topic: topic,
+                    post_id: 0
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.data.message);
+                        location.reload();
+                    } else {
+                        alert(response.data.message || 'Erro ao gerar imagem.');
+                    }
+                },
+                error: function() {
+                    alert('Erro ao comunicar com o servidor.');
+                },
+                complete: function() {
+                    $btn.prop('disabled', false).text('Gerar');
+                }
+            });
+        });
+        
         // Template selector
         $('#aipg_template').on('change', function() {
             const templateId = $(this).val();
