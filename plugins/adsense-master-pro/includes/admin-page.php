@@ -77,7 +77,7 @@ $ads = $wpdb->get_results("SELECT * FROM $table_name ORDER BY created_at DESC", 
                     <tbody>
                         <?php foreach ($ads as $ad): 
                             $options = unserialize($ad['options']);
-                            $ad_type = $this->detect_ad_type($ad['code']);
+                            $ad_type = detect_ad_type($ad['code']);
                         ?>
                         <tr data-ad-id="<?php echo $ad['id']; ?>">
                             <td><strong>#<?php echo $ad['id']; ?></strong></td>
@@ -103,12 +103,12 @@ $ads = $wpdb->get_results("SELECT * FROM $table_name ORDER BY created_at DESC", 
                             </td>
                             <td>
                                 <span class="amp-position-badge amp-position-<?php echo esc_attr($ad['position']); ?>">
-                                    <?php echo $this->get_position_label($ad['position']); ?>
+                                    <?php echo get_position_label($ad['position']); ?>
                                 </span>
                             </td>
                             <td>
                                 <span class="amp-type-badge amp-type-<?php echo esc_attr($ad_type); ?>">
-                                    <?php echo $this->get_ad_type_label($ad_type); ?>
+                                    <?php echo get_ad_type_label($ad_type); ?>
                                 </span>
                             </td>
                             <td>
@@ -304,6 +304,11 @@ $ads = $wpdb->get_results("SELECT * FROM $table_name ORDER BY created_at DESC", 
 if (!function_exists('detect_ad_type')) {
     function detect_ad_type($code) {
         if (strpos($code, 'googlesyndication.com') !== false) return 'adsense';
+        if (strpos($code, 'amazon.') !== false || strpos($code, 'amzn.to') !== false) return 'affiliate_amazon';
+        if (strpos($code, 'mercadolivre.com.br') !== false || strpos($code, 'mercadolibre.com') !== false) return 'affiliate_mercado_livre';
+        if (strpos($code, 'shopee.') !== false) return 'affiliate_shopee';
+        if (strpos($code, 'eduzz.') !== false) return 'affiliate_eduzz';
+        if (strpos($code, 'hotmart.') !== false || strpos($code, 'go.hotmart.com') !== false) return 'affiliate_hotmart';
         if (strpos($code, '<img') !== false) return 'banner';
         if (strpos($code, '<script') !== false) return 'script';
         return 'html';
@@ -332,7 +337,13 @@ if (!function_exists('get_ad_type_label')) {
             'adsense' => __('AdSense', 'adsense-master-pro'),
             'banner' => __('Banner', 'adsense-master-pro'),
             'script' => __('Script', 'adsense-master-pro'),
-            'html' => __('HTML', 'adsense-master-pro')
+            'html' => __('HTML', 'adsense-master-pro'),
+            'affiliate' => __('Afiliado', 'adsense-master-pro'),
+            'affiliate_amazon' => __('Afiliado (Amazon)', 'adsense-master-pro'),
+            'affiliate_mercado_livre' => __('Afiliado (Mercado Livre)', 'adsense-master-pro'),
+            'affiliate_shopee' => __('Afiliado (Shopee)', 'adsense-master-pro'),
+            'affiliate_eduzz' => __('Afiliado (Eduzz)', 'adsense-master-pro'),
+            'affiliate_hotmart' => __('Afiliado (Hotmart)', 'adsense-master-pro')
         );
         return isset($labels[$type]) ? $labels[$type] : $type;
     }

@@ -89,6 +89,7 @@ class AdSenseMasterPro {
         
         // Hooks para inserção de anúncios
         add_filter('the_content', array($this, 'insert_ads_in_content'), 20);
+        add_filter('the_content', array($this, 'enhance_affiliate_content'), 21);
         add_action('wp_head', array($this, 'insert_header_ads'));
         add_action('wp_footer', array($this, 'insert_footer_ads'));
         add_action('loop_start', array($this, 'insert_loop_ads'));
@@ -109,6 +110,8 @@ class AdSenseMasterPro {
         add_shortcode('adsense_ad', array($this, 'ad_shortcode'));
         add_shortcode('amp_analytics', array($this, 'analytics_shortcode'));
         add_shortcode('amp_ab_test', array($this, 'ab_test_shortcode'));
+        add_shortcode('amp_affiliate_button', array($this, 'affiliate_button_shortcode'));
+        add_shortcode('amp_affiliate_box', array($this, 'affiliate_box_shortcode'));
         
         // Widget
         add_action('widgets_init', array($this, 'register_widget'));
@@ -122,6 +125,8 @@ class AdSenseMasterPro {
         add_action('wp_ajax_nopriv_amp_track_impression', array($this, 'track_impression'));
         add_action('wp_ajax_amp_track_click', array($this, 'track_click'));
         add_action('wp_ajax_nopriv_amp_track_click', array($this, 'track_click'));
+        add_action('wp_ajax_amp_track_affiliate_click', array($this, 'track_affiliate_click'));
+        add_action('wp_ajax_nopriv_amp_track_affiliate_click', array($this, 'track_affiliate_click'));
         add_action('wp_ajax_amp_get_analytics', array($this, 'get_analytics_data'));
         add_action('wp_ajax_amp_optimize_ads', array($this, 'optimize_ads'));
         add_action('wp_ajax_amp_ab_test_result', array($this, 'ab_test_result'));
@@ -587,7 +592,7 @@ public function save_ad_enhanced() {
         $this->clear_cache();
     }
     
-    public function uninstall() {
+    public static function uninstall() {
         global $wpdb;
         
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}amp_ads");
@@ -603,197 +608,19 @@ public function save_ad_enhanced() {
         
         $cache_dir = WP_CONTENT_DIR . '/cache/adsense-master-pro/';
         if (file_exists($cache_dir)) {
-            $this->delete_directory($cache_dir);
+            self::delete_directory($cache_dir);
         }
     }
     
-    private function delete_directory($dir) {
+    private static function delete_directory($dir) {
         if (!file_exists($dir)) return;
         
         $files = array_diff(scandir($dir), array('.', '..'));
         foreach ($files as $file) {
             $path = $dir . DIRECTORY_SEPARATOR . $file;
-            is_dir($path) ? $this->delete_directory($path) : unlink($path);
+            is_dir($path) ? self::delete_directory($path) : unlink($path);
         }
         rmdir($dir);
-    }
-    
-    // ✅ V3.0: Novos métodos para frequência inteligente
-    
-    /**
-     * Calcula número ideal de anúncios baseado em comprimento do conteúdo
-     */
-    public function calculate_ideal_ad_count($word_count, $frequency_mode = 'unlimited') {
-        switch ($frequency_mode) {
-            case 'unlimited':
-                return 999;
-                
-            case 'fixed':
-                return intval($this->options['max_ads_per_page_custom'] ?? 50);
-                
-            case 'per_words':
-                $words_per_ad = 1000 / intval($this->options['ads_per_1000_words'] ?? 1);
-                return max(1, intval($word_count / $words_per_ad));
-                
-            case 'smart':
-                if ($word_count < 500) {
-                    return 1;
-                } elseif ($word_count < 1000) {
-                    return 2;
-                } elseif ($word_count < 2000) {
-                    return 3;
-                } elseif ($word_count < 3000) {
-                    return 4;
-                } else {
-                    return intval($word_count / 500);
-                }
-                
-            default:
-                return 999;
-        }
-    }
-    
-    /**
-     * Insere anúncios respeitando espaçamento mínimo
-     */
-    public function insert_ads_with_spacing($content) {
-        $min_words = intval($this->options['min_words_between_ads'] ?? 250);
-        $min_paragraphs = intval($this->options['min_paragraphs_between_ads'] ?? 2);
-        
-        $paragraphs = explode('</p>', $content);
-        $total_words = str_word_count(strip_tags($content));
-        $max_ads = $this->calculate_ideal_ad_count($total_words, $this->options['ad_frequency_mode'] ?? 'unlimited');
-        
-        $inserted_ads = 0;
-        $words_since_last_ad = 0;
-        $paragraphs_since_last_ad = 0;
-        
-        foreach ($paragraphs as $index => &$paragraph) {
-            if ($inserted_ads >= $max_ads) break;
-            
-            $paragraph_words = str_word_count(strip_tags($paragraph));
-            $words_since_last_ad += $paragraph_words;
-            $paragraphs_since_last_ad++;
-            
-            if ($words_since_last_ad >= $min_words && $paragraphs_since_last_ad >= $min_paragraphs) {
-                $ads = $this->get_ads_by_priority();
-                if (!empty($ads) && $inserted_ads < count($ads)) {
-                    $paragraph .= '</p>' . $this->render_ad_with_tracking($ads[$inserted_ads]);
-                    $inserted_ads++;
-                    $words_since_last_ad = 0;
-                    $paragraphs_since_last_ad = 0;
-                }
-            }
-        }
-        
-        return implode('</p>', $paragraphs);
-    }
-    
-    /**
-     * Insere anúncios flutuantes (sticky)
-     */
-    public function insert_floating_ads() {
-        if (!$this->options['enable_adsense']) {
-            return;
-        }
-        
-        $floating_options = $this->options['floating_ads'] ?? array();
-        
-        $positions = array('top', 'bottom', 'left', 'right');
-        
-        foreach ($positions as $position) {
-            if (intval($floating_options[$position] ?? 0)) {
-                $this->render_floating_ad($position, $floating_options);
-            }
-        }
-    }
-    
-    /**
-     * Renderiza um anúncio flutuante
-     */
-    private function render_floating_ad($position, $options) {
-        $ads = $this->get_ads_by_priority();
-        if (empty($ads)) return;
-        
-        $ad = $ads[0];
-        $z_index = intval($options['z_index'] ?? 9999);
-        $show_after = intval($options['show_after_scroll'] ?? 500);
-        $close_button = intval($options['close_button'] ?? 1);
-        
-        $css_position = '';
-        switch ($position) {
-            case 'top':
-                $css_position = 'top: 0; left: 0; right: 0; width: 100%;';
-                break;
-            case 'bottom':
-                $css_position = 'bottom: 0; left: 0; right: 0; width: 100%;';
-                break;
-            case 'left':
-                $css_position = 'left: 0; top: 50%;';
-                break;
-            case 'right':
-                $css_position = 'right: 0; top: 50%;';
-                break;
-        }
-        
-        ?>
-        <div class="amp-floating-ad amp-floating-<?php echo esc_attr($position); ?>" 
-             style="position: fixed; <?php echo esc_attr($css_position); ?>; z-index: <?php echo intval($z_index); ?>;" 
-             data-show-after="<?php echo intval($show_after); ?>" 
-             data-ad-id="<?php echo intval($ad->id); ?>">
-            
-            <?php if ($close_button): ?>
-                <button class="amp-floating-close" aria-label="<?php esc_attr_e('Fechar', 'adsense-master-pro'); ?>">×</button>
-            <?php endif; ?>
-            
-            <?php echo $this->render_ad_with_tracking($ad); ?>
-        </div>
-        <?php
-    }
-    
-    /**
-     * Insere anúncios em pop-up
-     */
-    public function insert_popup_ads() {
-        if (!$this->options['enable_adsense']) {
-            return;
-        }
-        
-        $popup_options = $this->options['popup_ads'] ?? array();
-        
-        if (!intval($popup_options['enable_popup'] ?? 0)) {
-            return;
-        }
-        
-        $ads = $this->get_ads_by_priority();
-        if (empty($ads)) return;
-        
-        $ad = $ads[0];
-        $trigger_type = $popup_options['trigger_on'] ?? 'time';
-        $trigger_value = intval($popup_options['trigger_value'] ?? 3);
-        $animation = $popup_options['animation'] ?? 'fadeIn';
-        $dismiss_button = intval($popup_options['dismiss_button'] ?? 1);
-        
-        ?>
-        <div id="amp-popup-ad" 
-             class="amp-popup-ad amp-popup-<?php echo esc_attr($animation); ?>" 
-             style="display: none;" 
-             data-ad-id="<?php echo intval($ad->id); ?>"
-             data-trigger="<?php echo esc_attr($trigger_type); ?>"
-             data-trigger-value="<?php echo intval($trigger_value); ?>"
-             data-frequency="<?php echo esc_attr($popup_options['frequency'] ?? 'once_per_session'); ?>">
-            
-            <div class="amp-popup-overlay"></div>
-            <div class="amp-popup-content">
-                
-                <?php if ($dismiss_button): ?>
-                    <button class="amp-popup-close" aria-label="<?php esc_attr_e('Fechar', 'adsense-master-pro'); ?>">×</button>
-                <?php endif; ?>
-                
-                <?php echo $this->render_ad_with_tracking($ad); ?>
-            </div>
-        </div>
-        <?php
     }
     
     /**
@@ -1171,6 +998,31 @@ public function save_ad_enhanced() {
         wp_send_json_success();
     }
     
+    public function track_affiliate_click() {
+        check_ajax_referer('amp_track', 'nonce');
+        $ad_id = intval($_POST['ad_id'] ?? 0);
+        if (!$this->options['analytics_tracking']) {
+            wp_send_json_success();
+            return;
+        }
+        global $wpdb;
+        $data = array(
+            'ad_id' => $ad_id,
+            'event_type' => 'affiliate_click',
+            'page_url' => esc_url($_SERVER['REQUEST_URI'] ?? ''),
+            'user_agent' => sanitize_text_field($_SERVER['HTTP_USER_AGENT'] ?? ''),
+            'ip_address' => $this->get_client_ip(),
+            'user_id' => get_current_user_id() ?: null,
+            'session_id' => session_id(),
+            'device_type' => $this->detect_device_type(),
+            'browser' => $this->detect_browser(),
+            'country' => $this->get_country_code(),
+            'referrer' => isset($_SERVER['HTTP_REFERER']) ? esc_url($_SERVER['HTTP_REFERER']) : ''
+        );
+        $wpdb->insert($wpdb->prefix . 'amp_analytics', $data);
+        wp_send_json_success();
+    }
+    
     public function insert_ads_in_content($content) {
         if (!is_single() && !is_page()) {
             return $content;
@@ -1183,6 +1035,37 @@ public function save_ad_enhanced() {
         
         // ✅ V3.0: Usar novo sistema de espaçamento inteligente
         return $this->insert_ads_with_spacing($content);
+    }
+    
+    public function enhance_affiliate_content($content) {
+        $domains = array(
+            'amazon' => array('amazon.', 'amzn.to'),
+            'mercado_livre' => array('mercadolivre.com.br', 'mercadolibre.com'),
+            'shopee' => array('shopee.'),
+            'eduzz' => array('eduzz.'),
+            'hotmart' => array('hotmart.', 'go.hotmart.com')
+        );
+        $pattern = '/<a\s[^>]*href=["\']([^"\']+)["\'][^>]*>(.*?)<\/a>/i';
+        $content = preg_replace_callback($pattern, function($m) use ($domains) {
+            $href = $m[1];
+            $text = $m[2];
+            $network = null;
+            foreach ($domains as $name => $list) {
+                foreach ($list as $d) {
+                    if (stripos($href, $d) !== false) {
+                        $network = $name;
+                        break 2;
+                    }
+                }
+            }
+            if (!$network) {
+                return $m[0];
+            }
+            $attrs = ' rel="nofollow sponsored" target="_blank" class="amp-affiliate-link" data-network="' . esc_attr($network) . '"';
+            $link = '<a href="' . esc_url($href) . '"' . $attrs . '>' . $text . '</a>';
+            return $link;
+        }, $content);
+        return $content;
     }
     
     public function insert_header_ads() {
@@ -1244,6 +1127,53 @@ public function save_ad_enhanced() {
     
     public function ab_test_shortcode($atts) {
         return '';
+    }
+    
+    public function affiliate_button_shortcode($atts) {
+        $atts = shortcode_atts(array(
+            'url' => '',
+            'label' => 'Comprar',
+            'network' => ''
+        ), $atts);
+        if (empty($atts['url'])) {
+            return '';
+        }
+        $network = sanitize_title($atts['network']);
+        $html = '<div class="amp-affiliate-button">';
+        $html .= '<a href="' . esc_url($atts['url']) . '" class="amp-affiliate-link" data-network="' . esc_attr($network) . '" rel="nofollow sponsored" target="_blank">' . esc_html($atts['label']) . '</a>';
+        $html .= '</div>';
+        return $html;
+    }
+    
+    public function affiliate_box_shortcode($atts) {
+        $atts = shortcode_atts(array(
+            'title' => '',
+            'description' => '',
+            'image' => '',
+            'price' => '',
+            'url' => '',
+            'network' => ''
+        ), $atts);
+        if (empty($atts['url'])) {
+            return '';
+        }
+        $network = sanitize_title($atts['network']);
+        $html = '<div class="amp-affiliate-box">';
+        if (!empty($atts['image'])) {
+            $html .= '<div class="amp-affiliate-image"><img src="' . esc_url($atts['image']) . '" alt=""></div>';
+        }
+        if (!empty($atts['title'])) {
+            $html .= '<h3 class="amp-affiliate-title">' . esc_html($atts['title']) . '</h3>';
+        }
+        if (!empty($atts['description'])) {
+            $html .= '<div class="amp-affiliate-description">' . wp_kses_post($atts['description']) . '</div>';
+        }
+        if (!empty($atts['price'])) {
+            $html .= '<div class="amp-affiliate-price">' . esc_html($atts['price']) . '</div>';
+        }
+        $html .= '<div class="amp-affiliate-actions"><a href="' . esc_url($atts['url']) . '" class="amp-affiliate-link" data-network="' . esc_attr($network) . '" rel="nofollow sponsored" target="_blank">Ver Oferta</a></div>';
+        $html .= '</div>';
+        return $html;
     }
     
     public function register_widget() {
@@ -1526,37 +1456,6 @@ public function save_ad_enhanced() {
         echo $html;
     }
     
-    /**
-     * Insere anúncios entre posts (em listas/archives)
-     * 
-     * @param string $content
-     * @return string
-     */
-    public function insert_ads_between_posts($content) {
-        if (!is_archive() && !is_home() && !is_search()) {
-            return $content;
-        }
-        
-        $between_options = $this->options['between_posts_ads'] ?? array();
-        
-        if (!intval($between_options['enable'] ?? 0)) {
-            return $content;
-        }
-        
-        static $post_counter = 0;
-        $post_counter++;
-        
-        $every_nth = intval($between_options['every_nth_post'] ?? 2);
-        
-        if ($post_counter % $every_nth === 0) {
-             $ad = $this->get_next_ad_html();
-             if (!empty($ad)) {
-                 $content .= '<div class="amp-ad-between-posts">' . $ad . '</div>';
-             }
-        }
-        
-        return $content;
-    }
     
     /**
      * Insere anúncios em comentários

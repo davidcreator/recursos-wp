@@ -395,6 +395,22 @@
             }
         },
         
+        trackAffiliateClick: function($link) {
+            var ad = $link.closest('.amp-ad-container');
+            var adId = ad.length ? ad.data('ad-id') : 0;
+            var network = $link.data('network') || '';
+            if (typeof amp_ajax !== 'undefined') {
+                $.post(amp_ajax.ajax_url, {
+                    action: 'amp_track_affiliate_click',
+                    ad_id: adId,
+                    network: network,
+                    nonce: amp_ajax.nonce
+                }).fail(function() {
+                    console.log('Erro ao rastrear clique de afiliado');
+                });
+            }
+        },
+        
         // Verificação de viewport
         checkViewportAds: function() {
             $('.amp-ad-container:not(.amp-ad-loaded)').each(function() {
@@ -506,6 +522,10 @@
     // Compatibilidade com temas
     $(document).on('click', '.amp-ad-container a', function() {
         AMP.trackAdClick($(this).closest('.amp-ad-container'));
+    });
+    
+    $(document).on('click', 'a.amp-affiliate-link', function() {
+        AMP.trackAffiliateClick($(this));
     });
     
     // Suporte para Accelerated Mobile Pages (AMP)
