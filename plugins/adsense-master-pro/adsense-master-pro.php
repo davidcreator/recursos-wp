@@ -118,9 +118,14 @@ class AdSenseMasterPro {
         
         // AJAX handlers
         add_action('wp_ajax_amp_save_ad', array($this, 'save_ad'));
+        add_action('wp_ajax_amp_update_ad', array($this, 'update_ad'));
         add_action('wp_ajax_amp_delete_ad', array($this, 'delete_ad'));
         add_action('wp_ajax_amp_preview_ad', array($this, 'preview_ad'));
+        add_action('wp_ajax_amp_duplicate_ad', array($this, 'duplicate_ad'));
+        add_action('wp_ajax_amp_toggle_ad_status', array($this, 'toggle_ad_status'));
         add_action('wp_ajax_amp_get_ad', array($this, 'get_ad'));
+        add_action('wp_ajax_amp_import_ad', array($this, 'import_ad'));
+        add_action('wp_ajax_amp_export_ads', array($this, 'export_ads'));
         add_action('wp_ajax_amp_track_impression', array($this, 'track_impression'));
         add_action('wp_ajax_nopriv_amp_track_impression', array($this, 'track_impression'));
         add_action('wp_ajax_amp_track_click', array($this, 'track_click'));
@@ -954,6 +959,7 @@ public function save_ad_enhanced() {
         $ad = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name WHERE id = %d", $id), ARRAY_A);
         
         if ($ad) {
+            $ad['options'] = maybe_unserialize($ad['options'] ?? array());
             wp_send_json_success($ad);
         } else {
             wp_send_json_error(__('Anúncio não encontrado.', 'adsense-master-pro'));
@@ -977,6 +983,122 @@ public function save_ad_enhanced() {
             wp_send_json_success(__('Anúncio excluído!', 'adsense-master-pro'));
         } else {
             wp_send_json_error(__('Erro ao excluir anúncio.', 'adsense-master-pro'));
+        }
+    }
+    
+    public function update_ad() {
+        check_ajax_referer('amp_nonce', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_die(__('Permissão negada.', 'adsense-master-pro'));
+        }
+        
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'amp_ads';
+        $id = intval($_POST['id'] ?? 0);
+        
+        if ($id <= 0) {
+            wp_send_json_error(__('ID inválido.', 'adsense-master-pro'));
+        }
+        
+        $options = array(
+            'css_selector' => sanitize_text_field($_POST['css_selector'] ?? ''),
+            'alignment' => sanitize_text_field($_POST['alignment'] ?? ''),
+            'show_on_desktop' => intval($_POST['show_on_desktop'] ?? 0),
+            'show_on_mobile' => intval($_POST['show_on_mobile'] ?? 0),
+            'show_on_homepage' => intval($_POST['show_on_homepage'] ?? 0),
+            'show_on_posts' => intval($_POST['show_on_posts'] ?? 0),
+            'show_on_pages' => intval($_POST['show_on_pages'] ?? 0),
+        );
+        
+        $data = array(
+            'name' => sanitize_text_field($_POST['name'] ?? ''),
+            'code' => isset($_POST['code']) ? wp_kses_post($_POST['code']) : '',
+            'position' => sanitize_text_field($_POST['position'] ?? ''),
+            'options' => maybe_serialize($options),
+        );
+        
+        if (empty($data['name']) || empty($data['code']) || empty($data['position'])) {
+            wp_send_json_error(__('Campos obrigatórios ausentes', 'adsense-master-pro'));
+        }
+        
+        $result = $wpdb->update($table_name, $data, array('id' => $id));
+        
+        if ($result !== false) {
+            wp_send_json_success(__('Anúncio atualizado com sucesso!', 'adsense-master-pro'));
+        } else {
+            wp_send_json_error(__('Erro ao atualizar anúncio.', 'adsense-master-pro'));
+        }
+    }
+    
+    public function duplicate_ad() {
+        check_ajax_referer('amp_nonce', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_die(__('Permissão negada.', 'adsense-master-pro'));
+        }
+        
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'amp_ads';
+        $id = intval($_POST['id'] ?? 0);
+        
+        if ($id <= 0) {
+            wp_send_json_error(__('ID inválido.', 'adsense-master-pro'));
+        }
+        
+        $ad = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name WHERE id = %d", $id), ARRAY_A);
+        if (!$ad) {
+            wp_send_json_error(__('Anúncio não encontrado.', 'adsense-master-pro'));
+        }
+        
+        $options = isset($ad['options']) ? maybe_unserialize($ad['options']) : array();
+        
+        $data = array(
+            'name' => 'Cópia de ' . $ad['name'],
+            'code' => $ad['code'],
+            'position' => $ad['position'],
+            'status' => 'active',
+            'ad_type' => $ad['ad_type'] ?? 'custom',
+            'priority' => intval($ad['priority'] ?? 10),
+            'options' => maybe_serialize($options),
+        );
+        
+        $result = $wpdb->insert(
+            $table_name,
+            $data,
+            array('%s', '%s', '%s', '%s', '%s', '%d', '%s')
+        );
+        
+        if ($result !== false) {
+            wp_send_json_success(array('id' => $wpdb->insert_id, 'message' => __('Anúncio duplicado com sucesso!', 'adsense-master-pro')));
+        } else {
+            $error = $wpdb->last_error ? $wpdb->last_error : __('Erro ao duplicar anúncio.', 'adsense-master-pro');
+            wp_send_json_error($error);
+        }
+    }
+    
+    public function toggle_ad_status() {
+        check_ajax_referer('amp_nonce', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_die(__('Permissão negada.', 'adsense-master-pro'));
+        }
+        
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'amp_ads';
+        $id = intval($_POST['id'] ?? 0);
+        $status = sanitize_text_field($_POST['status'] ?? 'inactive');
+        
+        if (!in_array($status, array('active', 'inactive'))) {
+            wp_send_json_error(__('Status inválido.', 'adsense-master-pro'));
+        }
+        
+        $result = $wpdb->update($table_name, array('status' => $status), array('id' => $id));
+        
+        if ($result !== false) {
+            wp_send_json_success(__('Status atualizado!', 'adsense-master-pro'));
+        } else {
+            wp_send_json_error(__('Erro ao atualizar status.', 'adsense-master-pro'));
         }
     }
     
@@ -1126,7 +1248,49 @@ public function save_ad_enhanced() {
     }
     
     public function ab_test_shortcode($atts) {
-        return '';
+        $atts = shortcode_atts(array(
+            'id' => 0,
+            'ad_a' => 0,
+            'ad_b' => 0,
+            'split' => 50
+        ), $atts);
+        
+        $test_id = intval($atts['id']);
+        $ad_id = 0;
+        
+        if ($test_id > 0) {
+            $ad_id = $this->get_ab_test_ad($test_id);
+        } else {
+            $ad_a = intval($atts['ad_a']);
+            $ad_b = intval($atts['ad_b']);
+            $split = max(0, min(100, intval($atts['split'])));
+            
+            if ($ad_a && $ad_b) {
+                $key_source = '';
+                $user_id = get_current_user_id();
+                if ($user_id) {
+                    $key_source = 'user:' . $user_id;
+                } else {
+                    $ip = $this->get_client_ip();
+                    $ua = $_SERVER['HTTP_USER_AGENT'] ?? '';
+                    $key_source = 'anon:' . $ip . ':' . $ua;
+                }
+                $hash = abs(crc32($key_source . '|inline_ab|' . $ad_a . '|' . $ad_b)) % 100;
+                $ad_id = ($hash < $split) ? $ad_a : $ad_b;
+            }
+        }
+        
+        if (!$ad_id) {
+            return '';
+        }
+        
+        global $wpdb;
+        $ad = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}amp_ads WHERE id = %d AND status = 'active'", $ad_id));
+        if (!$ad) {
+            return '';
+        }
+        
+        return $this->render_ad_with_tracking($ad);
     }
     
     public function affiliate_button_shortcode($atts) {
@@ -1186,7 +1350,10 @@ public function save_ad_enhanced() {
     
     public function optimize_ads() {}
     
-    public function ab_test_result() {}
+    public function ab_test_result() {
+        check_ajax_referer('amp_track', 'nonce');
+        wp_send_json_success();
+    }
     
     public function daily_optimization() {}
     
@@ -1235,6 +1402,36 @@ public function save_ad_enhanced() {
             WHERE status = 'active' 
             ORDER BY priority DESC, created_at ASC
         ");
+    }
+    
+    public function get_ab_test_ad($test_id) {
+        global $wpdb;
+        
+        $test = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$wpdb->prefix}amp_ab_tests WHERE id = %d AND status = 'active'",
+            intval($test_id)
+        ));
+        
+        if (!$test) {
+            return 0;
+        }
+        
+        $split = max(0, min(100, intval($test->traffic_split)));
+        
+        $key_source = '';
+        $user_id = get_current_user_id();
+        if ($user_id) {
+            $key_source = 'user:' . $user_id;
+        } else {
+            $ip = $this->get_client_ip();
+            $ua = $_SERVER['HTTP_USER_AGENT'] ?? '';
+            $key_source = 'anon:' . $ip . ':' . $ua;
+        }
+        
+        $hash = abs(crc32($key_source . '|' . $test_id)) % 100;
+        $selected = ($hash < $split) ? intval($test->ad_a_id) : intval($test->ad_b_id);
+        
+        return $selected ?: 0;
     }
     
     public function load_options() {
@@ -1529,7 +1726,24 @@ public function save_ad_enhanced() {
     }
     
     public function preview_ad() {
-}
+        check_ajax_referer('amp_nonce', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_die(__('Permissão negada.', 'adsense-master-pro'));
+        }
+        
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'amp_ads';
+        $id = intval($_POST['id'] ?? 0);
+        
+        $ad = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name WHERE id = %d", $id));
+        if (!$ad) {
+            wp_send_json_error(__('Anúncio não encontrado.', 'adsense-master-pro'));
+        }
+        
+        $html = $this->render_ad_with_tracking($ad);
+        wp_send_json_success(array('html' => $html));
+    }
 }
 
 // Widget

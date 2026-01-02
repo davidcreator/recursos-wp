@@ -10,6 +10,7 @@
     'use strict';
 
     const AdminActions = {
+        ajaxURL: (typeof ajaxurl !== 'undefined') ? ajaxurl : (typeof amp_ajax !== 'undefined' ? amp_ajax.ajax_url : ''),
         /**
          * Inicialização
          */
@@ -23,6 +24,8 @@
             this.bindEditAd();
             this.bindDeleteAd();
             this.bindToggleStatus();
+            this.bindPreviewAd();
+            this.bindDuplicateAd();
         },
 
         /**
@@ -150,7 +153,7 @@
                 const ad = ads[index];
                 
                 $.ajax({
-                    url: ajaxurl,
+                    url: AdminActions.ajaxURL,
                     method: 'POST',
                     data: {
                         action: 'amp_import_ad',
@@ -161,7 +164,7 @@
                         imported++;
                         const percent = Math.round((imported + failed) / total * 100);
                         
-                        $('#amp-progress-fill').css('width', percent + '%');
+                        $('.amp-progress-fill').css('width', percent + '%');
                         $('#amp-import-status').text(`${imported + failed}/${total} processados`);
                         $('#amp-import-log').append(`<li style="color: green; margin: 5px 0;">✓ ${ad.name}</li>`);
                         
@@ -171,7 +174,7 @@
                         failed++;
                         const percent = Math.round((imported + failed) / total * 100);
                         
-                        $('#amp-progress-fill').css('width', percent + '%');
+                        $('.amp-progress-fill').css('width', percent + '%');
                         $('#amp-import-status').text(`${imported + failed}/${total} processados`);
                         $('#amp-import-log').append(`<li style="color: red; margin: 5px 0;">✗ ${ad.name}</li>`);
                         
@@ -197,7 +200,7 @@
 
         exportAllAds: function() {
             $.ajax({
-                url: ajaxurl,
+                url: AdminActions.ajaxURL,
                 method: 'POST',
                 data: {
                     action: 'amp_export_ads',
@@ -242,7 +245,7 @@
 
         loadAdForEdit: function(adId) {
             $.ajax({
-                url: ajaxurl,
+                url: AdminActions.ajaxURL,
                 method: 'POST',
                 data: {
                     action: 'amp_get_ad',
@@ -257,15 +260,20 @@
                         $('#ad-position').val(ad.position);
                         $('#ad-code').val(ad.code);
                         
-                        const options = ad.options ? JSON.parse(ad.options) : {};
+                        let options = {};
+                        try {
+                            options = (typeof ad.options === 'string') ? JSON.parse(ad.options) : (ad.options || {});
+                        } catch (err) {
+                            options = {};
+                        }
                         $('#ad-alignment').val(options.alignment || 'center');
                         $('#css-selector').val(options.css_selector || '');
                         
-                        $('input[name="show_on_desktop"]').prop('checked', options.show_on_desktop);
-                        $('input[name="show_on_mobile"]').prop('checked', options.show_on_mobile);
-                        $('input[name="show_on_homepage"]').prop('checked', options.show_on_homepage);
-                        $('input[name="show_on_posts"]').prop('checked', options.show_on_posts);
-                        $('input[name="show_on_pages"]').prop('checked', options.show_on_pages);
+                        $('input[name="show_on_desktop"]').prop('checked', !!options.show_on_desktop);
+                        $('input[name="show_on_mobile"]').prop('checked', !!options.show_on_mobile);
+                        $('input[name="show_on_homepage"]').prop('checked', !!options.show_on_homepage);
+                        $('input[name="show_on_posts"]').prop('checked', !!options.show_on_posts);
+                        $('input[name="show_on_pages"]').prop('checked', !!options.show_on_pages);
                         
                         $('#amp-ad-form').data('edit-id', adId);
                         $('#amp-ad-modal').fadeIn();
@@ -292,7 +300,7 @@
 
         deleteAd: function(adId) {
             $.ajax({
-                url: ajaxurl,
+                url: AdminActions.ajaxURL,
                 method: 'POST',
                 data: {
                     action: 'amp_delete_ad',
@@ -321,7 +329,7 @@
                 const isActive = $(this).is(':checked');
                 
                 $.ajax({
-                    url: ajaxurl,
+                    url: AdminActions.ajaxURL,
                     method: 'POST',
                     data: {
                         action: 'amp_toggle_ad_status',
@@ -371,6 +379,7 @@
             const editId = $form.data('edit-id');
             
             const formData = {
+                id: editId || 0,
                 name: $('#ad-name').val(),
                 code: $('#ad-code').val(),
                 position: $('#ad-position').val(),
@@ -393,10 +402,10 @@
             $submitBtn.prop('disabled', true).text('Salvando...');
 
             $.ajax({
-                url: ajaxurl,
+                url: AdminActions.ajaxURL,
                 method: 'POST',
                 data: {
-                    action: 'amp_save_ad',
+                    action: editId ? 'amp_update_ad' : 'amp_save_ad',
                     nonce: amp_ajax.nonce,
                     ...formData
                 },
@@ -417,6 +426,66 @@
                 complete: function() {
                     $submitBtn.prop('disabled', false).text(originalText);
                 }
+            });
+        },
+        
+        /**
+         * ========================================
+         * PRÉ-VISUALIZAR ANÚNCIO
+         * ========================================
+         */
+        bindPreviewAd: function() {
+            $(document).on('click', '.preview-ad', function(e) {
+                e.preventDefault();
+                const adId = $(this).data('id');
+                $.ajax({
+                    url: AdminActions.ajaxURL,
+                    method: 'POST',
+                    data: {
+                        action: 'amp_preview_ad',
+                        nonce: amp_ajax.nonce,
+                        id: adId
+                    },
+                    success: function(response) {
+                        if (response.success && response.data && response.data.html) {
+                            $('#amp-preview-content').html(response.data.html);
+                            $('#amp-preview-modal').fadeIn();
+                        } else {
+                            alert('❌ Erro ao visualizar anúncio.');
+                        }
+                    }
+                });
+            });
+        },
+        
+        /**
+         * ========================================
+         * DUPLICAR ANÚNCIO
+         * ========================================
+         */
+        bindDuplicateAd: function() {
+            $(document).on('click', '.duplicate-ad', function(e) {
+                e.preventDefault();
+                const adId = $(this).data('id');
+                if (!confirm('Deseja duplicar este anúncio?')) return;
+                
+                $.ajax({
+                    url: AdminActions.ajaxURL,
+                    method: 'POST',
+                    data: {
+                        action: 'amp_duplicate_ad',
+                        nonce: amp_ajax.nonce,
+                        id: adId
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            alert('✅ Anúncio duplicado com sucesso!');
+                            location.reload();
+                        } else {
+                            alert('❌ ' + (response.data || 'Erro ao duplicar anúncio.'));
+                        }
+                    }
+                });
             });
         },
 

@@ -4,6 +4,54 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+if (!function_exists('detect_ad_type')) {
+    function detect_ad_type($code) {
+        if (strpos($code, 'googlesyndication.com') !== false) return 'adsense';
+        if (strpos($code, 'amazon.') !== false || strpos($code, 'amzn.to') !== false) return 'affiliate_amazon';
+        if (strpos($code, 'mercadolivre.com.br') !== false || strpos($code, 'mercadolibre.com') !== false) return 'affiliate_mercado_livre';
+        if (strpos($code, 'shopee.') !== false) return 'affiliate_shopee';
+        if (strpos($code, 'eduzz.') !== false) return 'affiliate_eduzz';
+        if (strpos($code, 'hotmart.') !== false || strpos($code, 'go.hotmart.com') !== false) return 'affiliate_hotmart';
+        if (strpos($code, '<img') !== false) return 'banner';
+        if (strpos($code, '<script') !== false) return 'script';
+        return 'html';
+    }
+}
+
+if (!function_exists('get_position_label')) {
+    function get_position_label($position) {
+        $labels = array(
+            'header' => __('Cabeçalho', 'adsense-master-pro'),
+            'footer' => __('Rodapé', 'adsense-master-pro'),
+            'before_content' => __('Antes do Conteúdo', 'adsense-master-pro'),
+            'after_content' => __('Depois do Conteúdo', 'adsense-master-pro'),
+            'before_paragraph' => __('Antes do 1º Parágrafo', 'adsense-master-pro'),
+            'after_paragraph' => __('Depois do 2º Parágrafo', 'adsense-master-pro'),
+            'sidebar' => __('Sidebar', 'adsense-master-pro'),
+            'custom' => __('Personalizada', 'adsense-master-pro')
+        );
+        return isset($labels[$position]) ? $labels[$position] : $position;
+    }
+}
+
+if (!function_exists('get_ad_type_label')) {
+    function get_ad_type_label($type) {
+        $labels = array(
+            'adsense' => __('AdSense', 'adsense-master-pro'),
+            'banner' => __('Banner', 'adsense-master-pro'),
+            'script' => __('Script', 'adsense-master-pro'),
+            'html' => __('HTML', 'adsense-master-pro'),
+            'affiliate' => __('Afiliado', 'adsense-master-pro'),
+            'affiliate_amazon' => __('Afiliado (Amazon)', 'adsense-master-pro'),
+            'affiliate_mercado_livre' => __('Afiliado (Mercado Livre)', 'adsense-master-pro'),
+            'affiliate_shopee' => __('Afiliado (Shopee)', 'adsense-master-pro'),
+            'affiliate_eduzz' => __('Afiliado (Eduzz)', 'adsense-master-pro'),
+            'affiliate_hotmart' => __('Afiliado (Hotmart)', 'adsense-master-pro')
+        );
+        return isset($labels[$type]) ? $labels[$type] : $type;
+    }
+}
+
 // Buscar anúncios do banco de dados
 global $wpdb;
 $table_name = $wpdb->prefix . 'amp_ads';
@@ -299,53 +347,4 @@ $ads = $wpdb->get_results("SELECT * FROM $table_name ORDER BY created_at DESC", 
 .amp-code-templates .button { margin-right: 10px; }
 </style>
 
-<?php
-// Funções auxiliares para a página
-if (!function_exists('detect_ad_type')) {
-    function detect_ad_type($code) {
-        if (strpos($code, 'googlesyndication.com') !== false) return 'adsense';
-        if (strpos($code, 'amazon.') !== false || strpos($code, 'amzn.to') !== false) return 'affiliate_amazon';
-        if (strpos($code, 'mercadolivre.com.br') !== false || strpos($code, 'mercadolibre.com') !== false) return 'affiliate_mercado_livre';
-        if (strpos($code, 'shopee.') !== false) return 'affiliate_shopee';
-        if (strpos($code, 'eduzz.') !== false) return 'affiliate_eduzz';
-        if (strpos($code, 'hotmart.') !== false || strpos($code, 'go.hotmart.com') !== false) return 'affiliate_hotmart';
-        if (strpos($code, '<img') !== false) return 'banner';
-        if (strpos($code, '<script') !== false) return 'script';
-        return 'html';
-    }
-}
-
-if (!function_exists('get_position_label')) {
-    function get_position_label($position) {
-        $labels = array(
-            'header' => __('Cabeçalho', 'adsense-master-pro'),
-            'footer' => __('Rodapé', 'adsense-master-pro'),
-            'before_content' => __('Antes do Conteúdo', 'adsense-master-pro'),
-            'after_content' => __('Depois do Conteúdo', 'adsense-master-pro'),
-            'before_paragraph' => __('Antes do 1º Parágrafo', 'adsense-master-pro'),
-            'after_paragraph' => __('Depois do 2º Parágrafo', 'adsense-master-pro'),
-            'sidebar' => __('Sidebar', 'adsense-master-pro'),
-            'custom' => __('Personalizada', 'adsense-master-pro')
-        );
-        return isset($labels[$position]) ? $labels[$position] : $position;
-    }
-}
-
-if (!function_exists('get_ad_type_label')) {
-    function get_ad_type_label($type) {
-        $labels = array(
-            'adsense' => __('AdSense', 'adsense-master-pro'),
-            'banner' => __('Banner', 'adsense-master-pro'),
-            'script' => __('Script', 'adsense-master-pro'),
-            'html' => __('HTML', 'adsense-master-pro'),
-            'affiliate' => __('Afiliado', 'adsense-master-pro'),
-            'affiliate_amazon' => __('Afiliado (Amazon)', 'adsense-master-pro'),
-            'affiliate_mercado_livre' => __('Afiliado (Mercado Livre)', 'adsense-master-pro'),
-            'affiliate_shopee' => __('Afiliado (Shopee)', 'adsense-master-pro'),
-            'affiliate_eduzz' => __('Afiliado (Eduzz)', 'adsense-master-pro'),
-            'affiliate_hotmart' => __('Afiliado (Hotmart)', 'adsense-master-pro')
-        );
-        return isset($labels[$type]) ? $labels[$type] : $type;
-    }
-}
-?>
+<?php ?>
