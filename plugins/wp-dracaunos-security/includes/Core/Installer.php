@@ -93,11 +93,12 @@ class Installer {
             'wpsp_custom_xmlrpc_path' => '',
 
             // Security toggles
-            'wpsp_block_default_admin' => 1,
-            'wpsp_block_wp_includes' => 1,
-            'wpsp_block_wp_content' => 1,
-            'wpsp_block_xmlrpc' => 1,
-            'wpsp_security_headers' => 1,
+            'wpsp_block_default_admin' => 0,
+            'wpsp_block_wp_includes' => 0,
+            'wpsp_block_wp_content' => 0,
+            'wpsp_block_xmlrpc' => 0,
+            'wpsp_security_headers' => 0,
+            'wpsp_safe_mode' => 1,
 
             // Detailed headers
             'wpsp_x_frame_options' => 'SAMEORIGIN',
@@ -132,15 +133,15 @@ class Installer {
             'wpsp_captcha_comments' => 1,
 
             // Optimization and header cleanup
-            'wpsp_remove_wp_version' => 1,
-            'wpsp_remove_meta_generator' => 1,
-            'wpsp_disable_emojis' => 1,
+            'wpsp_remove_wp_version' => 0,
+            'wpsp_remove_meta_generator' => 0,
+            'wpsp_disable_emojis' => 0,
             'wpsp_minify_html' => 0,
             'wpsp_minify_css' => 0,
             'wpsp_minify_js' => 0,
-            'wpsp_remove_feed_links' => 1,
-            'wpsp_remove_rest_api_links' => 1,
-            'wpsp_remove_oembed' => 1,
+            'wpsp_remove_feed_links' => 0,
+            'wpsp_remove_rest_api_links' => 0,
+            'wpsp_remove_oembed' => 0,
             'wpsp_remove_canonical' => 0,
         ];
 
@@ -157,27 +158,55 @@ class Installer {
             return;
         }
 
-        $block_default_admin = (int) get_option('wpsp_block_default_admin', 1);
-        $block_xmlrpc = (int) get_option('wpsp_block_xmlrpc', 1);
+        $safe_mode = (int) get_option('wpsp_safe_mode', 1);
+        if ($safe_mode) {
+            $current_content = file_exists($htaccess_file) ? file_get_contents($htaccess_file) : '';
+            if ($current_content && strpos($current_content, '# BEGIN WP Security Pro') !== false) {
+                $pattern = "/# BEGIN WP Security Pro[\\s\\S]*?# END WP Security Pro\\n?/";
+                $new_content = preg_replace($pattern, '', $current_content);
+                if ($new_content !== null) {
+                    file_put_contents($htaccess_file, $new_content);
+                }
+            }
+            return;
+        }
 
-        $rules = "\n# BEGIN WP Security Pro\n<IfModule mod_rewrite.c>\n    RewriteEngine On\n\n    # Block direct access to wp-includes\n    RewriteRule ^wp-includes/.*$ - [F,L]\n\n    # Block direct access to plugins php files\n    RewriteRule ^wp-content/plugins/.*\\.php$ - [F,L]\n\n";
+        $block_default_admin = (int) get_option('wpsp_block_default_admin', 0);
+        $block_xmlrpc = (int) get_option('wpsp_block_xmlrpc', 0);
+        $block_wp_includes = (int) get_option('wpsp_block_wp_includes', 0);
+        $block_wp_content = (int) get_option('wpsp_block_wp_content', 0);
 
+        $rules = "\n# BEGIN WP Security Pro\n<IfModule mod_rewrite.c>\n    RewriteEngine On\n\n";
+        if ($block_wp_includes) {
+            $rules .= "    RewriteRule ^wp-includes/.*$ - [F,L]\n\n";
+        }
+        if ($block_wp_content) {
+            $rules .= "    RewriteRule ^wp-content/plugins/.*\\.php$ - [F,L]\n\n";
+        }
         if ($block_default_admin) {
-            $rules .= "    # Block default admin and login\n    RewriteRule ^wp-admin/?(.*)$ - [F,L]\n    RewriteRule ^wp-login\\.php$ - [F,L]\n\n";
+            $rules .= "    RewriteRule ^wp-admin/?(.*)$ - [F,L]\n    RewriteRule ^wp-login\\.php$ - [F,L]\n\n";
         }
-
         if ($block_xmlrpc) {
-            $rules .= "    # Block XML-RPC\n    RewriteRule ^xmlrpc\\.php$ - [F,L]\n\n";
+            $rules .= "    RewriteRule ^xmlrpc\\.php$ - [F,L]\n\n";
         }
-
-        // Block sensitive root files
-        $rules .= "    # Block root sensitive files\n    RewriteRule ^license\\.txt$ - [F,L]\n    RewriteRule ^readme\\.html$ - [F,L]\n    RewriteRule ^wp-activate\\.php$ - [F,L]\n    RewriteRule ^wp-cron\\.php$ - [F,L]\n    RewriteRule ^wp-signup\\.php$ - [F,L]\n    RewriteRule ^wp-(.+)\\.php$ - [F,L]\n</IfModule>\n\n";
+        $rules .= "</IfModule>\n\n";
+        $emit_headers = (int) get_option('wpsp_security_headers', 0);
+        if ($emit_headers) {
+            $rules .= "# Security Headers\n<IfModule mod_headers.c>\n    Header always set X-Content-Type-Options \"nosniff\"\n    Header always set X-Frame-Options \"" . esc_attr(get_option('wpsp_x_frame_options', 'SAMEORIGIN')) . "\"\n    Header always set X-XSS-Protection \"1; mode=block\"\n    Header always set Referrer-Policy \"" . esc_attr(get_option('wpsp_referrer_policy', 'strict-origin-when-cross-origin')) . "\"\n</IfModule>\n";
+        }
+        $rules .= "# END WP Security Pro\n";
 
         // Security Headers minimal set (others emitted by PHP)
         $rules .= "# Security Headers\n<IfModule mod_headers.c>\n    Header always set X-Content-Type-Options \"nosniff\"\n    Header always set X-Frame-Options \"" . esc_attr(get_option('wpsp_x_frame_options', 'SAMEORIGIN')) . "\"\n    Header always set X-XSS-Protection \"1; mode=block\"\n    Header always set Referrer-Policy \"" . esc_attr(get_option('wpsp_referrer_policy', 'strict-origin-when-cross-origin')) . "\"\n</IfModule>\n# END WP Security Pro\n";
 
         $current_content = file_exists($htaccess_file) ? file_get_contents($htaccess_file) : '';
-        if (strpos($current_content, '# BEGIN WP Security Pro') === false) {
+        if ($current_content && strpos($current_content, '# BEGIN WP Security Pro') !== false) {
+            $pattern = "/# BEGIN WP Security Pro[\\s\\S]*?# END WP Security Pro\\n?/";
+            $new_content = preg_replace($pattern, $rules, $current_content);
+            if ($new_content !== null) {
+                file_put_contents($htaccess_file, $new_content);
+            }
+        } else {
             file_put_contents($htaccess_file, $rules . $current_content);
         }
     }

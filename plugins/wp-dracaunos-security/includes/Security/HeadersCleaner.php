@@ -11,19 +11,19 @@ class HeadersCleaner {
     
     private function init_hooks() {
         // Remover versão do WordPress
-        if (get_option('wpsp_remove_wp_version', 1)) {
+        if (get_option('wpsp_remove_wp_version', 0)) {
             remove_action('wp_head', 'wp_generator');
             add_filter('the_generator', '__return_empty_string');
         }
         
         // Remover Meta Generator
-        if (get_option('wpsp_remove_meta_generator', 1)) {
+        if (get_option('wpsp_remove_meta_generator', 0)) {
             remove_action('wp_head', 'wp_generator');
             add_filter('the_generator', '__return_false');
         }
         
         // Desabilitar emojis
-        if (get_option('wpsp_disable_emojis', 1)) {
+        if (get_option('wpsp_disable_emojis', 0)) {
             $this->disable_emojis();
         }
         

@@ -13,7 +13,7 @@ class XMLRPCManager {
     
     public function __construct() {
         $this->db = new Database();
-        $this->block_xmlrpc = get_option('wpsp_block_xmlrpc', 1);
+        $this->block_xmlrpc = get_option('wpsp_block_xmlrpc', 0);
         $this->custom_xmlrpc_path = get_option('wpsp_custom_xmlrpc_path', '');
         
         $this->init_hooks();

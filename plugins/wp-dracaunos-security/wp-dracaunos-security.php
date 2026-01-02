@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: WP Dracaunos Security
+ * Plugin Name: Dracaunos Security
  * Plugin URI: https://davidalmeida.xyz/wp-dracaunos-security
  * Description: Plugin completo de segurança WordPress com personalização de URLs, 2FA, captcha e otimizações
  * Version: 1.0.0
@@ -76,27 +76,29 @@ final class WP_Security_Pro {
         require_once WPSP_PLUGIN_DIR . 'includes/Security/HeadersCleaner.php';
         require_once WPSP_PLUGIN_DIR . 'includes/Security/SecurityHeaders.php';
         
-        // Optimization
         require_once WPSP_PLUGIN_DIR . 'includes/Optimization/Minifier.php';
-        
-        // Utils
-        require_once WPSP_PLUGIN_DIR . 'includes/Utils/Helpers.php';
     }
     
     public function init() {
-        // Inicializar componentes
         new WPSP\Core\Settings();
         new WPSP\Core\Admin();
-        new WPSP\Security\URLCustomizer();
-        new WPSP\Security\TwoFactorAuth();
-        new WPSP\Security\Captcha();
-        new WPSP\Security\XMLRPCManager();
-        new WPSP\Security\HeadersCleaner();
-        new WPSP\Security\SecurityHeaders();
-        new WPSP\Optimization\Minifier();
         
-        // Load text domain
-        load_plugin_textdomain('wp-security-pro', false, dirname(WPSP_PLUGIN_BASENAME) . '/languages');
+        $safe_mode = (int) get_option('wpsp_safe_mode', 1);
+        if ($safe_mode && !get_option('wpsp_htaccess_purged', 0)) {
+            WPSP\Core\Installer::activate();
+            update_option('wpsp_htaccess_purged', 1);
+        }
+        if (!$safe_mode) {
+            new WPSP\Security\URLCustomizer();
+            new WPSP\Security\TwoFactorAuth();
+            new WPSP\Security\Captcha();
+            new WPSP\Security\XMLRPCManager();
+            new WPSP\Security\HeadersCleaner();
+            new WPSP\Security\SecurityHeaders();
+            new WPSP\Optimization\Minifier();
+        }
+        
+        load_plugin_textdomain('wp-dracaunos-security', false, dirname(WPSP_PLUGIN_BASENAME) . '/languages');
     }
     
     public function activate() {

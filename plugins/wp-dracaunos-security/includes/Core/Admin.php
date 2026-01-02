@@ -12,8 +12,8 @@ class Admin {
     
     public function add_menu() {
         add_menu_page(
-            __('WP Security Pro', 'wp-security-pro'),
-            __('Security Pro', 'wp-security-pro'),
+            __('Dracaunos Security', 'wp-dracaunos-security'),
+            __('Dracaunos Security', 'wp-dracaunos-security'),
             'manage_options',
             'wp-security-pro',
             [$this, 'dashboard_page'],
@@ -23,8 +23,8 @@ class Admin {
         
         add_submenu_page(
             'wp-security-pro',
-            __('Dashboard', 'wp-security-pro'),
-            __('Dashboard', 'wp-security-pro'),
+            __('Dashboard', 'wp-dracaunos-security'),
+            __('Dashboard', 'wp-dracaunos-security'),
             'manage_options',
             'wp-security-pro',
             [$this, 'dashboard_page']
@@ -32,8 +32,8 @@ class Admin {
         
         add_submenu_page(
             'wp-security-pro',
-            __('URL Settings', 'wp-security-pro'),
-            __('URL Settings', 'wp-security-pro'),
+            __('URL Settings', 'wp-dracaunos-security'),
+            __('URL Settings', 'wp-dracaunos-security'),
             'manage_options',
             'wpsp-url-settings',
             [$this, 'url_settings_page']
@@ -41,8 +41,8 @@ class Admin {
         
         add_submenu_page(
             'wp-security-pro',
-            __('2FA Settings', 'wp-security-pro'),
-            __('2FA Settings', 'wp-security-pro'),
+            __('2FA Settings', 'wp-dracaunos-security'),
+            __('2FA Settings', 'wp-dracaunos-security'),
             'manage_options',
             'wpsp-2fa-settings',
             [$this, 'twofa_settings_page']
@@ -50,8 +50,8 @@ class Admin {
         
         add_submenu_page(
             'wp-security-pro',
-            __('Security Settings', 'wp-security-pro'),
-            __('Security', 'wp-security-pro'),
+            __('Security Settings', 'wp-dracaunos-security'),
+            __('Security', 'wp-dracaunos-security'),
             'manage_options',
             'wpsp-security-settings',
             [$this, 'security_settings_page']
@@ -59,8 +59,8 @@ class Admin {
         
         add_submenu_page(
             'wp-security-pro',
-            __('Optimization', 'wp-security-pro'),
-            __('Optimization', 'wp-security-pro'),
+            __('Optimization', 'wp-dracaunos-security'),
+            __('Optimization', 'wp-dracaunos-security'),
             'manage_options',
             'wpsp-optimization',
             [$this, 'optimization_page']

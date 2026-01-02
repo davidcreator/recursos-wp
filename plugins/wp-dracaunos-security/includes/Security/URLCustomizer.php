@@ -40,15 +40,15 @@ class URLCustomizer {
         }
         
         // Block default URLs
-        if (get_option('wpsp_block_default_admin', 1)) {
+        if (get_option('wpsp_block_default_admin', 0)) {
             add_action('init', [$this, 'block_default_admin']);
         }
         
-        if (get_option('wpsp_block_wp_includes', 1)) {
+        if (get_option('wpsp_block_wp_includes', 0)) {
             add_action('init', [$this, 'block_wp_includes']);
         }
         
-        if (get_option('wpsp_block_wp_content', 1)) {
+        if (get_option('wpsp_block_wp_content', 0)) {
             add_action('init', [$this, 'block_wp_content']);
         }
         

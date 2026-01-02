@@ -87,8 +87,12 @@ class TwoFactorAuth {
             }
         }
         
-        // Armazenar usuário temporariamente e mostrar página de verificação
-        set_transient('wpsp_2fa_user_' . $user->ID, $user->ID, 300); // 5 minutos
+        set_transient('wpsp_2fa_user_' . $user->ID, $user->ID, 300);
+        if (!headers_sent()) {
+            $cookie_path = defined('COOKIEPATH') ? COOKIEPATH : '/';
+            $cookie_domain = defined('COOKIE_DOMAIN') ? COOKIE_DOMAIN : '';
+            setcookie('wpsp_2fa_user', (string) $user->ID, time() + 300, $cookie_path, $cookie_domain, is_ssl(), true);
+        }
         
         // Enviar código se for método email
         $methods = $this->get_user_enabled_methods($user->ID);
@@ -107,7 +111,14 @@ class TwoFactorAuth {
      * Adicionar campo 2FA no formulário de login
      */
     public function add_2fa_field() {
-        if (isset($_GET['2fa_required'])) {
+        $show = false;
+        if (isset($_COOKIE['wpsp_2fa_user'])) {
+            $uid = intval($_COOKIE['wpsp_2fa_user']);
+            if ($uid && get_transient('wpsp_2fa_user_' . $uid)) {
+                $show = true;
+            }
+        }
+        if ($show) {
             ?>
             <p>
                 <label for="wpsp_2fa_code"><?php _e('Verification Code', 'wp-security-pro'); ?><br />

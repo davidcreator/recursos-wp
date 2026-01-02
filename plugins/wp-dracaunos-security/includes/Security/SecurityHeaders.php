@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) exit;
 class SecurityHeaders {
     
     public function __construct() {
-        if (get_option('wpsp_security_headers', 1)) {
+        if (get_option('wpsp_security_headers', 0)) {
             add_action('send_headers', [$this, 'add_security_headers']);
         }
     }
@@ -78,6 +78,12 @@ class SecurityHeaders {
         
         // Script src
         $script_src = get_option('wpsp_csp_script_src', "'self' 'unsafe-inline' 'unsafe-eval'");
+        if (get_option('wpsp_captcha_enabled', 0)) {
+            $extra = " https://www.gstatic.com/recaptcha/ https://www.google.com/recaptcha/";
+            if (strpos($script_src, 'recaptcha') === false) {
+                $script_src .= $extra;
+            }
+        }
         if (!empty($script_src)) {
             $directives[] = "script-src {$script_src}";
         }
@@ -110,6 +116,10 @@ class SecurityHeaders {
         $frame_ancestors = get_option('wpsp_csp_frame_ancestors', "'self'");
         if (!empty($frame_ancestors)) {
             $directives[] = "frame-ancestors {$frame_ancestors}";
+        }
+        
+        if (get_option('wpsp_captcha_enabled', 0)) {
+            $directives[] = "frame-src https://www.google.com/";
         }
         
         return implode('; ', $directives);
