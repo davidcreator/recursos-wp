@@ -62,6 +62,9 @@ $settings = wp_parse_args($settings, $defaults);
                     <a href="#display" class="nav-tab"><?php _e('Exibição', 'adsense-master-pro'); ?></a>
                     <a href="#advanced" class="nav-tab"><?php _e('Avançado', 'adsense-master-pro'); ?></a>
                     <a href="#performance" class="nav-tab"><?php _e('Performance', 'adsense-master-pro'); ?></a>
+                    <a href="#abtest" class="nav-tab"><?php _e('Teste A/B', 'adsense-master-pro'); ?></a>
+                    <a href="#heatmap" class="nav-tab"><?php _e('Heatmap de Cliques', 'adsense-master-pro'); ?></a>
+                    <a href="#reports" class="nav-tab"><?php _e('Relatórios', 'adsense-master-pro'); ?></a>
                 </nav>
                 
                 <!-- Aba Geral -->
@@ -109,6 +112,227 @@ $settings = wp_parse_args($settings, $defaults);
                                 <p class="description"><?php _e('Limite o número de anúncios exibidos por página para melhor experiência do usuário.', 'adsense-master-pro'); ?></p>
                             </td>
                         </tr>
+                    </table>
+                </div>
+                
+                <div id="heatmap" class="amp-tab-content">
+                    <h2><?php _e('Heatmap de Cliques', 'adsense-master-pro'); ?></h2>
+                    <?php
+                    global $wpdb;
+                    $ads_all = $wpdb->get_results("SELECT id, name FROM {$wpdb->prefix}amp_ads ORDER BY name ASC", ARRAY_A);
+                    ?>
+                    <div class="amp-form-row amp-form-columns">
+                        <div class="amp-form-group">
+                            <label for="heatmap-ad"><?php _e('Selecione o Anúncio', 'adsense-master-pro'); ?></label>
+                            <select id="heatmap-ad" class="regular-text">
+                                <option value=""><?php _e('Selecione', 'adsense-master-pro'); ?></option>
+                                <?php foreach ($ads_all as $ad): ?>
+                                    <option value="<?php echo intval($ad['id']); ?>"><?php echo '#' . intval($ad['id']) . ' - ' . esc_html($ad['name']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="amp-form-group">
+                            <label>&nbsp;</label>
+                            <button type="button" class="button button-primary" id="load-heatmap"><?php _e('Carregar Heatmap', 'adsense-master-pro'); ?></button>
+                        </div>
+                    </div>
+                    <div id="heatmap-container" style="position:relative; width:728px; height:250px; border:1px solid #ddd; background:#fafafa;">
+                        <canvas id="heatmap-canvas" width="728" height="250"></canvas>
+                    </div>
+                    <p class="description"><?php _e('Visualização aproximada com base nos cliques registrados. Tamanho ajustável conforme dados coletados.', 'adsense-master-pro'); ?></p>
+                </div>
+                
+                <div id="reports" class="amp-tab-content">
+                    <h2><?php _e('Relatórios Detalhados', 'adsense-master-pro'); ?></h2>
+                    <?php
+                    global $wpdb;
+                    $ads_list = $wpdb->get_results("SELECT id, name FROM {$wpdb->prefix}amp_ads ORDER BY name ASC", ARRAY_A);
+                    ?>
+                    <div class="amp-form-row amp-form-columns">
+                        <div class="amp-form-group">
+                            <label for="report-start"><?php _e('Data Inicial', 'adsense-master-pro'); ?></label>
+                            <input type="date" id="report-start" class="regular-text">
+                        </div>
+                        <div class="amp-form-group">
+                            <label for="report-end"><?php _e('Data Final', 'adsense-master-pro'); ?></label>
+                            <input type="date" id="report-end" class="regular-text">
+                        </div>
+                        <div class="amp-form-group">
+                            <label for="report-ad"><?php _e('Anúncio', 'adsense-master-pro'); ?></label>
+                            <select id="report-ad" class="regular-text">
+                                <option value=""><?php _e('Todos', 'adsense-master-pro'); ?></option>
+                                <?php foreach ($ads_list as $ad): ?>
+                                    <option value="<?php echo intval($ad['id']); ?>"><?php echo '#' . intval($ad['id']) . ' - ' . esc_html($ad['name']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="amp-form-group">
+                            <label for="report-device"><?php _e('Dispositivo', 'adsense-master-pro'); ?></label>
+                            <select id="report-device" class="regular-text">
+                                <option value=""><?php _e('Todos', 'adsense-master-pro'); ?></option>
+                                <option value="mobile"><?php _e('Mobile', 'adsense-master-pro'); ?></option>
+                                <option value="desktop"><?php _e('Desktop', 'adsense-master-pro'); ?></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="amp-form-row">
+                        <button type="button" class="button button-primary" id="generate-report"><?php _e('Gerar Relatório', 'adsense-master-pro'); ?></button>
+                    </div>
+                    <div class="amp-form-row">
+                        <table class="widefat fixed striped" id="report-table">
+                            <thead>
+                                <tr>
+                                    <th><?php _e('Data', 'adsense-master-pro'); ?></th>
+                                    <th><?php _e('Impressões', 'adsense-master-pro'); ?></th>
+                                    <th><?php _e('Cliques', 'adsense-master-pro'); ?></th>
+                                    <th><?php _e('CTR', 'adsense-master-pro'); ?></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                                <tr>
+                                    <th><?php _e('Totais', 'adsense-master-pro'); ?></th>
+                                    <th id="report-total-impr">0</th>
+                                    <th id="report-total-clicks">0</th>
+                                    <th id="report-total-ctr">0%</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="amp-form-row">
+                        <div style="position:relative; width:100%; max-width:900px;">
+                            <canvas id="report-chart" width="900" height="260"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="abtest" class="amp-tab-content">
+                    <h2><?php _e('Teste A/B de Anúncios', 'adsense-master-pro'); ?></h2>
+                    <?php
+                    global $wpdb;
+                    $ads = $wpdb->get_results("SELECT id, name, position, code, status FROM {$wpdb->prefix}amp_ads WHERE status IN ('active','inactive') ORDER BY name ASC", ARRAY_A);
+                    $tests = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}amp_ab_tests ORDER BY created_at DESC", ARRAY_A);
+                    if (!function_exists('detect_ad_type')) {
+                        function detect_ad_type($code) {
+                            if (strpos($code, 'googlesyndication.com') !== false) return 'adsense';
+                            if (strpos($code, '<img') !== false) return 'banner';
+                            if (strpos($code, '<script') !== false) return 'script';
+                            return 'html';
+                        }
+                    }
+                    if (!function_exists('get_position_label')) {
+                        function get_position_label($position) {
+                            $labels = array(
+                                'header' => __('Cabeçalho', 'adsense-master-pro'),
+                                'footer' => __('Rodapé', 'adsense-master-pro'),
+                                'before_content' => __('Antes do Conteúdo', 'adsense-master-pro'),
+                                'after_content' => __('Depois do Conteúdo', 'adsense-master-pro'),
+                                'before_paragraph' => __('Antes do 1º Parágrafo', 'adsense-master-pro'),
+                                'after_paragraph' => __('Depois do 2º Parágrafo', 'adsense-master-pro'),
+                                'sidebar' => __('Sidebar', 'adsense-master-pro'),
+                                'custom' => __('Personalizada', 'adsense-master-pro')
+                            );
+                            return isset($labels[$position]) ? $labels[$position] : $position;
+                        }
+                    }
+                    ?>
+                    <div class="amp-form-row amp-form-columns">
+                        <div class="amp-form-group">
+                            <label for="abtest-name"><?php _e('Nome do Teste', 'adsense-master-pro'); ?></label>
+                            <input type="text" id="abtest-name" class="regular-text">
+                        </div>
+                        <div class="amp-form-group">
+                            <label for="abtest-split"><?php _e('Divisão de Tráfego (%)', 'adsense-master-pro'); ?></label>
+                            <input type="number" id="abtest-split" class="small-text" min="0" max="100" value="50">
+                        </div>
+                        <div class="amp-form-group">
+                            <label for="abtest-status"><?php _e('Status', 'adsense-master-pro'); ?></label>
+                            <select id="abtest-status">
+                                <option value="active"><?php _e('Ativo', 'adsense-master-pro'); ?></option>
+                                <option value="inactive"><?php _e('Inativo', 'adsense-master-pro'); ?></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="amp-form-row amp-form-columns">
+                        <div class="amp-form-group">
+                            <label for="abtest-ad-a"><?php _e('Anúncio A', 'adsense-master-pro'); ?></label>
+                            <select id="abtest-ad-a" class="regular-text">
+                                <option value=""><?php _e('Selecione', 'adsense-master-pro'); ?></option>
+                                <?php foreach ($ads as $ad): 
+                                    $type = detect_ad_type($ad['code']);
+                                    $pos = get_position_label($ad['position']);
+                                ?>
+                                    <option value="<?php echo intval($ad['id']); ?>">
+                                        <?php echo '#' . intval($ad['id']) . ' - ' . esc_html($ad['name']) . ' (' . esc_html($pos) . ', ' . esc_html($type) . ')'; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="amp-form-group">
+                            <label for="abtest-ad-b"><?php _e('Anúncio B', 'adsense-master-pro'); ?></label>
+                            <select id="abtest-ad-b" class="regular-text">
+                                <option value=""><?php _e('Selecione', 'adsense-master-pro'); ?></option>
+                                <?php foreach ($ads as $ad): 
+                                    $type = detect_ad_type($ad['code']);
+                                    $pos = get_position_label($ad['position']);
+                                ?>
+                                    <option value="<?php echo intval($ad['id']); ?>">
+                                        <?php echo '#' . intval($ad['id']) . ' - ' . esc_html($ad['name']) . ' (' . esc_html($pos) . ', ' . esc_html($type) . ')'; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="amp-form-row">
+                        <div class="amp-form-group">
+                            <label for="abtest-desc"><?php _e('Descrição', 'adsense-master-pro'); ?></label>
+                            <textarea id="abtest-desc" rows="4" class="large-text"></textarea>
+                        </div>
+                    </div>
+                    <div class="amp-form-row">
+                        <button type="button" class="button button-primary" id="save-abtest"><?php _e('Salvar Teste A/B', 'adsense-master-pro'); ?></button>
+                        <span id="abtest-shortcode" style="margin-left:10px;"></span>
+                    </div>
+                    <hr>
+                    <h3><?php _e('Testes A/B Criados', 'adsense-master-pro'); ?></h3>
+                    <table class="widefat fixed striped">
+                        <thead>
+                            <tr>
+                                <th><?php _e('ID', 'adsense-master-pro'); ?></th>
+                                <th><?php _e('Nome', 'adsense-master-pro'); ?></th>
+                                <th><?php _e('Anúncio A', 'adsense-master-pro'); ?></th>
+                                <th><?php _e('Anúncio B', 'adsense-master-pro'); ?></th>
+                                <th><?php _e('Split', 'adsense-master-pro'); ?></th>
+                                <th><?php _e('Status', 'adsense-master-pro'); ?></th>
+                                <th><?php _e('Shortcode', 'adsense-master-pro'); ?></th>
+                                <th><?php _e('Ações', 'adsense-master-pro'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($tests)): ?>
+                                <tr><td colspan="8"><?php _e('Nenhum teste criado.', 'adsense-master-pro'); ?></td></tr>
+                            <?php else: foreach ($tests as $t):
+                                $a = null; $b = null;
+                                foreach ($ads as $ad) {
+                                    if ($ad['id'] == $t['ad_a_id']) $a = $ad;
+                                    if ($ad['id'] == $t['ad_b_id']) $b = $ad;
+                                }
+                            ?>
+                                <tr>
+                                    <td>#<?php echo intval($t['id']); ?></td>
+                                    <td><?php echo esc_html($t['name']); ?></td>
+                                    <td><?php echo $a ? esc_html($a['name']) . ' (' . esc_html(get_position_label($a['position'])) . ')' : '-'; ?></td>
+                                    <td><?php echo $b ? esc_html($b['name']) . ' (' . esc_html(get_position_label($b['position'])) . ')' : '-'; ?></td>
+                                    <td><?php echo intval($t['traffic_split']); ?>%</td>
+                                    <td><?php echo esc_html($t['status']); ?></td>
+                                    <td>[amp_ab_test id="<?php echo intval($t['id']); ?>"]</td>
+                                    <td>
+                                        <button class="button copy-abtest-shortcode" data-id="<?php echo intval($t['id']); ?>"><?php _e('Copiar', 'adsense-master-pro'); ?></button>
+                                        <button class="button delete-abtest" data-id="<?php echo intval($t['id']); ?>" style="color:#a00;"><?php _e('Excluir', 'adsense-master-pro'); ?></button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; endif; ?>
+                        </tbody>
                     </table>
                 </div>
                 
@@ -342,6 +566,195 @@ jQuery(document).ready(function($) {
             // Implementar reset
             location.reload();
         }
+    });
+    
+    $('#save-abtest').on('click', function() {
+        var name = $('#abtest-name').val().trim();
+        var split = parseInt($('#abtest-split').val(), 10);
+        var status = $('#abtest-status').val();
+        var adA = parseInt($('#abtest-ad-a').val(), 10);
+        var adB = parseInt($('#abtest-ad-b').val(), 10);
+        var desc = $('#abtest-desc').val().trim();
+        if (!name || !adA || !adB || adA === adB) {
+            alert('<?php _e('Preencha o nome e selecione anúncios diferentes para A e B.', 'adsense-master-pro'); ?>');
+            return;
+        }
+        $.ajax({
+            url: amp_ajax.ajax_url,
+            method: 'POST',
+            data: {
+                action: 'amp_save_ab_test',
+                nonce: amp_ajax.nonce,
+                name: name,
+                traffic_split: isNaN(split) ? 50 : Math.max(0, Math.min(100, split)),
+                status: status,
+                ad_a_id: adA,
+                ad_b_id: adB,
+                description: desc
+            },
+            success: function(resp) {
+                if (resp.success && resp.data && resp.data.shortcode) {
+                    $('#abtest-shortcode').text(resp.data.shortcode);
+                    alert('<?php _e('Teste A/B salvo com sucesso!', 'adsense-master-pro'); ?>');
+                    setTimeout(function(){ location.reload(); }, 800);
+                } else {
+                    alert('❌ ' + (resp.data || '<?php _e('Erro ao salvar Teste A/B.', 'adsense-master-pro'); ?>'));
+                }
+            },
+            error: function() {
+                alert('❌ <?php _e('Erro na comunicação com o servidor.', 'adsense-master-pro'); ?>');
+            }
+        });
+    });
+    
+    $(document).on('click', '.delete-abtest', function(e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+        if (!confirm('<?php _e('Deseja excluir este Teste A/B?', 'adsense-master-pro'); ?>')) return;
+        $.ajax({
+            url: amp_ajax.ajax_url,
+            method: 'POST',
+            data: {
+                action: 'amp_delete_ab_test',
+                nonce: amp_ajax.nonce,
+                id: id
+            },
+            success: function(resp) {
+                if (resp.success) {
+                    alert('<?php _e('Teste A/B excluído.', 'adsense-master-pro'); ?>');
+                    location.reload();
+                } else {
+                    alert('❌ ' + (resp.data || '<?php _e('Erro ao excluir Teste A/B.', 'adsense-master-pro'); ?>'));
+                }
+            }
+        });
+    });
+    
+    $(document).on('click', '.copy-abtest-shortcode', function(e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+        var text = '[amp_ab_test id="' + id + '"]';
+        var ta = $('<textarea>').val(text).appendTo('body').select();
+        document.execCommand('copy');
+        ta.remove();
+        alert('<?php _e('Shortcode copiado.', 'adsense-master-pro'); ?>');
+    });
+    
+    $('#load-heatmap').on('click', function() {
+        var adId = parseInt($('#heatmap-ad').val(), 10);
+        if (!adId) {
+            alert('<?php _e('Selecione um anúncio.', 'adsense-master-pro'); ?>');
+            return;
+        }
+        $.ajax({
+            url: amp_ajax.ajax_url,
+            method: 'POST',
+            data: {
+                action: 'amp_get_heatmap',
+                nonce: amp_ajax.nonce,
+                ad_id: adId,
+                limit: 5000
+            },
+            success: function(resp) {
+                if (resp.success && resp.data && resp.data.points) {
+                    var canvas = document.getElementById('heatmap-canvas');
+                    var ctx = canvas.getContext('2d');
+                    ctx.clearRect(0,0,canvas.width, canvas.height);
+                    var pts = resp.data.points;
+                    for (var i = 0; i < pts.length; i++) {
+                        var px = Math.round(pts[i].x * canvas.width);
+                        var py = Math.round(pts[i].y * canvas.height);
+                        var grd = ctx.createRadialGradient(px, py, 0, px, py, 25);
+                        grd.addColorStop(0, 'rgba(255,0,0,0.6)');
+                        grd.addColorStop(1, 'rgba(255,0,0,0)');
+                        ctx.fillStyle = grd;
+                        ctx.beginPath();
+                        ctx.arc(px, py, 25, 0, Math.PI*2);
+                        ctx.fill();
+                    }
+                    if (!pts.length) {
+                        alert('<?php _e('Sem dados de cliques para este anúncio.', 'adsense-master-pro'); ?>');
+                    }
+                } else {
+                    alert('❌ ' + (resp.data || '<?php _e('Erro ao carregar heatmap.', 'adsense-master-pro'); ?>'));
+                }
+            }
+        });
+    });
+    
+    $('#generate-report').on('click', function() {
+        var start = $('#report-start').val();
+        var end = $('#report-end').val();
+        var adId = parseInt($('#report-ad').val(), 10) || '';
+        var device = $('#report-device').val();
+        $.ajax({
+            url: amp_ajax.ajax_url,
+            method: 'POST',
+            data: {
+                action: 'amp_get_analytics',
+                nonce: amp_ajax.nonce,
+                start_date: start,
+                end_date: end,
+                ad_id: adId,
+                device: device
+            },
+            success: function(resp) {
+                if (resp.success && resp.data && resp.data.rows) {
+                    var rows = resp.data.rows;
+                    var $tbody = $('#report-table tbody');
+                    $tbody.empty();
+                    var totalImpr = 0, totalClicks = 0;
+                    for (var i = 0; i < rows.length; i++) {
+                        var r = rows[i];
+                        var impr = parseInt(r.impressions, 10) || 0;
+                        var clk = parseInt(r.clicks, 10) || 0;
+                        var ctr = impr ? ((clk / impr) * 100).toFixed(2) + '%' : '0%';
+                        totalImpr += impr;
+                        totalClicks += clk;
+                        var tr = $('<tr>');
+                        tr.append($('<td>').text(r.day));
+                        tr.append($('<td>').text(impr));
+                        tr.append($('<td>').text(clk));
+                        tr.append($('<td>').text(ctr));
+                        $tbody.append(tr);
+                    }
+                    var totalCtr = totalImpr ? ((totalClicks / totalImpr) * 100).toFixed(2) + '%' : '0%';
+                    $('#report-total-impr').text(totalImpr);
+                    $('#report-total-clicks').text(totalClicks);
+                    $('#report-total-ctr').text(totalCtr);
+                    
+                    var canvas = document.getElementById('report-chart');
+                    var ctx = canvas.getContext('2d');
+                    ctx.clearRect(0,0,canvas.width,canvas.height);
+                    var maxVal = 0;
+                    var imprData = rows.map(function(r){ return parseInt(r.impressions,10)||0; });
+                    var clickData = rows.map(function(r){ return parseInt(r.clicks,10)||0; });
+                    for (var j=0;j<imprData.length;j++) { maxVal = Math.max(maxVal, imprData[j], clickData[j]); }
+                    maxVal = maxVal || 1;
+                    var w = canvas.width, h = canvas.height;
+                    var n = rows.length || 1;
+                    function yScale(v){ return h - Math.round((v / maxVal) * (h - 20)); }
+                    function xPos(i){ return Math.round((i / Math.max(1,n-1)) * (w - 20)) + 10; }
+                    ctx.strokeStyle = '#0073aa';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    for (var i1=0;i1<n;i1++) {
+                        var x = xPos(i1), y = yScale(imprData[i1]);
+                        if (i1===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+                    }
+                    ctx.stroke();
+                    ctx.strokeStyle = '#d54e21';
+                    ctx.beginPath();
+                    for (var i2=0;i2<n;i2++) {
+                        var x2 = xPos(i2), y2 = yScale(clickData[i2]);
+                        if (i2===0) ctx.moveTo(x2,y2); else ctx.lineTo(x2,y2);
+                    }
+                    ctx.stroke();
+                } else {
+                    alert('❌ ' + (resp.data || '<?php _e('Erro ao gerar relatório.', 'adsense-master-pro'); ?>'));
+                }
+            }
+        });
     });
 });
 </script>

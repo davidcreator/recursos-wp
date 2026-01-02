@@ -520,8 +520,32 @@
     window.AMP = AMP;
     
     // Compatibilidade com temas
-    $(document).on('click', '.amp-ad-container a', function() {
-        AMP.trackAdClick($(this).closest('.amp-ad-container'));
+    $(document).on('click', '.amp-ad-container a', function(e) {
+        var $ad = $(this).closest('.amp-ad-container');
+        var off = $ad.offset() || {left:0, top:0};
+        var w = $ad.outerWidth() || 0;
+        var h = $ad.outerHeight() || 0;
+        var cx = Math.round(e.pageX - off.left);
+        var cy = Math.round(e.pageY - off.top);
+        var vw = window.innerWidth || $(window).width();
+        var vh = window.innerHeight || $(window).height();
+        var adId = $ad.data('ad-id');
+        if (typeof amp_ajax !== 'undefined') {
+            $.post(amp_ajax.ajax_url, {
+                action: 'amp_track_click',
+                ad_id: adId,
+                click_x: cx,
+                click_y: cy,
+                element_w: w,
+                element_h: h,
+                offset_x: Math.round(off.left),
+                offset_y: Math.round(off.top),
+                viewport_w: vw,
+                viewport_h: vh,
+                nonce: amp_ajax.nonce
+            });
+        }
+        AMP.trackAdClick($ad);
     });
     
     $(document).on('click', 'a.amp-affiliate-link', function() {

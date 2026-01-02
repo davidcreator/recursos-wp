@@ -135,6 +135,9 @@ class AdSenseMasterPro {
         add_action('wp_ajax_amp_get_analytics', array($this, 'get_analytics_data'));
         add_action('wp_ajax_amp_optimize_ads', array($this, 'optimize_ads'));
         add_action('wp_ajax_amp_ab_test_result', array($this, 'ab_test_result'));
+        add_action('wp_ajax_amp_save_ab_test', array($this, 'save_ab_test'));
+        add_action('wp_ajax_amp_delete_ab_test', array($this, 'delete_ab_test'));
+        add_action('wp_ajax_amp_get_heatmap', array($this, 'get_heatmap_data'));
         
         // Cron jobs
         add_action('amp_daily_optimization', array($this, 'daily_optimization'));
@@ -154,6 +157,7 @@ class AdSenseMasterPro {
         load_plugin_textdomain('adsense-master-pro', false, dirname(plugin_basename(__FILE__)) . '/languages');
         $this->load_options();
         $this->load_ads();
+        $this->ensure_analytics_columns();
     }
 
     /**
@@ -673,7 +677,7 @@ public function save_ad_enhanced() {
         $wpdb->insert($wpdb->prefix . 'amp_analytics', $data);
     }
     
-    public function track_ad_click($ad_id) {
+    public function track_ad_click($ad_id, $meta = array()) {
         if (!$this->options['analytics_tracking']) return;
         
         global $wpdb;
@@ -691,6 +695,21 @@ public function save_ad_enhanced() {
             'country' => $this->get_country_code(),
             'referrer' => isset($_SERVER['HTTP_REFERER']) ? esc_url($_SERVER['HTTP_REFERER']) : ''
         );
+        
+        $extra = array(
+            'click_x' => intval($meta['click_x'] ?? 0),
+            'click_y' => intval($meta['click_y'] ?? 0),
+            'element_w' => intval($meta['element_w'] ?? 0),
+            'element_h' => intval($meta['element_h'] ?? 0),
+            'offset_x' => intval($meta['offset_x'] ?? 0),
+            'offset_y' => intval($meta['offset_y'] ?? 0),
+            'viewport_w' => intval($meta['viewport_w'] ?? 0),
+            'viewport_h' => intval($meta['viewport_h'] ?? 0),
+        );
+        
+        foreach ($extra as $k => $v) {
+            if ($v) $data[$k] = $v;
+        }
         
         $wpdb->insert($wpdb->prefix . 'amp_analytics', $data);
     }
@@ -1115,7 +1134,15 @@ public function save_ad_enhanced() {
         check_ajax_referer('amp_track', 'nonce');
         
         $ad_id = intval($_POST['ad_id'] ?? 0);
-        $this->track_ad_click($ad_id);
+        $click_x = intval($_POST['click_x'] ?? 0);
+        $click_y = intval($_POST['click_y'] ?? 0);
+        $element_w = intval($_POST['element_w'] ?? 0);
+        $element_h = intval($_POST['element_h'] ?? 0);
+        $offset_x = intval($_POST['offset_x'] ?? 0);
+        $offset_y = intval($_POST['offset_y'] ?? 0);
+        $viewport_w = intval($_POST['viewport_w'] ?? 0);
+        $viewport_h = intval($_POST['viewport_h'] ?? 0);
+        $this->track_ad_click($ad_id, compact('click_x','click_y','element_w','element_h','offset_x','offset_y','viewport_w','viewport_h'));
         
         wp_send_json_success();
     }
@@ -1346,7 +1373,59 @@ public function save_ad_enhanced() {
     
     public function register_rest_routes() {}
     
-    public function get_analytics_data() {}
+    public function get_analytics_data() {
+        check_ajax_referer('amp_nonce', 'nonce');
+        if (!current_user_can('manage_options')) {
+            wp_die(__('Permissão negada.', 'adsense-master-pro'));
+        }
+        global $wpdb;
+        $start = sanitize_text_field($_POST['start_date'] ?? '');
+        $end = sanitize_text_field($_POST['end_date'] ?? '');
+        $ad_id = intval($_POST['ad_id'] ?? 0);
+        $device = sanitize_text_field($_POST['device'] ?? '');
+        
+        $end_default = date('Y-m-d');
+        $start_default = date('Y-m-d', strtotime('-30 days'));
+        $start_date = $start ?: $start_default;
+        $end_date = $end ?: $end_default;
+        $start_dt = $start_date . ' 00:00:00';
+        $end_dt = $end_date . ' 23:59:59';
+        
+        $params = array($start_dt, $end_dt);
+        $query = "SELECT DATE(timestamp) AS day,
+                         SUM(event_type='impression') AS impressions,
+                         SUM(event_type='click') + SUM(event_type='affiliate_click') AS clicks
+                  FROM {$wpdb->prefix}amp_analytics
+                  WHERE timestamp BETWEEN %s AND %s";
+        if ($ad_id > 0) {
+            $query .= " AND ad_id = %d";
+            $params[] = $ad_id;
+        }
+        if (!empty($device)) {
+            $query .= " AND device_type = %s";
+            $params[] = $device;
+        }
+        $query .= " GROUP BY day ORDER BY day ASC LIMIT 1000";
+        
+        $prepared = $wpdb->prepare($query, $params);
+        $rows = $wpdb->get_results($prepared, ARRAY_A);
+        $total_impr = 0;
+        $total_clicks = 0;
+        foreach ($rows as $r) {
+            $total_impr += intval($r['impressions']);
+            $total_clicks += intval($r['clicks']);
+        }
+        $ctr = $total_impr ? round(($total_clicks / max(1,$total_impr)) * 100, 2) : 0.0;
+        
+        wp_send_json_success(array(
+            'rows' => $rows,
+            'totals' => array(
+                'impressions' => $total_impr,
+                'clicks' => $total_clicks,
+                'ctr' => $ctr
+            )
+        ));
+    }
     
     public function optimize_ads() {}
     
@@ -1354,7 +1433,108 @@ public function save_ad_enhanced() {
         check_ajax_referer('amp_track', 'nonce');
         wp_send_json_success();
     }
+
+    public function get_heatmap_data() {
+        check_ajax_referer('amp_nonce', 'nonce');
+        if (!current_user_can('manage_options')) {
+            wp_die(__('Permissão negada.', 'adsense-master-pro'));
+        }
+        global $wpdb;
+        $ad_id = intval($_POST['ad_id'] ?? 0);
+        $limit = max(100, intval($_POST['limit'] ?? 5000));
+        if ($ad_id <= 0) {
+            wp_send_json_error(__('ID inválido.', 'adsense-master-pro'));
+        }
+        $rows = $wpdb->get_results($wpdb->prepare(
+            "SELECT click_x, click_y, element_w, element_h FROM {$wpdb->prefix}amp_analytics 
+             WHERE ad_id = %d AND event_type = 'click' AND click_x IS NOT NULL AND click_y IS NOT NULL 
+             ORDER BY id DESC LIMIT %d", $ad_id, $limit
+        ), ARRAY_A);
+        $points = array();
+        foreach ($rows as $r) {
+            $ew = max(1, intval($r['element_w'] ?? 0));
+            $eh = max(1, intval($r['element_h'] ?? 0));
+            $nx = $ew ? floatval($r['click_x']) / $ew : 0;
+            $ny = $eh ? floatval($r['click_y']) / $eh : 0;
+            if ($nx >= 0 && $nx <= 1 && $ny >= 0 && $ny <= 1) {
+                $points[] = array('x' => $nx, 'y' => $ny);
+            }
+        }
+        wp_send_json_success(array('points' => $points));
+    }
     
+    private function ensure_analytics_columns() {
+        global $wpdb;
+        $table = $wpdb->prefix . 'amp_analytics';
+        $cols = $wpdb->get_col("SHOW COLUMNS FROM $table", 0);
+        $need = array(
+            'click_x' => "ALTER TABLE $table ADD COLUMN click_x INT NULL",
+            'click_y' => "ALTER TABLE $table ADD COLUMN click_y INT NULL",
+            'element_w' => "ALTER TABLE $table ADD COLUMN element_w INT NULL",
+            'element_h' => "ALTER TABLE $table ADD COLUMN element_h INT NULL",
+            'offset_x' => "ALTER TABLE $table ADD COLUMN offset_x INT NULL",
+            'offset_y' => "ALTER TABLE $table ADD COLUMN offset_y INT NULL",
+            'viewport_w' => "ALTER TABLE $table ADD COLUMN viewport_w INT NULL",
+            'viewport_h' => "ALTER TABLE $table ADD COLUMN viewport_h INT NULL"
+        );
+        foreach ($need as $c => $sql) {
+            if (!in_array($c, $cols)) {
+                $wpdb->query($sql);
+            }
+        }
+    }
+    public function save_ab_test() {
+        check_ajax_referer('amp_nonce', 'nonce');
+        if (!current_user_can('manage_options')) {
+            wp_die(__('Permissão negada.', 'adsense-master-pro'));
+        }
+        global $wpdb;
+        $table = $wpdb->prefix . 'amp_ab_tests';
+        $name = sanitize_text_field($_POST['name'] ?? '');
+        $description = sanitize_textarea_field($_POST['description'] ?? '');
+        $ad_a_id = intval($_POST['ad_a_id'] ?? 0);
+        $ad_b_id = intval($_POST['ad_b_id'] ?? 0);
+        $traffic_split = max(0, min(100, intval($_POST['traffic_split'] ?? 50)));
+        $status = sanitize_text_field($_POST['status'] ?? 'active');
+        if (!$name || $ad_a_id <= 0 || $ad_b_id <= 0 || $ad_a_id === $ad_b_id) {
+            wp_send_json_error(__('Dados inválidos para Teste A/B.', 'adsense-master-pro'));
+        }
+        $result = $wpdb->insert($table, array(
+            'name' => $name,
+            'description' => $description,
+            'ad_a_id' => $ad_a_id,
+            'ad_b_id' => $ad_b_id,
+            'traffic_split' => $traffic_split,
+            'status' => in_array($status, array('active','inactive')) ? $status : 'active'
+        ), array('%s','%s','%d','%d','%d','%s'));
+        if ($result !== false) {
+            $id = $wpdb->insert_id;
+            wp_send_json_success(array('id' => $id, 'shortcode' => '[amp_ab_test id="' . $id . '"]'));
+        } else {
+            $error = $wpdb->last_error ? $wpdb->last_error : __('Erro ao salvar Teste A/B.', 'adsense-master-pro');
+            wp_send_json_error($error);
+        }
+    }
+    
+    public function delete_ab_test() {
+        check_ajax_referer('amp_nonce', 'nonce');
+        if (!current_user_can('manage_options')) {
+            wp_die(__('Permissão negada.', 'adsense-master-pro'));
+        }
+        global $wpdb;
+        $table = $wpdb->prefix . 'amp_ab_tests';
+        $id = intval($_POST['id'] ?? 0);
+        if ($id <= 0) {
+            wp_send_json_error(__('ID inválido.', 'adsense-master-pro'));
+        }
+        $result = $wpdb->delete($table, array('id' => $id), array('%d'));
+        if ($result !== false) {
+            wp_send_json_success(__('Teste A/B excluído.', 'adsense-master-pro'));
+        } else {
+            $error = $wpdb->last_error ? $wpdb->last_error : __('Erro ao excluir Teste A/B.', 'adsense-master-pro');
+            wp_send_json_error($error);
+        }
+    }
     public function daily_optimization() {}
     
     public function hourly_analytics() {}
