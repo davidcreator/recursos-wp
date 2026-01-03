@@ -44,6 +44,37 @@
     border-color: #0073aa;
     color: #fff;
 }
+.bdrposts-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+    align-items: center;
+}
+.bdrposts-search {
+    min-height: 36px;
+    padding: 6px 10px;
+    font-size: 13px;
+    border: 1px solid #e5e5e5;
+    border-radius: 6px;
+}
+.bdrposts-sort-by {
+    min-height: 36px;
+    padding: 6px 10px;
+    font-size: 13px;
+    border: 1px solid #e5e5e5;
+    border-radius: 6px;
+    background: #fff;
+}
+.bdrposts-sort-order {
+    min-height: 36px;
+    padding: 6px 12px;
+    font-size: 13px;
+    border: 1px solid #e5e5e5;
+    border-radius: 6px;
+    background: #f8f8f8;
+    cursor: pointer;
+}
 
 /* === Layout Grid === */
 .bdrposts-grid {
@@ -441,6 +472,28 @@
     background: transparent;
     transform: none;
 }
+.bdrposts-load-more-wrap {
+    text-align: center;
+    margin-top: 24px;
+}
+.bdrposts-load-more {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 160px;
+    height: 44px;
+    padding: 0 16px;
+    background: #0073aa;
+    color: #fff;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+.bdrposts-load-more:hover {
+    background: #005177;
+}
 
 /* === Sub-layouts === */
 
@@ -719,6 +772,16 @@
         height: 36px;
         padding: 0 10px;
         font-size: 13px;
+    }
+    .bdrposts-tools {
+        gap: 6px;
+    }
+    .bdrposts-search,
+    .bdrposts-sort-by,
+    .bdrposts-sort-order {
+        min-height: 32px;
+        padding: 4px 8px;
+        font-size: 12px;
     }
     
     /* Hover desabilitado em mobile */

@@ -256,8 +256,6 @@ class BDRPosts {
                 $attributes['categories'] = array();
             }
         }
-        // Evita upscaling de paginação para filtros
-        $attributes['enablePagination'] = false;
         return $this->render_block($attributes);
     }
     
@@ -288,6 +286,7 @@ class BDRPosts {
             'responsiveMode' => array('type' => 'string', 'default' => 'auto'),
             'order' => array('type' => 'string', 'default' => 'DESC'),
             'orderBy' => array('type' => 'string', 'default' => 'date'),
+            'searchTerm' => array('type' => 'string', 'default' => ''),
             'categories' => array('type' => 'array', 'default' => array(), 'items' => array('type' => 'number')),
             'tags' => array('type' => 'array', 'default' => array(), 'items' => array('type' => 'number')),
             'authors' => array('type' => 'array', 'default' => array(), 'items' => array('type' => 'number')),
@@ -313,12 +312,17 @@ class BDRPosts {
             'showReadMore' => array('type' => 'boolean', 'default' => true),
             'readMoreText' => array('type' => 'string', 'default' => 'Ler Mais'),
             'enablePagination' => array('type' => 'boolean', 'default' => false),
+            'page' => array('type' => 'number', 'default' => 1),
             'showReadingTime' => array('type' => 'boolean', 'default' => false),
             'tickerLabel' => array('type' => 'string', 'default' => __('Destaques', 'bdrposts')),
             'showFilterBar' => array('type' => 'boolean', 'default' => false),
             'filterMode' => array('type' => 'string', 'default' => 'category'),
             'filterTerms' => array('type' => 'array', 'default' => array(), 'items' => array('type' => 'number')),
-            'filterAllLabel' => array('type' => 'string', 'default' => __('Todos', 'bdrposts'))
+            'filterAllLabel' => array('type' => 'string', 'default' => __('Todos', 'bdrposts')),
+            'allowSearch' => array('type' => 'boolean', 'default' => false),
+            'allowOrderChange' => array('type' => 'boolean', 'default' => false),
+            'loadMore' => array('type' => 'boolean', 'default' => false),
+            'loadMoreLabel' => array('type' => 'string', 'default' => __('Carregar mais', 'bdrposts'))
         );
     }
     
@@ -484,14 +488,19 @@ class BDRPosts {
         $sub_layout = isset($attributes['subLayout']) ? $attributes['subLayout'] : 'title-meta';
         $columns = isset($attributes['columns']) ? $attributes['columns'] : 3;
         
-        $wrapper_classes = array(
+        $current_page = isset($attributes['page']) ? max(1, intval($attributes['page'])) : 1;
+        $total_pages = max(1, intval($query->max_num_pages));
+        $wrapper_extra_classes = implode(' ', array(
             'bdrposts-wrapper',
             'bdrposts-layout-' . esc_attr($layout),
             'bdrposts-sublayout-' . esc_attr($sub_layout),
             'bdrposts-columns-' . esc_attr($columns)
-        );
+        ));
+        $wrapper_attr = function_exists('get_block_wrapper_attributes')
+            ? get_block_wrapper_attributes(array('class' => $wrapper_extra_classes))
+            : 'class="' . $wrapper_extra_classes . '"';
         $data_attrs = esc_attr(wp_json_encode($attributes));
-        echo '<div class="' . implode(' ', $wrapper_classes) . '" data-bdrposts-attrs="' . $data_attrs . '">';
+        echo '<div ' . $wrapper_attr . ' data-bdrposts-attrs="' . $data_attrs . '" data-bdrposts-page="' . esc_attr($current_page) . '" data-bdrposts-total="' . esc_attr($total_pages) . '">';
 
         // Barra de filtros por categoria/tag
         if (!empty($attributes['showFilterBar'])) {
@@ -531,6 +540,25 @@ class BDRPosts {
             }
             echo '</div>';
         }
+        if (!empty($attributes['allowSearch']) || !empty($attributes['allowOrderChange'])) {
+            echo '<div class="bdrposts-tools">';
+            if (!empty($attributes['allowSearch'])) {
+                $val = isset($attributes['searchTerm']) ? $attributes['searchTerm'] : '';
+                echo '<input type="search" class="bdrposts-search" placeholder="' . esc_attr__('Buscar posts...', 'bdrposts') . '" value="' . esc_attr($val) . '" />';
+            }
+            if (!empty($attributes['allowOrderChange'])) {
+                $ob = isset($attributes['orderBy']) ? $attributes['orderBy'] : 'date';
+                $ord = isset($attributes['order']) ? $attributes['order'] : 'DESC';
+                echo '<select class="bdrposts-sort-by">';
+                foreach (array('date','title','modified','menu_order','rand') as $opt) {
+                    $sel = $ob === $opt ? ' selected' : '';
+                    echo '<option value="' . esc_attr($opt) . '"' . $sel . '>' . esc_html(ucfirst($opt)) . '</option>';
+                }
+                echo '</select>';
+                echo '<button type="button" class="bdrposts-sort-order" data-order="' . esc_attr($ord) . '">' . esc_html($ord === 'ASC' ? 'ASC' : 'DESC') . '</button>';
+            }
+            echo '</div>';
+        }
         
         switch ($layout) {
             case 'masonry':
@@ -552,9 +580,15 @@ class BDRPosts {
         if (isset($attributes['enablePagination']) && $attributes['enablePagination']) {
             echo $this->render_pagination($query);
         }
-        
+        if (!empty($attributes['loadMore'])) {
+            if ($current_page < $total_pages) {
+                $label = isset($attributes['loadMoreLabel']) ? $attributes['loadMoreLabel'] : __('Carregar mais', 'bdrposts');
+                echo '<div class="bdrposts-load-more-wrap"><button type="button" class="bdrposts-load-more" data-next-page="' . esc_attr($current_page + 1) . '">' . esc_html($label) . '</button></div>';
+            }
+        }
+
         wp_reset_postdata();
-        
+
         $html = ob_get_clean();
         if ($use_cache) {
             set_transient($cache_key, $html, 120);
@@ -575,11 +609,11 @@ class BDRPosts {
             'post_status' => 'publish',
             'ignore_sticky_posts' => true
         );
-        
-        // Paginação
-        if (isset($attributes['enablePagination']) && $attributes['enablePagination']) {
-            $paged = get_query_var('paged') ? get_query_var('paged') : 1;
-            $args['paged'] = $paged;
+        if (!empty($attributes['searchTerm'])) {
+            $args['s'] = sanitize_text_field($attributes['searchTerm']);
+        }
+        if (isset($attributes['page'])) {
+            $args['paged'] = max(1, intval($attributes['page']));
             unset($args['offset']);
         }
         

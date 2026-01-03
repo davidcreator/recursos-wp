@@ -37,6 +37,7 @@
             responsiveMode: { type: 'string', default: 'auto' },
             order: { type: 'string', default: 'DESC' },
             orderBy: { type: 'string', default: 'date' },
+            searchTerm: { type: 'string', default: '' },
             categories: { type: 'array', default: [] },
             tags: { type: 'array', default: [] },
             authors: { type: 'array', default: [] },
@@ -62,12 +63,17 @@
             showReadMore: { type: 'boolean', default: true },
             readMoreText: { type: 'string', default: 'Ler Mais' },
             enablePagination: { type: 'boolean', default: false },
+            page: { type: 'number', default: 1 },
             showReadingTime: { type: 'boolean', default: false },
             tickerLabel: { type: 'string', default: wp.i18n.__('Destaques', 'bdrposts') },
             showFilterBar: { type: 'boolean', default: false },
             filterMode: { type: 'string', default: 'category' },
             filterTerms: { type: 'array', default: [] },
-            filterAllLabel: { type: 'string', default: wp.i18n.__('Todos', 'bdrposts') }
+            filterAllLabel: { type: 'string', default: wp.i18n.__('Todos', 'bdrposts') },
+            allowSearch: { type: 'boolean', default: false },
+            allowOrderChange: { type: 'boolean', default: false },
+            loadMore: { type: 'boolean', default: false },
+            loadMoreLabel: { type: 'string', default: wp.i18n.__('Carregar mais', 'bdrposts') }
         },
         edit: function(props) {
             const { attributes, setAttributes } = props;
@@ -189,6 +195,31 @@
                             min: 1,
                             max: 6,
                             onChange: (v) => setAttributes({ columns: v })
+                        })
+                    ),
+                    wp.element.createElement(PanelBody, {
+                        title: __('Ferramentas Frontend', 'bdrposts'),
+                        initialOpen: false
+                    },
+                        wp.element.createElement(ToggleControl, {
+                            label: __('Ativar busca', 'bdrposts'),
+                            checked: attributes.allowSearch,
+                            onChange: (v) => setAttributes({ allowSearch: v })
+                        }),
+                        wp.element.createElement(ToggleControl, {
+                            label: __('Permitir ordenação', 'bdrposts'),
+                            checked: attributes.allowOrderChange,
+                            onChange: (v) => setAttributes({ allowOrderChange: v })
+                        }),
+                        wp.element.createElement(ToggleControl, {
+                            label: __('Botão Carregar mais', 'bdrposts'),
+                            checked: attributes.loadMore,
+                            onChange: (v) => setAttributes({ loadMore: v })
+                        }),
+                        attributes.loadMore && wp.element.createElement(TextControl, {
+                            label: __('Texto do botão Carregar mais', 'bdrposts'),
+                            value: attributes.loadMoreLabel,
+                            onChange: (v) => setAttributes({ loadMoreLabel: v })
                         })
                     ),
 
