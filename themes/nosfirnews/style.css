@@ -16,7 +16,7 @@ Text Domain: nosfirnews
 :root { --white: #ffffff; --text: #333; --primary: #1a73e8; --border: #e1e5e9; }
 
 * { box-sizing: border-box; }
-body { margin: 0; color: var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, sans-serif; }
+body { margin: 0; color: var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, sans-serif; font-size: clamp(14px, 1rem + 0.2vw, 18px); }
 
 .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
 .site-header { background: var(--white); border-bottom: 1px solid var(--border); }
@@ -33,4 +33,37 @@ body { margin: 0; color: var(--text); font-family: system-ui, -apple-system, Seg
 
 #content.site-content { padding: 1.25rem 0; }
 
-@media (max-width: 991px) { .nav-menu { flex-direction: column; } }
+@media (min-width: 1600px) {
+  .container { max-width: 1400px; }
+  .nav-menu { gap: .75rem; }
+  .nav-menu a { padding: .75rem 1rem; }
+  .site-title { font-size: 1.5rem; }
+}
+
+@media (max-width: 1200px) {
+  .container { max-width: 1140px; }
+  .site-header .container { gap: .75rem; }
+  .nav-menu a { padding: .5rem .75rem; }
+}
+
+@media (max-width: 991px) {
+  .nav-menu { flex-direction: column; }
+  .nav-menu a { width: 100%; }
+}
+
+@media (max-width: 768px) {
+  .container { padding: 0 .75rem; }
+  .site-title { font-size: 1.125rem; }
+  .site-description { font-size: .8125rem; }
+  .site-branding { gap: .5rem; }
+}
+
+@media (max-width: 576px) {
+  .site-header .container { flex-wrap: wrap; }
+  .site-branding { flex: 1 1 auto; }
+  .nav-menu a { padding: .5rem .625rem; }
+}
+
+@media (max-width: 400px) {
+  body { font-size: clamp(14px, 3vw, 16px); }
+}

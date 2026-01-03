@@ -34,6 +34,7 @@
             postType: { type: 'string', default: 'post' },
             postsPerPage: { type: 'number', default: 6 },
             columns: { type: 'number', default: 3 },
+            responsiveMode: { type: 'string', default: 'auto' },
             order: { type: 'string', default: 'DESC' },
             orderBy: { type: 'string', default: 'date' },
             categories: { type: 'array', default: [] },
@@ -161,6 +162,15 @@
                             ],
                             onChange: (v) => setAttributes({ layout: v })
                         }),
+                        (attributes.layout === 'grid' || attributes.layout === 'masonry') && wp.element.createElement(SelectControl, {
+                            label: __('Modo Responsivo', 'bdrposts'),
+                            value: attributes.responsiveMode,
+                            options: [
+                                { label: __('Automático (ajuste por largura)', 'bdrposts'), value: 'auto' },
+                                { label: __('Fixar número de colunas', 'bdrposts'), value: 'fixed' }
+                            ],
+                            onChange: (v) => setAttributes({ responsiveMode: v })
+                        }),
                         attributes.layout !== 'ticker' && wp.element.createElement(SelectControl, {
                             label: __('Sub-layout', 'bdrposts'),
                             value: attributes.subLayout,
@@ -173,7 +183,7 @@
                             ],
                             onChange: (v) => setAttributes({ subLayout: v })
                         }),
-                        attributes.layout !== 'ticker' && attributes.layout !== 'slider' && wp.element.createElement(RangeControl, {
+                        attributes.layout !== 'ticker' && attributes.layout !== 'slider' && attributes.responsiveMode === 'fixed' && wp.element.createElement(RangeControl, {
                             label: __('Colunas', 'bdrposts'),
                             value: attributes.columns,
                             min: 1,

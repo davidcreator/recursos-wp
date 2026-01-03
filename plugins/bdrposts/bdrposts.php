@@ -285,6 +285,7 @@ class BDRPosts {
             'postType' => array('type' => 'string', 'default' => 'post'),
             'postsPerPage' => array('type' => 'number', 'default' => 6),
             'columns' => array('type' => 'number', 'default' => 3),
+            'responsiveMode' => array('type' => 'string', 'default' => 'auto'),
             'order' => array('type' => 'string', 'default' => 'DESC'),
             'orderBy' => array('type' => 'string', 'default' => 'date'),
             'categories' => array('type' => 'array', 'default' => array(), 'items' => array('type' => 'number')),
@@ -633,7 +634,8 @@ class BDRPosts {
      * Renderiza layout Grid
      */
     private function render_grid_layout($query, $attributes) {
-        echo '<div class="bdrposts-grid">';
+        $extra = (isset($attributes['responsiveMode']) && $attributes['responsiveMode'] === 'auto') ? ' bdrposts-grid-auto' : '';
+        echo '<div class="bdrposts-grid' . $extra . '">';
         
         while ($query->have_posts()) {
             $query->the_post();
@@ -647,7 +649,8 @@ class BDRPosts {
      * Renderiza layout Masonry
      */
     private function render_masonry_layout($query, $attributes) {
-        echo '<div class="bdrposts-masonry">';
+        $extra = (isset($attributes['responsiveMode']) && $attributes['responsiveMode'] === 'auto') ? ' bdrposts-masonry-auto' : '';
+        echo '<div class="bdrposts-masonry' . $extra . '">';
         
         while ($query->have_posts()) {
             $query->the_post();

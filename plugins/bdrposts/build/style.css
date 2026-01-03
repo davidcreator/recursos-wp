@@ -78,6 +78,11 @@
     grid-template-columns: repeat(6, 1fr);
 }
 
+/* === Grid Auto (adaptação automática a telas) === */
+.bdrposts-grid.bdrposts-grid-auto {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
 /* === Layout Masonry === */
 .bdrposts-masonry {
     column-gap: 30px;
@@ -99,6 +104,12 @@
 
 .bdrposts-columns-4 .bdrposts-masonry {
     column-count: 4;
+}
+
+/* === Masonry Auto (adaptação automática a telas) === */
+.bdrposts-masonry.bdrposts-masonry-auto {
+    column-width: 320px;
+    column-gap: 30px;
 }
 
 .bdrposts-masonry .bdrposts-item {
@@ -601,6 +612,10 @@
         column-count: 1 !important;
         column-gap: 15px;
     }
+    .bdrposts-masonry.bdrposts-masonry-auto {
+        column-width: 280px;
+        column-gap: 15px;
+    }
     
     .bdrposts-masonry .bdrposts-item {
         margin-bottom: 15px;
@@ -836,6 +851,10 @@
     .bdrposts-masonry {
         column-gap: 35px;
     }
+    .bdrposts-masonry.bdrposts-masonry-auto {
+        column-width: 360px;
+        column-gap: 35px;
+    }
 }
 
 /* === Desktop Extra Grande (acima de 1920px) === */
@@ -851,6 +870,10 @@
     }
     
     .bdrposts-masonry {
+        column-gap: 40px;
+    }
+    .bdrposts-masonry.bdrposts-masonry-auto {
+        column-width: 400px;
         column-gap: 40px;
     }
     
