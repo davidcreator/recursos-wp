@@ -636,7 +636,7 @@ public function save_ad_enhanced() {
      * Insere anúncios entre posts
      */
     public function insert_ads_between_posts($posts, $query) {
-        if (!$this->options['enable_adsense']) {
+        if (!intval($this->options['enable_adsense'] ?? 0)) {
             return $posts;
         }
         
@@ -656,7 +656,7 @@ public function save_ad_enhanced() {
     // ✅ V3.0: Métodos de analytics e otimização (já existentes, mantém compatibilidade)
     
     public function track_ad_impression($ad_id) {
-        if (!$this->options['analytics_tracking']) return;
+        if (!intval($this->options['analytics_tracking'] ?? 0)) return;
         
         global $wpdb;
         
@@ -678,7 +678,7 @@ public function save_ad_enhanced() {
     }
     
     public function track_ad_click($ad_id, $meta = array()) {
-        if (!$this->options['analytics_tracking']) return;
+        if (!intval($this->options['analytics_tracking'] ?? 0)) return;
         
         global $wpdb;
         
@@ -883,7 +883,7 @@ public function save_ad_enhanced() {
     }
     
     public function frontend_scripts() {
-        if ($this->options['enable_adsense']) {
+        if (intval($this->options['enable_adsense'] ?? 0)) {
             wp_enqueue_script('amp-frontend', AMP_PLUGIN_URL . 'assets/js/frontend.js', array('jquery'), AMP_VERSION, true);
             wp_enqueue_style('amp-frontend', AMP_PLUGIN_URL . 'assets/css/frontend.css', array(), AMP_VERSION);
             
@@ -1544,7 +1544,7 @@ public function save_ad_enhanced() {
     public function ad_blocker_detection() {}
     
     public function add_header_code() {
-        if ($this->options['enable_adsense'] && !empty($this->options['adsense_publisher_id'])) {
+        if (intval($this->options['enable_adsense'] ?? 0) && !empty($this->options['adsense_publisher_id'])) {
             echo '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' . esc_attr($this->options['adsense_publisher_id']) . '" crossorigin="anonymous"></script>' . "\n";
         }
     }
@@ -1615,7 +1615,8 @@ public function save_ad_enhanced() {
     }
     
     public function load_options() {
-        $this->options = get_option('amp_options', array());
+        $opts = get_option('amp_options', array());
+        $this->options = is_array($opts) ? $opts : array();
     }
     
     public function load_ads() {
