@@ -2,6 +2,8 @@
 function nosfirnews_core_dynamic_css(){
     $color= get_theme_mod('nosfirnews_hfg_header_bg', get_theme_mod('header_bg','#ffffff'));
     $css= '.site-header{background-color:'.$color.';}';
+    $logo_h = (int) get_theme_mod( 'nn_header_logo_height', 48 );
+    if ( $logo_h > 0 ) { $css .= '.site-header .custom-logo-link img{max-height:'.$logo_h.'px;height:auto;}'; }
     $header_img = get_theme_mod( 'nosfirnews_header_bg_image', '' );
     if ( $header_img ) { $css .= '.site-header{background-image:url(' . esc_url( $header_img ) . ');background-size:cover;background-repeat:no-repeat;background-position:center;}'; }
     $body_text = get_theme_mod( 'nosfirnews_body_text_color', '' );
@@ -26,6 +28,17 @@ function nosfirnews_core_dynamic_css(){
     if ( get_theme_mod( 'nosfirnews_hide_site_description', false ) ) {
         $css .= '.site-description{display:none;}';
     }
+    $css .= '.branding-pos-left{justify-content:flex-start;text-align:left;}';
+    $css .= '.branding-pos-center{justify-content:center;text-align:center;}';
+    $css .= '.branding-pos-right{justify-content:flex-end;text-align:right;}';
+    $css .= '.nav-pos-left .nav-menu{justify-content:flex-start;}';
+    $css .= '.nav-pos-center .nav-menu{justify-content:center;}';
+    $css .= '.nav-pos-right .nav-menu{justify-content:flex-end;}';
+    $bp = (int) get_theme_mod( 'nn_mobile_breakpoint', 998 );
+    if ( $bp > 0 ) {
+        $css .= '@media (max-width: '.$bp.'px){.main-navigation{display:none;}.nav-toggle{display:inline-block;}}';
+        $css .= '@media (min-width: '.($bp+1).'px){.main-navigation{display:block;}.nav-toggle{display:none;}}';
+    }
     wp_add_inline_style('nosfirnews-style',$css);
 }
-add_action('wp_enqueue_scripts','nosfirnews_core_dynamic_css');
+add_action('wp_enqueue_scripts','nosfirnews_core_dynamic_css', 20);

@@ -42,6 +42,19 @@
         toggleDesktopMenu();
       }
     }
+    var st = e.target.closest('.submenu-toggle');
+    if(st){
+      e.preventDefault();
+      var li = st.closest('li');
+      if(!li) return;
+      var expanded = st.getAttribute('aria-expanded') === 'true';
+      st.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+      li.classList.toggle('submenu-open', !expanded);
+      if(expanded){
+        var openDesc = li.querySelectorAll('.submenu-open');
+        openDesc.forEach(function(n){ n.classList.remove('submenu-open'); var btn=n.querySelector('.submenu-toggle'); if(btn) btn.setAttribute('aria-expanded','false'); });
+      }
+    }
     if(e.target.closest('.drawer-close')){ e.preventDefault(); closeMobileDrawer(); }
     if(e.target.closest('.search-toggle')){ e.preventDefault(); toggleSearch(); }
     if(e.target.classList.contains('nn-mobile-drawer') && e.target.id==='mobile-menu'){ closeMobileDrawer(); }
