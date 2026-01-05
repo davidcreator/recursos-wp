@@ -47,6 +47,9 @@ Text Domain: nosfirnews
 /* ============================================
    1. VARIÁVEIS E RESET BASE
    ============================================ */
+/* ============================================
+   1. VARIÁVEIS E RESET BASE
+   ============================================ */
 :root {
   --white: #ffffff;
   --text: #333;
@@ -78,18 +81,18 @@ img, video {
 }
 
 /* ============================================
-   2. CONTAINER E LAYOUT BASE
+   2. CONTAINER E LAYOUT BASE (MOBILE FIRST)
    ============================================ */
 .container,
 .nn-container {
   width: 100%;
-  max-width: var(--nn-container-desktop);
+  max-width: 100%;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 0.75rem;
 }
 
 /* ============================================
-   3. HEADER E NAVEGAÇÃO
+   3. HEADER E NAVEGAÇÃO (MOBILE FIRST)
    ============================================ */
 .site-header,
 .nn-header {
@@ -98,40 +101,48 @@ img, video {
   position: sticky;
   top: 0;
   z-index: 1000;
+  width: 100%;
 }
 
 .site-header .container,
-.nn-header .nn-container {
+.nn-header .nn-container,
+.header-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.5rem;
   min-height: 60px;
+  flex-wrap: wrap;
 }
 
 .site-branding {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  flex: 0 1 auto;
+  gap: 0.5rem;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .site-title {
   margin: 0;
   font-weight: 600;
-  font-size: 1.25rem;
+  font-size: 1rem;
   line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .site-description {
   margin: 0;
   opacity: 0.8;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
+  display: none;
 }
 
-/* 3.1. Navegação Desktop */
+/* 3.1. Navegação Desktop - OCULTA POR PADRÃO */
 .main-navigation {
-  display: none;
+  display: none !important;
 }
 
 .nav-menu {
@@ -152,11 +163,11 @@ img, video {
 .nav-pos-left .nav-menu { justify-content: flex-start; }
 .nav-pos-center .nav-menu { justify-content: center; }
 .nav-pos-right .nav-menu { justify-content: flex-end; }
-/* Posicionamento do bloco nav como elemento no header */
+
 .header-inner .main-navigation.nav-pos-left { margin-right: auto; }
 .header-inner .main-navigation.nav-pos-center { margin-left: auto; margin-right: auto; }
 .header-inner .main-navigation.nav-pos-right { margin-left: auto; }
-/* Posicionamento do bloco branding como elemento no header */
+
 .header-inner .site-branding.branding-pos-left { margin-right: auto; }
 .header-inner .site-branding.branding-pos-center { margin-left: auto; margin-right: auto; }
 .header-inner .site-branding.branding-pos-right { margin-left: auto; }
@@ -181,20 +192,22 @@ img, video {
   background: rgba(26, 115, 232, 0.1);
 }
 
-/* 3.4. Botão Toggle Mobile */
+/* 3.4. Botão Toggle Mobile - VISÍVEL POR PADRÃO */
 .nav-toggle {
-  display: none;
+  display: block;
   background: none;
   border: 1px solid var(--border);
   padding: 0.5rem 0.75rem;
   border-radius: 0.375rem;
   cursor: pointer;
   font-size: 1.25rem;
+  flex-shrink: 0;
 }
+
 .header-inner.toggle-pos-left .nav-toggle { order: 0; margin-right: 0.5rem; }
 .header-inner.toggle-pos-center .nav-toggle { order: 1; margin-left: auto; margin-right: auto; }
 .header-inner.toggle-pos-right .nav-toggle { order: 99; margin-left: auto; }
-/* Alinhamento do container do header conforme a posição do nav-toggle (usa nn_nav_alignment) */
+
 .header-inner.toggle-pos-left { justify-content: flex-start; }
 .header-inner.toggle-pos-center { justify-content: center; }
 .header-inner.toggle-pos-right { justify-content: space-between; }
@@ -233,6 +246,17 @@ img, video {
   transform: translateX(0);
 }
 
+.mobile-nav-menu .nav-menu {
+  flex-direction: column;
+  gap: 0;
+}
+
+.mobile-nav-menu .nav-menu a {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.25rem;
+}
+
 .drawer-close {
   background: none;
   border: 0;
@@ -247,13 +271,14 @@ img, video {
 }
 
 /* ============================================
-   4. GRID E CARDS
+   4. GRID E CARDS (MOBILE FIRST - 1 COLUNA)
    ============================================ */
 .nn-grid,
 .posts-wrapper {
   display: grid;
-  gap: 1.5rem;
-  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+  gap: 1rem;
+  grid-template-columns: 1fr !important;
+  width: 100%;
 }
 
 .nn-card {
@@ -263,6 +288,7 @@ img, video {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   overflow: hidden;
   transition: box-shadow 0.2s ease;
+  width: 100%;
 }
 
 .nn-card:hover {
@@ -270,19 +296,23 @@ img, video {
 }
 
 .nn-card .nn-card-body {
-  padding: 1.25rem;
+  padding: 1rem;
 }
 
 .nn-card .nn-card-title {
   margin: 0 0 0.5rem;
   font-weight: 600;
-  font-size: 1.125rem;
+  font-size: 1rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .nn-card .nn-card-text {
   margin: 0;
   color: var(--muted);
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* ============================================
@@ -300,6 +330,7 @@ img, video {
   text-decoration: none;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-size: 0.875rem;
 }
 
 .nn-btn:hover {
@@ -326,19 +357,18 @@ img, video {
 }
 
 /* ============================================
-   6. SISTEMA DE COLUNAS
+   6. SISTEMA DE COLUNAS (MOBILE FIRST - STACK)
    ============================================ */
 .row {
-  display: flex;
-  flex-wrap: wrap;
-  margin-left: -0.5rem;
-  margin-right: -0.5rem;
+  display: block;
+  width: 100%;
+  margin: 0;
 }
 
 .col {
-  flex: 1 1 0%;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  width: 100% !important;
+  padding: 0;
+  margin-bottom: 1rem;
 }
 
 .w-100 {
@@ -346,26 +376,41 @@ img, video {
 }
 
 /* ============================================
-   7. FOOTER
+   7. FOOTER (MOBILE FIRST - 1 COLUNA)
    ============================================ */
 .footer-widgets {
   display: grid;
   gap: var(--nn-footer-gap);
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr !important;
+  width: 100%;
 }
 
 /* ============================================
    8. CONTENT AREA
    ============================================ */
 #content.site-content {
-  padding: 1.5rem 0;
+  padding: 1rem 0;
   min-height: 50vh;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .entry-title {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   line-height: 1.3;
   margin: 0 0 1rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.entry-content {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.entry-content img {
+  max-width: 100%;
+  height: auto;
 }
 
 /* ============================================
@@ -374,54 +419,84 @@ img, video {
 
 /* 9.1. Tablets pequenos e acima (576px+) */
 @media (min-width: 576px) {
+  .container,
+  .nn-container {
+    padding: 0 1rem;
+  }
+
+  .site-title {
+    font-size: 1.125rem;
+  }
+
+  .site-description {
+    display: block;
+  }
+
   .nn-grid,
   .posts-wrapper {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+    gap: 1.25rem;
   }
   
   .footer-widgets.footer-cols-2 {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .nn-card .nn-card-title {
+    font-size: 1.125rem;
   }
 }
 
 /* 9.2. Tablets (768px+) */
 @media (min-width: 768px) {
-  body {
-    font-size: 16px;
-  }
-  
   .container,
   .nn-container {
     padding: 0 1.5rem;
+    max-width: var(--nn-container-tablet);
   }
   
   .nn-grid,
   .posts-wrapper {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
     gap: 1.5rem;
   }
   
   .site-title {
     font-size: 1.375rem;
   }
+
+  .site-header .container,
+  .header-inner {
+    gap: 1rem;
+  }
   
   .footer-widgets.footer-cols-3 {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  .entry-title {
+    font-size: 1.5rem;
+  }
+
+  #content.site-content {
+    padding: 1.5rem 0;
   }
 }
 
 /* 9.3. Desktop pequeno (992px+) */
 @media (min-width: 992px) {
+  /* ATIVA NAVEGAÇÃO DESKTOP */
   .main-navigation {
-    display: block;
+    display: block !important;
   }
   
+  /* OCULTA TOGGLE E DRAWER MOBILE */
   .nav-toggle {
-    display: none;
+    display: none !important;
   }
   
   .nn-mobile-drawer {
-    display: none;
+    display: none !important;
   }
   
   .container,
@@ -436,9 +511,29 @@ img, video {
   .nav-menu a {
     width: auto;
   }
+
+  /* SISTEMA DE COLUNAS ATIVO */
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+  }
+
+  .col {
+    flex: 1 1 0%;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    margin-bottom: 0;
+  }
   
   .footer-widgets.footer-cols-4 {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+
+  .nn-grid,
+  .posts-wrapper {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
   }
 }
 
@@ -451,7 +546,7 @@ img, video {
   
   .nn-grid,
   .posts-wrapper {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
   }
   
   .nav-menu {
@@ -496,82 +591,83 @@ img, video {
 }
 
 /* ============================================
-   10. MOBILE (abaixo de 992px)
+   10. MOBILE EXTRA PEQUENO (max 400px)
    ============================================ */
-@media (max-width: 991px) {
-  .nav-toggle {
-    display: block;
-  }
-  
-  .main-navigation {
-    display: none;
-  }
-  
-  .mobile-nav-menu .nav-menu {
-    flex-direction: column;
-    gap: 0;
-  }
-  
-  .mobile-nav-menu .nav-menu a {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border-radius: 0.25rem;
-  }
-  
-  .row {
-    display: block;
-    margin: 0;
-  }
-  
-  .col {
-    width: 100%;
-    padding: 0;
-    margin-bottom: 1rem;
-  }
-}
-
-/* 10.1. Mobile pequeno (max 576px) */
-@media (max-width: 575px) {
-  .container,
-  .nn-container {
-    padding: 0 0.75rem;
-  }
-  
-  .site-header .container {
-    flex-wrap: nowrap;
-    gap: 0.5rem;
-  }
-  
-  .site-title {
-    font-size: 1.125rem;
-  }
-  
-  .site-description {
-    display: none;
-  }
-  
-  .nn-grid,
-  .posts-wrapper {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .nn-card .nn-card-body {
-    padding: 1rem;
-  }
-}
-
-/* 10.2. Mobile extra pequeno (max 400px) */
 @media (max-width: 400px) {
   body {
     font-size: 14px;
   }
+
+  .container,
+  .nn-container {
+    padding: 0 0.5rem;
+  }
   
   .site-title {
+    font-size: 0.875rem;
+  }
+
+  .site-header .container,
+  .header-inner {
+    gap: 0.25rem;
+    padding: 0.5rem;
+  }
+
+  .nav-toggle {
+    padding: 0.375rem 0.5rem;
     font-size: 1rem;
   }
   
   .nn-card .nn-card-title {
-    font-size: 1rem;
+    font-size: 0.9375rem;
+  }
+
+  .nn-card .nn-card-body {
+    padding: 0.75rem;
+  }
+
+  .entry-title {
+    font-size: 1.125rem;
+  }
+}
+
+/* ============================================
+   11. UTILITÁRIOS RESPONSIVOS
+   ============================================ */
+.mobile-only {
+  display: block !important;
+}
+
+.desktop-only {
+  display: none !important;
+}
+
+@media (min-width: 992px) {
+  .mobile-only {
+    display: none !important;
+  }
+  
+  .desktop-only {
+    display: block !important;
+  }
+}
+
+/* Previne overflow horizontal */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Tabelas responsivas */
+table {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  display: block;
+}
+
+@media (min-width: 768px) {
+  table {
+    display: table;
   }
 }
