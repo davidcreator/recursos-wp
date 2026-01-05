@@ -14,7 +14,38 @@ Text Domain: nosfirnews
 */
 
 /* ============================================
-   VARIÁVEIS E RESET BASE
+   ÍNDICE DE NAVEGAÇÃO
+   ============================================
+   
+   1. VARIÁVEIS E RESET BASE .................. linha 34
+   2. CONTAINER E LAYOUT BASE ................. linha 56
+   3. HEADER E NAVEGAÇÃO ...................... linha 66
+      3.1. Navegação Desktop .................. linha 97
+      3.2. Posicionamento Branding ............ linha 107
+      3.3. Posicionamento Navegação ........... linha 119
+      3.4. Botão Toggle Mobile ................ linha 143
+      3.5. Drawer Mobile ...................... linha 157
+   4. GRID E CARDS ............................ linha 203
+   5. BOTÕES E BADGES ......................... linha 237
+   6. SISTEMA DE COLUNAS ...................... linha 272
+   7. FOOTER .................................. linha 286
+   8. CONTENT AREA ............................ linha 294
+   9. MEDIA QUERIES - MOBILE FIRST ............ linha 308
+      9.1. Tablets pequenos (576px+) .......... linha 312
+      9.2. Tablets (768px+) ................... linha 323
+      9.3. Desktop pequeno (992px+) ........... linha 349
+      9.4. Desktop médio (1200px+) ............ linha 378
+      9.5. Desktop grande (1600px+) ........... linha 396
+      9.6. Desktop extra grande (1920px+) ..... linha 406
+      9.7. 4K (2560px+) ....................... linha 414
+   10. MOBILE (abaixo de 992px) ............... linha 426
+   11. Mobile pequeno (max 576px) ............. linha 455
+   12. Mobile extra pequeno (max 400px) ....... linha 485
+   
+   ============================================ */
+
+/* ============================================
+   1. VARIÁVEIS E RESET BASE
    ============================================ */
 :root {
   --white: #ffffff;
@@ -47,7 +78,7 @@ img, video {
 }
 
 /* ============================================
-   CONTAINER E LAYOUT BASE
+   2. CONTAINER E LAYOUT BASE
    ============================================ */
 .container,
 .nn-container {
@@ -58,7 +89,7 @@ img, video {
 }
 
 /* ============================================
-   HEADER E NAVEGAÇÃO
+   3. HEADER E NAVEGAÇÃO
    ============================================ */
 .site-header,
 .nn-header {
@@ -98,7 +129,7 @@ img, video {
   font-size: 0.875rem;
 }
 
-/* Navegação Desktop */
+/* 3.1. Navegação Desktop */
 .main-navigation {
   display: none;
 }
@@ -111,9 +142,13 @@ img, video {
   gap: 0.5rem;
   flex-wrap: wrap;
 }
+
+/* 3.2. Posicionamento Branding */
 .branding-pos-left { justify-content: flex-start; text-align: left; }
 .branding-pos-center { justify-content: center; text-align: center; }
 .branding-pos-right { justify-content: flex-end; text-align: right; }
+
+/* 3.3. Posicionamento Navegação */
 .nav-pos-left .nav-menu { justify-content: flex-start; }
 .nav-pos-center .nav-menu { justify-content: center; }
 .nav-pos-right .nav-menu { justify-content: flex-end; }
@@ -146,7 +181,7 @@ img, video {
   background: rgba(26, 115, 232, 0.1);
 }
 
-/* Botão Toggle Mobile */
+/* 3.4. Botão Toggle Mobile */
 .nav-toggle {
   display: none;
   background: none;
@@ -164,7 +199,7 @@ img, video {
 .header-inner.toggle-pos-center { justify-content: center; }
 .header-inner.toggle-pos-right { justify-content: space-between; }
 
-/* Drawer Mobile */
+/* 3.5. Drawer Mobile */
 .nn-mobile-drawer {
   position: fixed;
   inset: 0;
@@ -212,7 +247,7 @@ img, video {
 }
 
 /* ============================================
-   GRID E CARDS
+   4. GRID E CARDS
    ============================================ */
 .nn-grid,
 .posts-wrapper {
@@ -251,7 +286,7 @@ img, video {
 }
 
 /* ============================================
-   BOTÕES E BADGES
+   5. BOTÕES E BADGES
    ============================================ */
 .nn-btn {
   display: inline-flex;
@@ -291,7 +326,7 @@ img, video {
 }
 
 /* ============================================
-   SISTEMA DE COLUNAS
+   6. SISTEMA DE COLUNAS
    ============================================ */
 .row {
   display: flex;
@@ -311,7 +346,7 @@ img, video {
 }
 
 /* ============================================
-   FOOTER
+   7. FOOTER
    ============================================ */
 .footer-widgets {
   display: grid;
@@ -320,7 +355,7 @@ img, video {
 }
 
 /* ============================================
-   CONTENT AREA
+   8. CONTENT AREA
    ============================================ */
 #content.site-content {
   padding: 1.5rem 0;
@@ -334,10 +369,10 @@ img, video {
 }
 
 /* ============================================
-   MEDIA QUERIES - MOBILE FIRST
+   9. MEDIA QUERIES - MOBILE FIRST
    ============================================ */
 
-/* Tablets pequenos e acima (576px+) */
+/* 9.1. Tablets pequenos e acima (576px+) */
 @media (min-width: 576px) {
   .nn-grid,
   .posts-wrapper {
@@ -349,7 +384,7 @@ img, video {
   }
 }
 
-/* Tablets (768px+) */
+/* 9.2. Tablets (768px+) */
 @media (min-width: 768px) {
   body {
     font-size: 16px;
@@ -375,7 +410,7 @@ img, video {
   }
 }
 
-/* Desktop pequeno (992px+) */
+/* 9.3. Desktop pequeno (992px+) */
 @media (min-width: 992px) {
   .main-navigation {
     display: block;
@@ -407,7 +442,7 @@ img, video {
   }
 }
 
-/* Desktop médio (1200px+) */
+/* 9.4. Desktop médio (1200px+) */
 @media (min-width: 1200px) {
   .container,
   .nn-container {
@@ -428,7 +463,7 @@ img, video {
   }
 }
 
-/* Desktop grande (1600px+) */
+/* 9.5. Desktop grande (1600px+) */
 @media (min-width: 1600px) {
   .container,
   .nn-container {
@@ -440,7 +475,7 @@ img, video {
   }
 }
 
-/* Desktop extra grande (1920px+) */
+/* 9.6. Desktop extra grande (1920px+) */
 @media (min-width: 1920px) {
   .container,
   .nn-container {
@@ -448,7 +483,7 @@ img, video {
   }
 }
 
-/* 4K (2560px+) */
+/* 9.7. 4K (2560px+) */
 @media (min-width: 2560px) {
   .container,
   .nn-container {
@@ -461,7 +496,7 @@ img, video {
 }
 
 /* ============================================
-   MOBILE (abaixo de 992px)
+   10. MOBILE (abaixo de 992px)
    ============================================ */
 @media (max-width: 991px) {
   .nav-toggle {
@@ -495,7 +530,7 @@ img, video {
   }
 }
 
-/* Mobile pequeno (max 576px) */
+/* 10.1. Mobile pequeno (max 576px) */
 @media (max-width: 575px) {
   .container,
   .nn-container {
@@ -526,7 +561,7 @@ img, video {
   }
 }
 
-/* Mobile extra pequeno (max 400px) */
+/* 10.2. Mobile extra pequeno (max 400px) */
 @media (max-width: 400px) {
   body {
     font-size: 14px;

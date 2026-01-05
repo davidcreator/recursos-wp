@@ -1,34 +1,111 @@
+/*
+===========================================
+ÍNDICE - NosfirnNews Theme
+===========================================
+
+1. VARIÁVEIS CSS
+2. LAYOUT E CONTAINERS
+   2.1 Container Principal
+   2.2 Grid System
+   2.3 Posts Wrapper
+3. COMPONENTES
+   3.1 Cards
+   3.2 Botões
+   3.3 Badges
+4. NAVEGAÇÃO
+   4.1 Header
+   4.2 Nav Menu
+5. SISTEMA DE GRID RESPONSIVO
+   5.1 Row e Col
+6. FOOTER
+   6.1 Footer Widgets
+7. MEDIA QUERIES
+   7.1 Tablet (max-width: 991px)
+   7.2 Mobile (max-width: 768px)
+
+===========================================
+*/
+
+/* ========================================
+   1. VARIÁVEIS CSS
+   ======================================== */
 :root{--white:#fff;--text:#333;--primary:#1a73e8;--border:#e1e5e9;--muted:#6b7280}
+
+/* ========================================
+   2. LAYOUT E CONTAINERS
+   ======================================== */
+
+/* 2.1 Container Principal */
 .nn-container{max-width:1200px;margin:0 auto;padding:0 1rem}
+
+/* 2.2 Grid System */
 .nn-grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+
+/* 2.3 Posts Wrapper */
 .posts-wrapper{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+
+/* ========================================
+   3. COMPONENTES
+   ======================================== */
+
+/* 3.1 Cards */
 .nn-card{background:var(--white);border:1px solid var(--border);border-radius:.5rem;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
 .nn-card .nn-card-body{padding:1rem}
 .nn-card .nn-card-title{margin:0 0 .5rem;font-weight:600}
 .nn-card .nn-card-text{margin:0;color:var(--muted)}
+
+/* 3.2 Botões */
 .nn-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem .75rem;border-radius:.375rem;border:1px solid var(--border);background:var(--white);color:var(--text);text-decoration:none}
 .nn-btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+/* 3.3 Badges */
 .nn-badge{display:inline-block;padding:.125rem .5rem;border-radius:999px;background:rgba(26,115,232,.12);color:var(--primary);font-size:.75rem}
+
+/* ========================================
+   4. NAVEGAÇÃO
+   ======================================== */
+
+/* 4.1 Header */
 .nn-header{background:var(--white);border-bottom:1px solid var(--border)}
 .nn-header .nn-container{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+
+/* 4.2 Nav Menu */
 .nn-nav{display:flex;gap:.5rem}
 .nn-nav a{display:block;padding:.5rem .75rem;border-radius:.375rem;color:var(--text);text-decoration:none}
 .nn-nav a:hover{background:rgba(26,115,232,.1);color:var(--primary)}
+
+/* ========================================
+   5. SISTEMA DE GRID RESPONSIVO
+   ======================================== */
+
+/* 5.1 Row e Col */
 .row{display:flex;flex-wrap:wrap;margin-left:-.5rem;margin-right:-.5rem}
 .col{flex:1 0 0;padding-left:.5rem;padding-right:.5rem}
 .w-100{width:100%}
-@media (max-width:991px){
-  .row{display:block;margin:0}
-  .col{width:100%;padding:0}
-}
-@media (max-width:768px){
-  .nn-grid{gap:.75rem;grid-template-columns:1fr}
-  .posts-wrapper{grid-template-columns:1fr}
-}
+
+/* ========================================
+   6. FOOTER
+   ======================================== */
+
+/* 6.1 Footer Widgets */
 .footer-widgets{display:grid;gap:var(--nn-footer-gap,20px)}
 .footer-widgets.footer-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
 .footer-widgets.footer-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
 .footer-widgets.footer-cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+
+/* ========================================
+   7. MEDIA QUERIES
+   ======================================== */
+
+/* 7.1 Tablet (max-width: 991px) */
+@media (max-width:991px){
+  .row{display:block;margin:0}
+  .col{width:100%;padding:0}
+}
+
+/* 7.2 Mobile (max-width: 768px) */
 @media (max-width:768px){
+  .nn-grid{gap:.75rem;grid-template-columns:1fr}
+  .posts-wrapper{grid-template-columns:1fr}
   .footer-widgets{grid-template-columns:1fr}
 }
