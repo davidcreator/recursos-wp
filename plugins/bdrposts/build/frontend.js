@@ -111,7 +111,8 @@
     }
 
     /**
-     * Inicializa Masonry (usando CSS columns como fallback)
+     * Inicializa Masonry (MELHORADO)
+     * Suporta CSS columns com melhorias de renderização
      */
     function initMasonry() {
         const masonryContainers = document.querySelectorAll('.bdrposts-masonry');
@@ -120,7 +121,7 @@
             // Adiciona classe para indicar que foi inicializado
             container.classList.add('bdrposts-masonry-initialized');
             
-            // Força reflow para melhor renderização
+            // Força reflow para melhor renderização com CSS columns
             const items = container.querySelectorAll('.bdrposts-item');
             items.forEach(function(item, index) {
                 item.style.opacity = '0';
@@ -129,6 +130,43 @@
                     item.style.opacity = '1';
                 }, index * 50);
             });
+            
+            // Observa mudanças de tamanho para reorganizar
+            if (window.ResizeObserver) {
+                const resizeObserver = new ResizeObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        // Força recalculo de colunas quando resize acontecer
+                        const currentGap = getComputedStyle(entry.target).columnGap;
+                        entry.target.style.columnGap = currentGap;
+                    });
+                });
+                resizeObserver.observe(container);
+            }
+            
+            // Observa quando imagens carregam para reajustar layout
+            const images = container.querySelectorAll('img');
+            let loadedImages = 0;
+            const totalImages = images.length;
+            
+            if (totalImages > 0) {
+                images.forEach(function(img) {
+                    function imageLoaded() {
+                        loadedImages++;
+                        if (loadedImages === totalImages) {
+                            // Todas as imagens carregadas, força recalculo
+                            const currentGap = getComputedStyle(container).columnGap;
+                            container.style.columnGap = currentGap;
+                        }
+                    }
+                    
+                    if (img.complete) {
+                        imageLoaded();
+                    } else {
+                        img.addEventListener('load', imageLoaded);
+                        img.addEventListener('error', imageLoaded);
+                    }
+                });
+            }
         });
     }
 
@@ -297,6 +335,8 @@
                             } else if (layoutMasonry) {
                                 const target = wrapper.querySelector('.bdrposts-masonry');
                                 layoutMasonry.childNodes.forEach(function(node) { if (node.nodeType === 1) { target.appendChild(node); } });
+                                // Reinicializa masonry após adicionar novos items
+                                initMasonry();
                             } else if (layoutSlider) {
                                 const target = wrapper.querySelector('.swiper-wrapper');
                                 layoutSlider.childNodes.forEach(function(node) { if (node.nodeType === 1) { target.appendChild(node); } });
@@ -371,7 +411,7 @@
         initTickers: initTickers,
         initMasonry: initMasonry,
         initFilters: initFilters,
-        version: '1.0.0'
+        version: '1.0.1'
     };
 
 })();

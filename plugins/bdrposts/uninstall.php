@@ -5,7 +5,7 @@
  * Script executado quando o plugin é desinstalado
  * Remove todas as opções e dados do plugin
  * 
- * @package BRDPosts
+ * @package bdrposts
  */
 
 // Se o uninstall não foi chamado pelo WordPress, sai
@@ -16,7 +16,7 @@ if (!defined('WP_UNINSTALL_PLUGIN')) {
 /**
  * Remove opções do plugin
  */
-function brdposts_uninstall_cleanup() {
+function bdrposts_uninstall_cleanup() {
     global $wpdb;
     
     // Remove opções do plugin (se houver)
@@ -38,4 +38,4 @@ function brdposts_uninstall_cleanup() {
 }
 
 // Executa cleanup
-brdposts_uninstall_cleanup();
+bdrposts_uninstall_cleanup();
