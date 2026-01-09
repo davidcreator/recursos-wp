@@ -22,10 +22,165 @@ define('BDRPOSTS_VERSION', '1.0.1');
 define('BDRPOSTS_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BDRPOSTS_PLUGIN_URL', plugin_dir_url(__FILE__));
 
+// SANITIZAÇÃO DE ATRIBUTOS
+/**
+ * Sanitiza todos os atributos do bloco
+ */
+
+function sanitize_attributes($attributes) {
+    $sanitized = array();
+    
+    // Strings com whitelist
+    $string_fields = array(
+        'layout' => array('grid', 'masonry', 'slider', 'ticker'),
+        'subLayout' => array('title-meta', 'meta-title', 'left-image', 'right-image', 'overlay'),
+        'orderBy' => array('date', 'title', 'modified', 'menu_order', 'rand', 'author', 'name'),
+        'order' => array('ASC', 'DESC'),
+        'imageSize' => array('thumbnail', 'medium', 'large', 'full'),
+        'responsiveMode' => array('auto', 'fixed'),
+        'filterMode' => array('category', 'tag')
+    );
+    
+    foreach ($string_fields as $field => $allowed) {
+        if (isset($attributes[$field])) {
+            $value = sanitize_key($attributes[$field]);
+            $sanitized[$field] = in_array($value, $allowed, true) ? $value : $allowed[0];
+        }
+    }
+
+    // Post Type Validation
+    if (isset($attributes['postType'])) {
+        $post_type = sanitize_key($attributes['postType']);
+        $sanitized['postType'] = post_type_exists($post_type) ? $post_type : 'post';
+    }
+    
+    // Taxonomy validation
+    if (isset($attributes['taxonomy'])) {
+        $taxonomy = sanitize_key($attributes['taxonomy']);
+        $sanitized['taxonomy'] = taxonomy_exists($taxonomy) ? $taxonomy : '';
+    }
+    
+    // Text fields
+    $text_fields = array('readMoreText', 'searchTerm', 'tickerLabel', 'filterAllLabel', 'loadMoreLabel');
+    foreach ($text_fields as $field) {
+        if (isset($attributes[$field])) {
+            $sanitized[$field] = sanitize_text_field($attributes[$field]);
+        }
+    }
+
+    // Arrays de Inteiros
+    $int_array_fields = array('categories', 'tags', 'authors', 'includePosts', 'excludePosts', 'taxonomyTerms', 'filterTerms');
+    foreach ($int_array_fields as $field) {
+        if (isset($attributes[$field]) && is_array($attributes[$field])) {
+            $sanitized[$field] = array_filter(array_map('absint', $attributes[$field]));
+        } else {
+            $sanitized[$field] = array();
+        }
+    }
+    
+    // Números com limites
+    if (isset($attributes['postsPerPage'])) {
+        $sanitized['postsPerPage'] = min(100, max(1, absint($attributes['postsPerPage'])));
+    }
+    
+    if (isset($attributes['columns'])) {
+        $sanitized['columns'] = min(6, max(1, absint($attributes['columns'])));
+    }
+    
+    if (isset($attributes['excerptLength'])) {
+        $sanitized['excerptLength'] = min(500, max(1, absint($attributes['excerptLength'])));
+    }
+    
+    if (isset($attributes['offset'])) {
+        $sanitized['offset'] = max(0, absint($attributes['offset']));
+    }
+    
+    if (isset($attributes['page'])) {
+        $sanitized['page'] = max(1, absint($attributes['page']));
+    }
+    
+    // Booleans
+    $bool_fields = array(
+        'excludeCurrent', 'showImage', 'linkImage', 'showTitle', 'linkTitle',
+        'showExcerpt', 'showMeta', 'showDate', 'showAuthor', 'showCategories',
+        'showTags', 'linkAuthor', 'showReadMore', 'enablePagination',
+        'showReadingTime', 'showFilterBar', 'allowSearch', 'allowOrderChange', 'loadMore'
+    );
+    
+    foreach ($bool_fields as $field) {
+        if (isset($attributes[$field])) {
+            $sanitized[$field] = (bool) $attributes[$field];
+        }
+    }
+    
+    return $sanitized;
+}
 /**
  * Classe principal do plugin BDRPosts
  */
 class BDRPosts {
+
+    // Rate Limiting
+    private const RATE_LIMIT_REQUESTS = 100;
+    private const RATE_LIMIT_WINDOW = 3600;
+
+    // Métodos (adicionar após sanitize_attributes)
+    /**
+     * Verifica rate limit por IP
+     * @return bool|WP_Error True se permitido, WP_Error se bloqueado
+     */
+    private function check_rate_limit() {
+        $ip = $this->get_client_ip();
+        $key = 'bdrposts_rate_' . md5($ip);
+        $count = get_transient($key);
+
+        if ($count >= self::RATE_LIMIT_REQUESTS) {
+            return new WP_Error(
+                'rate_limit_exceeded',
+                sprintf(
+                    __('Limite de %d requisições por hora excedido. Aguarde e tente novamente.', 'bdrposts'),
+                    self::RATE_LIMIT_REQUESTS
+                ),
+                array('status' => 429)
+            );
+        }
+
+        // Incrementa contador
+        set_transient($key, $count + 1, self::RATE_LIMIT_WINDOW);
+        return true;
+    }
+
+    /**
+     * Obtém IP do cliente (com suporte a proxies e Cloudflare)
+     * @return string IP validado
+     */
+    private function get_client_ip() {
+        $ip = '';
+        
+        // Cloudflare
+        if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+            $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
+        }
+        // Proxies comuns (X-Forwarded-For)
+        elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ip_list = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+            $ip = trim($ip_list[0]);
+        }
+        // X-Real-IP (usado por alguns proxies)
+        elseif (!empty($_SERVER['HTTP_X_REAL_IP'])) {
+            $ip = $_SERVER['HTTP_X_REAL_IP'];
+        }
+        // IP direto
+        elseif (!empty($_SERVER['REMOTE_ADDR'])) {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+        
+        // Valida IP
+        $validated_ip = filter_var(trim($ip), FILTER_VALIDATE_IP);
+        
+        // Se IP inválido, usa fallback seguro
+        return $validated_ip ? $validated_ip : '0.0.0.0';
+    }
     
     private static $instance = null;
     
@@ -272,7 +427,7 @@ class BDRPosts {
             'attributes' => $this->get_block_attributes()
         ));
     }
-    
+        
     /**
      * Define os atributos do bloco
      */
@@ -466,14 +621,40 @@ class BDRPosts {
     public function render_block($attributes) {
         // Cache baseado nos atributos e página atual
         $paged = get_query_var('paged') ? intval(get_query_var('paged')) : 1;
-        $cache_key = 'bdrposts_cache_' . md5(wp_json_encode($attributes) . '|' . $paged);
-        $use_cache = empty($attributes['enablePagination']);
-        if ($use_cache) {
+        $cache_key = 'bdrposts_cache_' . md5(wp_json_encode(
+    $attributes, 
+    JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+) . '|' . $paged);
+$lock_key = 'bdrposts_lock_' . $cache_key;
+$use_cache = empty($attributes['enablePagination']);
+
+if ($use_cache) {
+    // Tenta buscar do cache
+    $cached = get_transient($cache_key);
+    if (false !== $cached) {
+        return $cached;
+    }
+    
+    // Verifica se outro processo está gerando o cache (stampede protection)
+    $is_locked = get_transient($lock_key);
+    if ($is_locked) {
+        // Aguarda até 2 segundos pelo cache
+        $attempts = 0;
+        while ($attempts < 4 && !$cached) {
+            usleep(500000); // 0.5 segundos
             $cached = get_transient($cache_key);
-            if ($cached) {
-                return $cached;
-            }
+            $attempts++;
         }
+        
+        // Se conseguiu o cache durante a espera, retorna
+        if (false !== $cached) {
+            return $cached;
+        }
+    }
+    
+    // Cria lock para este processo (expira em 10 segundos)
+    set_transient($lock_key, 1, 10);
+}
 
         $args = $this->build_query_args($attributes);
         $query = new WP_Query($args);
@@ -499,7 +680,10 @@ class BDRPosts {
         $wrapper_attr = function_exists('get_block_wrapper_attributes')
             ? get_block_wrapper_attributes(array('class' => $wrapper_extra_classes))
             : 'class="' . $wrapper_extra_classes . '"';
-        $data_attrs = esc_attr(wp_json_encode($attributes));
+        $data_attrs = esc_attr(wp_json_encode(
+            $attributes, 
+            JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+        ));
         echo '<div ' . $wrapper_attr . ' data-bdrposts-attrs="' . $data_attrs . '" data-bdrposts-page="' . esc_attr($current_page) . '" data-bdrposts-total="' . esc_attr($total_pages) . '">';
 
         // Barra de filtros por categoria/tag
@@ -592,7 +776,12 @@ class BDRPosts {
         $html = ob_get_clean();
         if ($use_cache) {
             set_transient($cache_key, $html, 120);
+            delete_transient($lock_key); // Libera o lock
         }
+
+        wp_reset_postdata();
+
+        $html = ob_get_clean();
         return $html;
     }
     
@@ -771,9 +960,15 @@ class BDRPosts {
             if ($link_image) {
                 echo '<a href="' . esc_url(get_permalink()) . '" aria-label="' . esc_attr(get_the_title()) . '">';
             }
+            $thumbnail_id = get_post_thumbnail_id();
+            $alt_text = get_post_meta($thumbnail_id, '_wp_attachment_image_alt', true);
+            $alt_text = $alt_text ? $alt_text : get_the_title();
+
             the_post_thumbnail($image_size, array(
                 'loading' => 'lazy',
                 'decoding' => 'async',
+                'alt' => esc_attr($alt_text),
+                'class' => 'bdrposts-thumbnail-img',
                 'sizes' => '(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 33vw',
                 'fetchpriority' => $img_priority
             ));
@@ -875,7 +1070,7 @@ class BDRPosts {
         
         if ($show_reading_time) {
             $reading_time = $this->calculate_reading_time(get_post_field('post_content', get_the_ID()));
-            $meta_items[] = '<span class="bdrposts-meta-reading-time">' . sprintf(__('%s min de leitura', 'bdrposts'), $reading_time) . '</span>';
+            $meta_items[] = '<span class="bdrposts-meta-reading-time">' . sprintf( _n('%s minuto de leitura', '%s minutos de leitura', $reading_time, 'bdrposts'), number_format_i18n($reading_time)) . '</span>';
         }
         
         if (!empty($meta_items)) {

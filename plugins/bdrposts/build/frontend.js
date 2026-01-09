@@ -110,6 +110,44 @@
         });
     }
 
+    // Prevenção de Memory Leaks no Ticker
+    function initTickers() {
+    const tickers = document.querySelectorAll('.bdrposts-ticker .bdrposts-ticker-content');
+    
+    tickers.forEach(function(ticker) {
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            ticker.style.transform = 'none';
+            ticker.style.animation = 'none';
+            return;
+        }
+        
+        // ... código existente ...
+        
+        // ADICIONAR: Observer para limpar quando removido
+        if (window.MutationObserver) {
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    mutation.removedNodes.forEach(function(node) {
+                        if (node === ticker.parentElement) {
+                            if (ticker.rafId) {
+                                cancelAnimationFrame(ticker.rafId);
+                            }
+                            observer.disconnect();
+                        }
+                    });
+                });
+            });
+            
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        }
+        
+        ticker.rafId = requestAnimationFrame(animate);
+    });
+}
+
     /**
      * Inicializa Masonry (MELHORADO)
      * Suporta CSS columns com melhorias de renderização
