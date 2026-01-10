@@ -1,0 +1,2 @@
+<?php
+class NosfirNews_Admin_Control_Range extends NosfirNews_Admin_Control_Base { public function render(){ $min=isset($this->args['min'])?$this->args['min']:0; $max=isset($this->args['max'])?$this->args['max']:100; $step=isset($this->args['step'])?$this->args['step']:1; echo '<label>'.$this->label.' <input type="range" name="'.$this->id.'" value="'.esc_attr($this->value).'" min="'.$min.'" max="'.$max.'" step="'.$step.'" /></label>'; } }

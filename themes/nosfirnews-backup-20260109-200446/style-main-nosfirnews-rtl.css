@@ -1,0 +1,53 @@
+/*
+====================================
+ÍNDICE - NosfirnNews RTL Stylesheet
+====================================
+
+1. CONFIGURAÇÕES GLOBAIS
+   - Body (direção RTL)
+
+2. LAYOUT E CONTAINERS
+   - Container principal
+   
+3. NAVEGAÇÃO
+   - Navegação principal
+   - Menu de navegação
+   
+4. COMPONENTES
+   - Cards
+
+====================================
+*/
+
+/* ====================================
+   1. CONFIGURAÇÕES GLOBAIS
+   ==================================== */
+
+body{direction:rtl}
+
+/* ====================================
+   2. LAYOUT E CONTAINERS
+   ==================================== */
+
+.nn-container{padding:0 1rem}
+
+/* ====================================
+   3. NAVEGAÇÃO
+   ==================================== */
+
+/* Navegação principal */
+.nn-nav{flex-direction:row-reverse}
+.nn-nav a{text-align:right}
+
+/* Menu de navegação */
+.nav-menu{direction:rtl}
+.nav-menu li{margin-left:0;margin-right:0}
+.nav-menu a{padding:.625rem .875rem}
+
+/* ====================================
+   4. COMPONENTES
+   ==================================== */
+
+/* Cards */
+.nn-card .nn-card-body{padding:1rem}
+.nn-card .nn-card-title{margin:0 0 .5rem}

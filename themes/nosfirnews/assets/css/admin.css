@@ -1,0 +1,13 @@
+/* NosfirNews Admin Styles */
+
+.nosfirnews-admin-page {
+  padding: 20px;
+}
+
+.nosfirnews-admin-section {
+  background: #fff;
+  border: 1px solid #ccd0d4;
+  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 20px;
+}

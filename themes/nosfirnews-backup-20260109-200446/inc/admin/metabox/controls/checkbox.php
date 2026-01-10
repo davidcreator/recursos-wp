@@ -1,0 +1,2 @@
+<?php
+class NosfirNews_Admin_Control_Checkbox extends NosfirNews_Admin_Control_Base { public function render(){ echo '<label><input type="checkbox" name="'.$this->id.'" '.( $this->value?'checked':'' ).' /> '.$this->label.'</label>'; } }

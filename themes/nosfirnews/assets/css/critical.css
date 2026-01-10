@@ -1,0 +1,20 @@
+/* NosfirNews Critical CSS */
+/* Apenas estilos above-the-fold */
+
+:root {
+  --primary: #1a73e8;
+  --text: #333;
+  --white: #fff;
+  --border: #e1e5e9;
+}
+
+.site-header {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}

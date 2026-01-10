@@ -1,0 +1,2 @@
+<?php
+abstract class NosfirNews_Admin_Control_Base { protected $id; protected $label; protected $value; protected $args; public function __construct($id,$label,$value,$args=[]){$this->id=$id;$this->label=$label;$this->value=$value;$this->args=$args;} abstract public function render(); }

@@ -1,0 +1,242 @@
+# ==================================
+# NODE / NPM
+# ==================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+.pnpm-debug.log*
+
+# ==================================
+# ASSETS BUILD
+# ==================================
+
+# Arquivos compilados (commitar apenas os sources)
+assets/css/*.min.css
+assets/css/*.css.map
+assets/js/*.min.js
+assets/js/*.js.map
+
+# Diretórios de build temporários
+assets/dist/
+assets/build/
+.cache/
+
+# ==================================
+# ASSETS TEMPORÁRIOS
+# ==================================
+
+# Backups de imagens
+assets/img/*.bak
+assets/img/*-backup.*
+assets/img/temp/
+
+# Arquivos temporários de fontes
+assets/fonts/*.tmp
+assets/fonts/temp/
+
+# ==================================
+# EDITORES E IDEs
+# ==================================
+
+# VSCode
+.vscode/
+!.vscode/settings.json.example
+!.vscode/extensions.json.example
+
+# PHPStorm / IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# ==================================
+# SISTEMA OPERACIONAL
+# ==================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ==================================
+# WORDPRESS
+# ==================================
+
+# Uploads (não versionar uploads)
+wp-content/uploads/
+wp-content/upgrade/
+wp-content/backup-db/
+wp-content/cache/
+
+# WordPress core (se estiver versionando o tema apenas)
+# wp-admin/
+# wp-includes/
+# wp-*.php
+# xmlrpc.php
+
+# Config
+wp-config.php
+wp-config-local.php
+.htaccess
+
+# ==================================
+# TESTES E COVERAGE
+# ==================================
+
+# PHPUnit
+/phpunit.xml
+/phpunit.xml.dist
+/tests/_output/*
+/coverage/
+
+# Jest / JavaScript tests
+coverage/
+.nyc_output/
+
+# Cypress
+cypress/screenshots/
+cypress/videos/
+
+# ==================================
+# LOGS
+# ==================================
+
+*.log
+logs/
+error_log
+debug.log
+php_errors.log
+npm-debug.log*
+
+# ==================================
+# TEMPORÁRIOS E CACHE
+# ==================================
+
+# Temp files
+tmp/
+temp/
+*.tmp
+*.temp
+*.cache
+
+# Sass cache
+.sass-cache/
+*.css.map
+
+# ==================================
+# BACKUP E VERSÕES ANTIGAS
+# ==================================
+
+# Backups gerais
+*.bak
+*.backup
+*.old
+*-backup/
+*-old/
+
+# Backups específicos do tema
+nosfirnews-backup-*/
+backup-*/
+
+# ==================================
+# ASSETS OPCIONAIS
+# ==================================
+
+# Se você usar CDN para assets, ignore versões locais
+# assets/vendor/bootstrap/
+# assets/vendor/jquery/
+
+# ==================================
+# DOCUMENTATION BUILD
+# ==================================
+
+# Se gerar docs automaticamente
+/docs/_build/
+/docs/.doctrees/
+
+# ==================================
+# ENVIRONMENT
+# ==================================
+
+.env
+.env.local
+.env.*.local
+.envrc
+
+# ==================================
+# COMPOSER (se usar)
+# ==================================
+
+vendor/
+composer.lock
+composer.phar
+
+# ==================================
+# OUTROS
+# ==================================
+
+# Zip files
+*.zip
+*.tar.gz
+*.rar
+
+# Certificados SSL
+*.pem
+*.key
+*.crt
+
+# Credenciais
+credentials.json
+secrets.json
+
+# ==================================
+# WHITELIST (forçar commit)
+# ==================================
+
+# Se precisar forçar commit de algum arquivo ignorado
+# !important-file.min.css
+
+# ==================================
+# COMENTÁRIOS ÚTEIS
+# ==================================
+
+# Para commitar um .min.css específico:
+# !assets/css/specific-file.min.css
+
+# Para ignorar tudo em uma pasta exceto um arquivo:
+# assets/temp/*
+# !assets/temp/.gitkeep
+
+# Para manter estrutura de pastas vazias:
+# Use arquivos .gitkeep nas pastas

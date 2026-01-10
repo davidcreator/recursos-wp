@@ -1,0 +1,11 @@
+<?php
+if ( have_posts() ) {
+    echo '<div class="container download-archive">';
+    while ( have_posts() ) { the_post();
+        echo '<article id="post-' . get_the_ID() . '" class="download">';
+        echo '<h2><a href="' . esc_url( get_permalink() ) . '">' . esc_html( get_the_title() ) . '</a></h2>';
+        the_excerpt();
+        echo '</article>';
+    }
+    echo '</div>';
+} else { get_template_part( 'page-templates/content', 'none' ); }
