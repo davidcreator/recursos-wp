@@ -1,8 +1,36 @@
-/* NosfirNews Admin Styles */
+/* ============================================
+   NosfirNews Admin Styles
+   ============================================ */
+
+/* ============================================
+   1. Layout Principal
+   ============================================ */
 
 .nosfirnews-admin-page {
   padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
+
+.nosfirnews-admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e5e5e5;
+}
+
+.nosfirnews-admin-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1d2327;
+  margin: 0;
+}
+
+/* ============================================
+   2. Seções e Cards
+   ============================================ */
 
 .nosfirnews-admin-section {
   background: #fff;
@@ -10,4 +38,486 @@
   border-radius: 4px;
   padding: 20px;
   margin-bottom: 20px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
 }
+
+.nosfirnews-admin-section-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 15px 0;
+  color: #1d2327;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nosfirnews-admin-section-description {
+  color: #646970;
+  font-size: 14px;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+/* ============================================
+   3. Grid de Cards
+   ============================================ */
+
+.nosfirnews-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.nosfirnews-card {
+  background: #f9f9f9;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.nosfirnews-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-color: #2271b1;
+}
+
+.nosfirnews-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.nosfirnews-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1d2327;
+  margin: 0;
+}
+
+.nosfirnews-card-content {
+  color: #646970;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ============================================
+   4. Formulários
+   ============================================ */
+
+.nosfirnews-form-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.nosfirnews-form-table th {
+  text-align: left;
+  padding: 20px 10px 20px 0;
+  width: 200px;
+  vertical-align: top;
+  font-weight: 600;
+  color: #1d2327;
+}
+
+.nosfirnews-form-table td {
+  padding: 20px 10px;
+  vertical-align: top;
+}
+
+.nosfirnews-form-table input[type="text"],
+.nosfirnews-form-table input[type="email"],
+.nosfirnews-form-table input[type="url"],
+.nosfirnews-form-table input[type="number"],
+.nosfirnews-form-table textarea,
+.nosfirnews-form-table select {
+  width: 100%;
+  max-width: 500px;
+  padding: 8px 12px;
+  border: 1px solid #8c8f94;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.nosfirnews-form-table input[type="text"]:focus,
+.nosfirnews-form-table input[type="email"]:focus,
+.nosfirnews-form-table input[type="url"]:focus,
+.nosfirnews-form-table input[type="number"]:focus,
+.nosfirnews-form-table textarea:focus,
+.nosfirnews-form-table select:focus {
+  border-color: #2271b1;
+  outline: none;
+  box-shadow: 0 0 0 1px #2271b1;
+}
+
+.nosfirnews-form-table textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.nosfirnews-form-table .description {
+  display: block;
+  margin-top: 5px;
+  color: #646970;
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* ============================================
+   5. Botões
+   ============================================ */
+
+.nosfirnews-button {
+  display: inline-block;
+  padding: 8px 16px;
+  border: 1px solid #2271b1;
+  border-radius: 4px;
+  background: #2271b1;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nosfirnews-button:hover {
+  background: #135e96;
+  border-color: #135e96;
+  color: #fff;
+}
+
+.nosfirnews-button:active {
+  transform: translateY(1px);
+}
+
+.nosfirnews-button-secondary {
+  background: #fff;
+  color: #2271b1;
+  border-color: #2271b1;
+}
+
+.nosfirnews-button-secondary:hover {
+  background: #f6f7f7;
+  color: #135e96;
+  border-color: #135e96;
+}
+
+.nosfirnews-button-danger {
+  background: #d63638;
+  border-color: #d63638;
+  color: #fff;
+}
+
+.nosfirnews-button-danger:hover {
+  background: #b32d2e;
+  border-color: #b32d2e;
+  color: #fff;
+}
+
+.nosfirnews-button-small {
+  padding: 4px 12px;
+  font-size: 13px;
+}
+
+.nosfirnews-button-large {
+  padding: 12px 24px;
+  font-size: 16px;
+}
+
+/* ============================================
+   6. Tabelas
+   ============================================ */
+
+.nosfirnews-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+.nosfirnews-table thead th {
+  background: #f6f7f7;
+  border-bottom: 2px solid #c3c4c7;
+  padding: 12px 10px;
+  text-align: left;
+  font-weight: 600;
+  color: #1d2327;
+}
+
+.nosfirnews-table tbody td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #e5e5e5;
+  color: #2c3338;
+}
+
+.nosfirnews-table tbody tr:hover {
+  background: #f6f7f7;
+}
+
+.nosfirnews-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ============================================
+   7. Badges e Status
+   ============================================ */
+
+.nosfirnews-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.nosfirnews-badge-success {
+  background: #d7f7c2;
+  color: #2c6e1f;
+}
+
+.nosfirnews-badge-warning {
+  background: #fcf3cf;
+  color: #8a6d3b;
+}
+
+.nosfirnews-badge-error {
+  background: #ffd5d8;
+  color: #b32d2e;
+}
+
+.nosfirnews-badge-info {
+  background: #d5e7f7;
+  color: #135e96;
+}
+
+/* ============================================
+   8. Notices e Alertas
+   ============================================ */
+
+.nosfirnews-notice {
+  padding: 15px;
+  border-left: 4px solid;
+  margin: 20px 0;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.nosfirnews-notice-success {
+  background: #d7f7c2;
+  border-color: #2c6e1f;
+  color: #1d2327;
+}
+
+.nosfirnews-notice-warning {
+  background: #fcf3cf;
+  border-color: #8a6d3b;
+  color: #1d2327;
+}
+
+.nosfirnews-notice-error {
+  background: #ffd5d8;
+  border-color: #b32d2e;
+  color: #1d2327;
+}
+
+.nosfirnews-notice-info {
+  background: #d5e7f7;
+  border-color: #135e96;
+  color: #1d2327;
+}
+
+/* ============================================
+   9. Toggle Switch
+   ============================================ */
+
+.nosfirnews-toggle {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+
+.nosfirnews-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.nosfirnews-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #8c8f94;
+  transition: 0.3s;
+  border-radius: 26px;
+}
+
+.nosfirnews-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+.nosfirnews-toggle input:checked + .nosfirnews-toggle-slider {
+  background-color: #2271b1;
+}
+
+.nosfirnews-toggle input:checked + .nosfirnews-toggle-slider:before {
+  transform: translateX(24px);
+}
+
+/* ============================================
+   10. Tabs
+   ============================================ */
+
+.nosfirnews-tabs {
+  display: flex;
+  border-bottom: 2px solid #c3c4c7;
+  margin-bottom: 20px;
+  gap: 5px;
+}
+
+.nosfirnews-tab {
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #646970;
+  transition: all 0.2s ease;
+  margin-bottom: -2px;
+}
+
+.nosfirnews-tab:hover {
+  color: #2271b1;
+}
+
+.nosfirnews-tab.active {
+  color: #2271b1;
+  border-bottom-color: #2271b1;
+}
+
+.nosfirnews-tab-content {
+  display: none;
+}
+
+.nosfirnews-tab-content.active {
+  display: block;
+}
+
+/* ============================================
+   11. Loading e Spinners
+   ============================================ */
+
+.nosfirnews-loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(34, 113, 177, 0.3);
+  border-radius: 50%;
+  border-top-color: #2271b1;
+  animation: nosfirnews-spin 0.8s linear infinite;
+}
+
+@keyframes nosfirnews-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   12. Responsividade
+   ============================================ */
+
+@media screen and (max-width: 782px) {
+  .nosfirnews-admin-page {
+    padding: 10px;
+  }
+
+  .nosfirnews-admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .nosfirnews-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nosfirnews-form-table th,
+  .nosfirnews-form-table td {
+    display: block;
+    width: 100%;
+    padding: 10px 0;
+  }
+
+  .nosfirnews-form-table input[type="text"],
+  .nosfirnews-form-table input[type="email"],
+  .nosfirnews-form-table input[type="url"],
+  .nosfirnews-form-table input[type="number"],
+  .nosfirnews-form-table textarea,
+  .nosfirnews-form-table select {
+    max-width: 100%;
+  }
+
+  .nosfirnews-tabs {
+    flex-wrap: wrap;
+  }
+
+  .nosfirnews-tab {
+    flex: 1 1 auto;
+    min-width: 100px;
+  }
+}
+
+/* ============================================
+   13. Utilitários
+   ============================================ */
+
+.nosfirnews-text-center {
+  text-align: center;
+}
+
+.nosfirnews-text-right {
+  text-align: right;
+}
+
+.nosfirnews-mt-10 { margin-top: 10px; }
+.nosfirnews-mt-20 { margin-top: 20px; }
+.nosfirnews-mb-10 { margin-bottom: 10px; }
+.nosfirnews-mb-20 { margin-bottom: 20px; }
+
+.nosfirnews-hidden {
+  display: none;
+}
+
+.nosfirnews-flex {
+  display: flex;
+}
+
+.nosfirnews-flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nosfirnews-flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nosfirnews-gap-10 { gap: 10px; }
+.nosfirnews-gap-20 { gap: 20px; }
